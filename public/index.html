@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TACTICAL_POSITION_MONITOR_v5.7_CRT_FINAL</title>
+    <title>TACTICAL_POSITION_MONITOR_v5.8_CRT_FIXED</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght=400;700&family=Orbitron:wght=400;700;900&display=swap');
     </style>
@@ -114,6 +114,7 @@
 </head>
 <body>
 
+<!-- 대화창 형태의 원본 인하우스 모달 팝업 -->
 <div class="modal-overlay" id="alert-modal">
     <div class="modal-content" id="modal-box">
         <div class="corner-decor"></div>
@@ -133,12 +134,14 @@
         <input type="text" id="window-alias" value="작전 1호기 (BTC-5분봉)" oninput="onLocalSettingsChanged()">
     </div>
 
+    <!-- Orbitron 글꼴 및 발광효과 활성화 -->
     <div class="live-clock-wrapper" id="live-clock">00:00:00</div>
 
     <div class="pnl-box" id="pnl-container">
         <div class="corner-decor"></div>
         <div class="pnl-title" id="lbl-pnl-title">⚡ REALTIME POSITION PNL TRACKER</div>
         <div class="pnl-direction-wrapper">
+            <!-- 숏/롱 선택에 따라 전체 CRT 테마가 복구/전환되는 양방향 스위치 -->
             <select id="pnl-side" onchange="onPositionSideChanged()">
                 <option value="long">🟩 POSITION: LONG (매수) -> MATRIX THEME</option>
                 <option value="short" selected>🟥 POSITION: SHORT (매도) -> EVANGELION THEME</option>
@@ -237,7 +240,7 @@
 </div>
 
 <script>
-    // 오리지널 파일의 강렬한 CRT 뿌연 글로우 스타일 딕셔너리 100% 미러링 복구
+    // CRT 뿌연 글로우 스타일 딕셔너리 미러링
     const themes = {
         nerv_operational: `
             body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); }
@@ -301,7 +304,7 @@
     let nextCheckTime = 0;
     let isSystemRunning = false;
 
-    // 포지션 방향 변경 시 테마 체인저 연동 함수 완벽 롤백
+    // 포지션 방향 변경 시 테마 연동 구조
     function onPositionSideChanged() {
         const side = document.getElementById('pnl-side').value;
         if (side === 'long') switchTheme('matrix'); else switchTheme('nerv_operational');
@@ -332,7 +335,7 @@
         updateSystemStatusUI();
     }
 
-    // 브라우저 프론트엔드가 직접 안전망 우회 수신 후 백엔드 서버로 밀어주는 핵심 통신 파이프라인
+    // Bybit 인터셉터 및 프론트 브로커 보고 파이프라인
     async function fetchBybitAndReport() {
         try {
             const url = 'https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=5&limit=200';
@@ -378,7 +381,7 @@
             });
 
         } catch (e) {
-            console.error("안전 브로커 수신 장애 수동 복구 중:", e);
+            console.error("안전 브로커 수신 장애 복구 중:", e);
         }
     }
 
@@ -395,7 +398,7 @@
 
             calculateLivePnl();
 
-            // 백엔드로부터 알람 조건 성립 신호 포착 시, 원본 인하우스 팝업 모달창 오픈 로직 복구
+            // 인하우스 경고창 모달 호출
             if (data.lastData.triggerPopup) {
                 log(`⚡ [CRITICAL] STRATEGY_PATTERN_MATCHED`);
                 startRepeatingAlertSound();
@@ -411,7 +414,8 @@
                 openPopup(popupHtml);
             }
 
-            if (!localConfig || localConfig.isSystemRunning !== data.config.isSystemRunning) {
+            // 로컬 설정 객체가 비었거나 원격 상태가 바뀐 경우 동기화 인터페이스 주입
+            if (!localConfig) {
                 document.getElementById('window-alias').value = data.config.windowAlias;
                 document.getElementById('pnl-side').value = data.config.side;
                 document.getElementById('cond-price-atv').checked = data.config.priceAtv;
@@ -427,11 +431,14 @@
                 document.getElementById('cond-vol-atv').checked = data.config.volAtv;
                 document.getElementById('cond-vol-ratio').value = data.config.volRatio;
                 
+                isSystemRunning = data.config.isSystemRunning;
                 if (data.config.side === 'long') switchTheme('matrix'); else switchTheme('nerv_operational');
+            } else {
+                // 상호 토글 동기화 대응
+                isSystemRunning = data.config.isSystemRunning;
             }
 
             localConfig = data.config;
-            isSystemRunning = localConfig.isSystemRunning;
             updateSystemStatusUI();
 
         } catch (e) {
@@ -440,7 +447,6 @@
     }
 
     async function onLocalSettingsChanged() {
-        if (!localConfig) return;
         const payload = {
             isSystemRunning: isSystemRunning,
             windowAlias: document.getElementById('window-alias').value,
@@ -458,18 +464,18 @@
             volAtv: document.getElementById('cond-vol-atv').checked,
             volRatio: parseFloat(document.getElementById('cond-vol-ratio').value) || 1.5,
             volMaPeriod: parseInt(document.getElementById('cond-vol-ma-period').value) || 30,
-            telegramToken: localConfig.telegramToken,
-            telegramChatId: localConfig.telegramChatId
+            telegramToken: localConfig ? localConfig.telegramToken : "",
+            telegramChatId: localConfig ? localConfig.telegramChatId : ""
         };
         await fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     }
 
+    // 에러 없이 즉시 구동 가능하도록 최적화 완료된 시스템 토글 함수
     function toggleSystem() {
         if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
         if (audioContext.state === 'suspended') audioContext.resume();
         
         isSystemRunning = !isSystemRunning;
-        onLocalSettingsChanged();
         
         if (isSystemRunning) {
             log("TACTICAL CORE DEPLOYED.");
@@ -478,7 +484,9 @@
             stopRepeatingAlertSound();
             log("SYSTEM ANALYSIS SUSPENDED.");
         }
-        syncServer();
+        
+        updateSystemStatusUI();
+        onLocalSettingsChanged();
     }
 
     function updateSystemStatusUI() {
@@ -542,27 +550,50 @@
         b.innerHTML = `:: ${m}<br>` + b.innerHTML;
     }
 
-    function setNextTargetTime() { const now = new Date(); const nextMinutes = Math.ceil((now.getMinutes() + 0.05) / 5) * 5; const target = new Date(now); target.setMinutes(nextMinutes); target.setSeconds(1); target.setMilliseconds(0); nextCheckTime = target.getTime(); }
+    // 상시 5분봉 정밀 계측을 위한 타겟 카운트다운 생성기
+    function setNextTargetTime() { 
+        const now = new Date(); 
+        const currentMinutes = now.getMinutes();
+        const nextMinutes = Math.ceil((currentMinutes + 0.01) / 5) * 5; 
+        
+        const target = new Date(now); 
+        target.setMinutes(nextMinutes); 
+        target.setSeconds(0); 
+        target.setMilliseconds(0); 
+        
+        // 정각 한계 돌파 필터링
+        if (nextMinutes === 60 || target.getTime() <= now.getTime()) {
+            target.setTime(target.getTime() + 5 * 60 * 1000);
+        }
+        nextCheckTime = target.getTime(); 
+    }
 
+    // 실시간 타이틀 시계 루프 (1초 마다)
     setInterval(() => {
         const d = new Date();
         document.getElementById('live-clock').innerText = 
             String(d.getHours()).padStart(2, '0') + ":" + String(d.getMinutes()).padStart(2, '0') + ":" + String(d.getSeconds()).padStart(2, '0');
     }, 1000);
 
+    // 봉 완성 실시간 계산 독립 루프 (1초 마다 실행)
     setInterval(() => {
-        if (nextCheckTime === 0 || !isSystemRunning) {
-            document.getElementById('countdown').innerText = "STANDBY";
-            return;
+        if (nextCheckTime === 0) {
+            setNextTargetTime();
         }
         const diff = nextCheckTime - Date.now();
-        if (diff <= 0) { setNextTargetTime(); } 
-        else { const m = Math.floor(diff / 60000), s = Math.floor((diff % 60000) / 1000); document.getElementById('countdown').innerText = `${m}M ${s}S`; }
+        if (diff <= 0) { 
+            setNextTargetTime(); 
+        } else { 
+            const m = Math.floor(diff / 60000);
+            const s = Math.floor((diff % 60000) / 1000); 
+            document.getElementById('countdown').innerText = `${m}M ${s}S`; 
+        }
     }, 1000);
 
     window.addEventListener('DOMContentLoaded', () => {
         setNextTargetTime();
         
+        // 최초 구동 파이프라인 정렬
         fetchBybitAndReport();
         setInterval(fetchBybitAndReport, 3000);
 
