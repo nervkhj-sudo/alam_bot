@@ -4,71 +4,240 @@
     <meta charset="UTF-8">
     <title>MAGI SYSTEM TACTICAL MONITOR</title>
     <style id="theme-style">
-        /* 초기 로딩용 기본 테마 NERV OPERATIONAL (주황색 CRT) */
-        body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
-        body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.5) 50%); z-index: 99999; opacity: 0.6; pointer-events: none; background-size: 100% 8px; transform: translateZ(0); will-change: transform; }
-        .container { background-color: #0c0502; border: 1px solid #ff5500; padding: 30px; border-radius: 4px; width: 100%; max-width: 900px; position: relative; box-shadow: 0 0 25px rgba(255, 85, 0, 0.35), inset 0 0 15px rgba(255, 85, 0, 0.1); box-sizing: border-box; }
-        h1 { font-size: 24px; text-align: center; margin-top: 0; margin-bottom: 25px; padding-bottom: 10px; color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.6); letter-spacing: 2px; position: relative; }
-        .live-clock-wrapper { font-size: 32px; text-align: center; font-weight: bold; margin-bottom: 25px; color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); letter-spacing: 1px; }
+        /* NERV OPERATIONAL (주황색 CRT) 기본 테마 */
+        body { 
+            font-family: 'Courier New', monospace; 
+            background-color: #050201; 
+            color: #ff5500; 
+            text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            box-sizing: border-box; 
+        }
+        body::before { 
+            content: " "; 
+            display: block; 
+            position: fixed; 
+            top: 0; left: 0; bottom: 0; right: 0; 
+            background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.5) 50%); 
+            z-index: 99999; 
+            opacity: 0.4; 
+            pointer-events: none; 
+            background-size: 100% 8px; 
+        }
+        .container { 
+            background-color: #0c0502; 
+            border: 1px solid #ff5500; 
+            padding: 25px; 
+            border-radius: 4px; 
+            width: 100%; 
+            max-width: 850px; 
+            position: relative; 
+            box-shadow: 0 0 25px rgba(255, 85, 0, 0.35), inset 0 0 15px rgba(255, 85, 0, 0.1); 
+            box-sizing: border-box; 
+        }
+        h1 { 
+            font-size: 24px; 
+            text-align: center; 
+            margin-top: 0; 
+            margin-bottom: 20px; 
+            padding-bottom: 10px; 
+            color: #ff5500; 
+            border-bottom: 2px double #ff5500; 
+            text-shadow: 0 0 8px rgba(255,85,0,0.6); 
+            letter-spacing: 2px; 
+        }
+        .live-clock-wrapper { 
+            font-size: 32px; 
+            text-align: center; 
+            font-weight: bold; 
+            margin-bottom: 20px; 
+            color: #ff5500; 
+            text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); 
+        }
         
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
-        .data-box { border: 1px solid #ff5500; padding: 15px; background: rgba(170, 55, 0, 0.08); box-shadow: 0 0 12px rgba(170, 55, 0, 0.2); position: relative; display: flex; flex-direction: column; gap: 10px; }
-        .data-row { display: flex; justify-content: space-between; font-size: 14px; border-bottom: 1px dashed rgba(255, 85, 0, 0.2); padding-bottom: 5px; }
+        /* 대시보드 2열 그리드 강제 유지 */
+        .dashboard-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+            margin-bottom: 20px; 
+        }
+        .data-box { 
+            border: 1px solid #ff5500; 
+            padding: 15px; 
+            background: rgba(170, 55, 0, 0.08); 
+            box-shadow: 0 0 12px rgba(170, 55, 0, 0.2); 
+            position: relative; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between;
+            gap: 8px; 
+            box-sizing: border-box;
+        }
+        .data-row { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 14px; 
+            border-bottom: 1px dashed rgba(255, 85, 0, 0.2); 
+            padding-bottom: 4px; 
+        }
         .data-row:last-child { border-bottom: none; padding-bottom: 0; }
-        .data-row span:last-child { color: #ffffff; font-weight: bold; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 15px rgba(255,255,255,0.6); }
+        .data-row span:last-child { 
+            color: #ffffff; 
+            font-weight: bold; 
+            text-shadow: 0 0 8px rgba(255,255,255,1); 
+        }
         
-        .condition-section { margin-bottom: 25px; }
-        .section-title { font-size: 14px; font-weight: bold; margin-bottom: 15px; letter-spacing: 1px; }
-        .condition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .condition-group { border: 1px solid #ff5500; padding: 15px; background: rgba(12, 5, 2, 0.7); box-shadow: 0 0 10px rgba(170, 55, 0, 0.15); position: relative; display: flex; flex-direction: column; gap: 12px; }
+        .condition-section { margin-bottom: 20px; }
+        .section-title { font-size: 14px; font-weight: bold; margin-bottom: 12px; letter-spacing: 1px; }
+        
+        /* 하단 조건 설정 영역 2열 배치 고정 */
+        .condition-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+        }
+        .condition-group { 
+            border: 1px solid #ff5500; 
+            padding: 15px; 
+            background: rgba(12, 5, 2, 0.7); 
+            position: relative; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            box-sizing: border-box;
+        }
         .condition-title-row { display: flex; justify-content: space-between; align-items: center; }
         .condition-title { font-size: 13px; font-weight: bold; color: #ff5500; }
         .input-inline { display: flex; align-items: center; gap: 8px; font-size: 13px; }
         
-        input[type="checkbox"] { width: 16px; height: 16px; accent-color: #ff5500; cursor: pointer; }
-        select, input[type="number"], input[type="text"] { background-color: #050201; color: #ff5500; border: 1px solid #ff5500; padding: 6px 10px; font-family: inherit; font-size: 13px; outline: none; box-shadow: 0 0 5px rgba(255,85,0,0.3); box-sizing: border-box; }
-        select { cursor: pointer; }
-        input[type="number"] { width: 90px; }
-        input[type="text"] { width: 100%; }
+        input[type="checkbox"] { width: 16px; height: 16px; accent-color: #ff5500; cursor: pointer; margin: 0; }
+        select, input[type="number"], input[type="text"] { 
+            background-color: #050201; 
+            color: #ff5500; 
+            border: 1px solid #ff5500; 
+            padding: 5px 8px; 
+            font-family: inherit; 
+            font-size: 13px; 
+            outline: none; 
+            box-sizing: border-box; 
+        }
+        input[type="number"] { width: 100%; max-width: 100px; }
+        input[type="text"] { width: 100%; max-width: 200px; }
         
-        .control-section { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; align-items: center; }
-        .btn-core { background-color: #ff5500; color: #0c0502; border: none; padding: 14px 28px; font-family: inherit; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.2s; box-shadow: 0 0 15px rgba(255, 85, 0, 0.6); letter-spacing: 1px; width: 100%; max-width: 400px; text-align: center; }
-        .btn-core:hover { opacity: 0.9; transform: scale(1.01); }
-        .status { font-size: 15px; font-weight: bold; padding: 10px; width: 100%; max-width: 380px; text-align: center; color: #ff5500; border: 1px dashed #ff5500; background: rgba(170, 55, 0, 0.05); text-shadow: 0 0 5px rgba(255,85,0,0.5); letter-spacing: 1px; }
+        /* 중앙 제어 버튼 레이아웃 원상 복구 */
+        .control-section { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+            align-items: center; 
+        }
+        .btn-core { 
+            background-color: #ff5500; 
+            color: #0c0502; 
+            border: none; 
+            padding: 12px 0; 
+            font-family: inherit; 
+            font-size: 15px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            box-shadow: 0 0 15px rgba(255, 85, 0, 0.5); 
+            letter-spacing: 1px; 
+            width: 100%; 
+            max-width: 450px; 
+            text-align: center; 
+            box-sizing: border-box;
+        }
+        .btn-core:hover { opacity: 0.9; }
+        .status { 
+            font-size: 14px; 
+            font-weight: bold; 
+            padding: 8px; 
+            width: 100%; 
+            max-width: 450px; 
+            text-align: center; 
+            color: #ff5500; 
+            border: 1px dashed #ff5500; 
+            background: rgba(170, 55, 0, 0.05); 
+            box-sizing: border-box;
+        }
         
-        .log-section { display: flex; flex-direction: column; gap: 8px; }
-        .log { background: #050201; border: 1px solid #ff5500; height: 120px; overflow-y: auto; padding: 12px; font-size: 12px; line-height: 1.6; color: #ff5500; box-sizing: border-box; }
+        .log-section { display: flex; flex-direction: column; gap: 5px; }
+        .log { background: #050201; border: 1px solid #ff5500; height: 100px; overflow-y: auto; padding: 10px; font-size: 12px; line-height: 1.5; color: #ff5500; box-sizing: border-box; }
         
-        .pnl-box { border: 1px solid #ff5500; padding: 12px; background: rgba(170, 55, 0, 0.04); display: flex; flex-direction: column; gap: 8px; }
-        .pnl-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-        .pnl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-top: 1px dashed rgba(255,85,0,0.3); padding-top: 8px; margin-top: 4px; }
-        .pnl-metric { display: flex; flex-direction: column; gap: 4px; }
+        .pnl-box { background: rgba(170, 55, 0, 0.04); }
+        .pnl-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; gap: 5px; }
+        .pnl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-top: 1px dashed rgba(255,85,0,0.3); padding-top: 8px; }
+        .pnl-metric { display: flex; flex-direction: column; gap: 2px; }
         .pnl-metric span:first-child { font-size: 11px; opacity: 0.7; }
         .pnl-metric span:last-child { font-size: 15px; font-weight: bold; }
         .pnl-plus { color: #00ff41 !important; text-shadow: 0 0 8px rgba(0,255,65,0.6) !important; }
         .pnl-minus { color: #ff3b30 !important; text-shadow: 0 0 8px rgba(255,59,48,0.6) !important; }
 
-        .window-alias-box { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255, 85, 0, 0.5); margin-bottom: 15px; font-size: 13px; color: #ff5500; }
-        .window-alias-box input { width: 180px; text-align: center; }
+        .window-alias-box { display: flex; align-items: center; justify-content: flex-start; gap: 10px; padding-bottom: 10px; border-bottom: 1px dashed rgba(255, 85, 0, 0.4); margin-bottom: 15px; font-size: 13px; }
+        #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.3); padding-top: 5px; text-align: center; font-size: 11px; color: rgba(255,85,0,0.7); }
 
-        #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.5); padding-top: 5px; margin-top: 5px; text-align: center; font-size: 11px; color: rgba(255,85,0,0.7); }
-
-        .corner-decor::before, .corner-decor::after, .container::before, .container::after, .pnl-box::before, .pnl-box::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { content: ""; position: absolute; width: 6px; height: 6px; border: solid transparent; pointer-events: none; }
-        .container::before, .pnl-box::before, .data-box::before, .condition-group::before { top: -1px; left: -1px; border-width: 1.5px 0 0 1.5px; border-color: #ff5500; }
-        .container::after, .pnl-box::after, .data-box::after, .condition-group::after { bottom: -1px; right: -1px; border-width: 0 1.5px 1.5px 0; border-color: #ff5500; }
+        /* 테두리 장식 */
+        .corner-decor::before, .corner-decor::after, .container::before, .container::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { content: ""; position: absolute; width: 6px; height: 6px; border: solid transparent; pointer-events: none; }
+        .container::before, .data-box::before, .condition-group::before { top: -1px; left: -1px; border-width: 1.5px 0 0 1.5px; border-color: #ff5500; }
+        .container::after, .data-box::after, .condition-group::after { bottom: -1px; right: -1px; border-width: 0 1.5px 1.5px 0; border-color: #ff5500; }
         .corner-decor::before { top: -1px; right: -1px; border-width: 1.5px 1.5px 0 0; border-color: #ff5500; }
         .corner-decor::after { bottom: -1px; left: -1px; border-width: 0 0 1.5px 1.5px; border-color: #ff5500; }
 
-        .nerv-tag { position: absolute; top: 10px; right: 15px; font-size: 10px; font-weight: bold; border: 1px solid #ff5500; padding: 2px 5px; letter-spacing: 1px; }
+        .nerv-tag { position: absolute; top: 10px; left: 15px; font-size: 10px; font-weight: bold; border: 1px solid #ff5500; padding: 2px 5px; letter-spacing: 1px; }
 
-        /* 모달 팝업 레이아웃 스타일 */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.75); background-image: repeating-linear-gradient(45deg, rgba(255,85,0,0.08) 0px, rgba(255,85,0,0.08) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); z-index: 100000; display: none; justify-content: center; align-items: center; }
-        .modal-content { background-color: #ff5500; border: 1px solid #ff5500; padding: 3px; position: relative; box-shadow: 0 0 40px rgba(255, 85, 0, 0.85); width: 100%; max-width: 380px; box-sizing: border-box; }
-        .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000000 !important; }
-        .modal-body { border: 2px solid #ff5500; background: #000000; color: #ff5500; padding: 20px; display: flex; flex-direction: column; gap: 15px; text-shadow: 0 0 8px rgba(255, 85, 0, 0.8); position: relative; }
-        .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #ff5500 !important; }
-        .modal-close-btn { background-color: #000000; color: #ff5500; border: 1px solid #ff5500; font-family: inherit; font-size: 13px; font-weight: bold; padding: 8px; cursor: pointer; text-align: center; width: 100%; outline: none; }
-        .modal-close-btn:hover { background-color: rgba(255,85,0,0.15); }
+        /* 알림 모달 레이어 팝업 캡슐화 및 중앙 정렬 보정 */
+        .modal-overlay { 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.85); 
+            background-image: repeating-linear-gradient(45deg, rgba(255,85,0,0.05) 0px, rgba(255,85,0,0.05) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); 
+            z-index: 100000; 
+            display: none; 
+            justify-content: center; 
+            align-items: center; 
+        }
+        .modal-content { 
+            background-color: #ff5500; 
+            padding: 2px; 
+            position: relative; 
+            box-shadow: 0 0 40px rgba(255, 85, 0, 0.85); 
+            width: 100%; 
+            max-width: 400px; 
+            box-sizing: border-box; 
+        }
+        .modal-body { 
+            border: 1px solid #000000;
+            background: #000000; 
+            color: #ff5500; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+            position: relative; 
+        }
+        .modal-close-btn { 
+            background-color: #000000; 
+            color: #ff5500; 
+            border: 1px solid #ff5500; 
+            font-family: inherit; 
+            font-size: 13px; 
+            font-weight: bold; 
+            padding: 10px; 
+            cursor: pointer; 
+            text-align: center; 
+            width: 100%; 
+            box-shadow: 0 0 10px rgba(255,85,0,0.3);
+            box-sizing: border-box;
+        }
+        .modal-close-btn:hover { background-color: rgba(255,85,0,0.2); }
     </style>
 </head>
 <body>
@@ -89,7 +258,7 @@
     </div>
 
     <div class="dashboard-grid">
-        <!-- 실시간 지표 상황 모니터 -->
+        <!-- 실시간 데이터 모니터 -->
         <div class="data-box">
             <div class="corner-decor"></div>
             <div class="data-row"><span id="lbl-price">MONITORING_PRICE :</span><span id="current-price">0 USDT</span></div>
@@ -99,7 +268,7 @@
             <div id="sub-countdown-row"><span id="lbl-next">NEXT_DATA_INTERCEPT :</span> <span id="countdown">대기 중...</span></div>
         </div>
 
-        <!-- 실시간 모의 포지션 설정 및 PNL 추적기 -->
+        <!-- 모의 포지션 PNL 팩터 -->
         <div class="data-box pnl-box">
             <div class="corner-decor"></div>
             <div class="pnl-row">
@@ -131,12 +300,11 @@
         </div>
     </div>
 
-    <!-- 조건 설정 타겟 매트릭스 -->
+    <!-- 조건 매트릭스 설정 영역 -->
     <div class="condition-section">
-        <div class="section-title" id="section-desc">&gt; MAGI CENTRAL_LOGIC</div>
+        <div class="section-title" id="section-desc">> MAGI CENTRAL_LOGIC</div>
         <div class="condition-grid">
             
-            <!-- 가격 조건 -->
             <div class="condition-group">
                 <div class="corner-decor"></div>
                 <div class="condition-title-row">
@@ -157,7 +325,6 @@
                 </div>
             </div>
 
-            <!-- RSI 조건 -->
             <div class="condition-group">
                 <div class="corner-decor"></div>
                 <div class="condition-title-row">
@@ -177,7 +344,6 @@
                 </div>
             </div>
 
-            <!-- 볼린저 밴드 조건 -->
             <div class="condition-group">
                 <div class="corner-decor"></div>
                 <div class="condition-title-row">
@@ -195,7 +361,6 @@
                 </div>
             </div>
 
-            <!-- 거래량 조건 -->
             <div class="condition-group">
                 <div class="corner-decor"></div>
                 <div class="condition-title-row">
@@ -216,86 +381,84 @@
         </div>
     </div>
 
-    <!-- 중앙 컨트롤 마스터 스위치 -->
+    <!-- 중앙 관제 마스터 파워 스위치 -->
     <div class="control-section">
         <button class="btn-core" id="btn-toggle" onclick="toggleSystem()">ACTIVATE MAGI SYSTEM</button>
         <div class="status" id="status-text">SYSTEM: OFF_LINE</div>
     </div>
 
-    <!-- 시스템 로그 스코프 -->
+    <!-- 오퍼레이션 로그 아카이브 -->
     <div class="log-section">
         <div style="font-size:12px; font-weight:bold;">REALTIME ACTION LOG</div>
         <div class="log" id="log-box"></div>
     </div>
 </div>
 
-<!-- 알림 팝업 모달 레이어 -->
+<!-- 알림 팝업 전용 구조 (버튼 위치 이송 완료) -->
 <div class="modal-overlay" id="alert-modal">
     <div class="modal-content">
         <div class="corner-decor"></div>
         <div class="modal-body">
             <div class="corner-decor"></div>
             <div id="modal-info">
-                <!-- 자바스크립트를 통해 동적 알림 정보 바인딩 -->
+                <!-- 동적 컨디션 로그 데이터 매핑 구역 -->
             </div>
+            <!-- 완전히 팝업 창 영역 안쪽 하단으로 강제 복귀 처리 -->
             <button class="modal-close-btn" onclick="closePopup()">CONFIRM & TERMINATE ALERT</button>
         </div>
     </div>
 </div>
 
 <script>
-// CRT 뿌연 글로우 스타일 딕셔너리 미러링
 const themes = {
     nerv_operational: `
         body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
-        body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.5) 50%); z-index: 99999; opacity: 0.6; pointer-events: none; background-size: 100% 8px; transform: translateZ(0); will-change: transform; }
-        .container { background-color: #0c0502; border: 1px solid #ff5500; padding: 30px; border-radius: 4px; width: 100%; max-width: 900px; position: relative; box-shadow: 0 0 25px rgba(255, 85, 0, 0.35), inset 0 0 15px rgba(255, 85, 0, 0.1); box-sizing: border-box; }
-        h1 { font-size: 24px; text-align: center; margin-top: 0; margin-bottom: 25px; padding-bottom: 10px; color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.6); letter-spacing: 2px; position: relative; }
-        .live-clock-wrapper { font-size: 32px; text-align: center; font-weight: bold; margin-bottom: 25px; color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); letter-spacing: 1px; }
-        .data-box { border: 1px solid #ff5500; padding: 15px; background: rgba(170, 55, 0, 0.08); box-shadow: 0 0 12px rgba(170, 55, 0, 0.2); position: relative; display: flex; flex-direction: column; gap: 10px; }
-        .data-row span:last-child { color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 15px rgba(255,255,255,0.6); }
-        .condition-group { border: 1px solid #ff5500; padding: 15px; background: rgba(12, 5, 2, 0.7); box-shadow: 0 0 10px rgba(170, 55, 0, 0.15); position: relative; display: flex; flex-direction: column; gap: 12px; }
+        body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.5) 50%); z-index: 99999; opacity: 0.4; pointer-events: none; background-size: 100% 8px; }
+        .container { background-color: #0c0502; border: 1px solid #ff5500; padding: 25px; border-radius: 4px; width: 100%; max-width: 850px; position: relative; box-shadow: 0 0 25px rgba(255, 85, 0, 0.35), inset 0 0 15px rgba(255, 85, 0, 0.1); box-sizing: border-box; }
+        h1 { font-size: 24px; text-align: center; margin-top: 0; margin-bottom: 20px; padding-bottom: 10px; color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.6); letter-spacing: 2px; }
+        .live-clock-wrapper { font-size: 32px; text-align: center; font-weight: bold; margin-bottom: 20px; color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .data-box { border: 1px solid #ff5500; padding: 15px; background: rgba(170, 55, 0, 0.08); box-shadow: 0 0 12px rgba(170, 55, 0, 0.2); position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; box-sizing: border-box; }
+        .data-row span:last-child { color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,1); }
+        .condition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .condition-group { border: 1px solid #ff5500; padding: 15px; background: rgba(12, 5, 2, 0.7); position: relative; display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; }
         .condition-title { color: #ff5500; }
-        .corner-decor::before, .corner-decor::after, .container::before, .container::after, .pnl-box::before, .pnl-box::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #ff5500 !important; border-width: 1.5px !important; }
+        .corner-decor::before, .corner-decor::after, .container::before, .container::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #ff5500 !important; border-width: 1.5px !important; }
         input[type="checkbox"] { accent-color: #ff5500; }
-        select, input[type="number"], input[type="text"] { background-color: #050201; color: #ff5500; border: 1px solid #ff5500; box-shadow: 0 0 5px rgba(255,85,0,0.3); }
-        .btn-core { background-color: #ff5500; color: #0c0502; box-shadow: 0 0 15px rgba(255, 85, 0, 0.6); }
-        .status { color: #ff5500; border: 1px dashed #ff5500; background: rgba(170, 55, 0, 0.05); text-shadow: 0 0 5px rgba(255,85,0,0.5); }
+        select, input[type="number"], input[type="text"] { background-color: #050201; color: #ff5500; border: 1px solid #ff5500; }
+        .btn-core { background-color: #ff5500; color: #0c0502; box-shadow: 0 0 15px rgba(255, 85, 0, 0.5); width: 100%; max-width: 450px; }
+        .status { color: #ff5500; border: 1px dashed #ff5500; background: rgba(170, 55, 0, 0.05); width: 100%; max-width: 450px; }
         .log { background: #050201; border: 1px solid #ff5500; color: #ff5500; }
-        .pnl-box { border: 1px solid #ff5500; background: rgba(170, 55, 0, 0.04); }
-        .window-alias-box { border-bottom: 1px dashed rgba(255, 85, 0, 0.5); color: #ff5500; }
-        #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.5); color: rgba(255,85,0,0.7); }
-        .modal-overlay { background-color: rgba(0,0,0,0.75); background-image: repeating-linear-gradient(45deg, rgba(255,85,0,0.08) 0px, rgba(255,85,0,0.08) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
-        .modal-content { background-color: #ff5500; border: 1px solid #ff5500; color: #000000; box-shadow: 0 0 40px rgba(255, 85, 0, 0.85); }
-        .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000000 !important; }
-        .modal-body { border: 2px solid #ff5500; background: #000000; color: #ff5500; text-shadow: 0 0 8px rgba(255, 85, 0, 0.8); }
-        .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #ff5500 !important; }
+        .window-alias-box { border-bottom: 1px dashed rgba(255, 85, 0, 0.4); }
+        #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.3); color: rgba(255,85,0,0.7); }
+        .modal-overlay { background-color: rgba(0,0,0,0.85); background-image: repeating-linear-gradient(45deg, rgba(255,85,0,0.05) 0px, rgba(255,85,0,0.05) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
+        .modal-content { background-color: #ff5500; box-shadow: 0 0 40px rgba(255, 85, 0, 0.85); }
+        .modal-body { border: 1px solid #000000; background: #000000; color: #ff5500; }
         .modal-close-btn { background-color: #000000; color: #ff5500; border: 1px solid #ff5500; }
     `,
     matrix: `
         body { font-family: 'Courier New', monospace; background-color: #000000; color: #00ff41; text-shadow: 0 0 6px rgba(0, 255, 65, 0.8), 0 0 12px rgba(0, 255, 65, 0.4); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
-        body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.45) 50%); z-index: 99999; opacity: 0.55; pointer-events: none; background-size: 100% 8px; transform: translateZ(0); will-change: transform; }
-        .container { background-color: #030303; border: 1px solid #00ff41; padding: 30px; border-radius: 4px; width: 100%; max-width: 900px; position: relative; box-shadow: 0 0 25px rgba(0, 255, 65, 0.35), inset 0 0 10px rgba(0,255,65,0.05); box-sizing: border-box; }
-        h1 { font-size: 24px; text-align: center; margin-top: 0; margin-bottom: 25px; padding-bottom: 10px; color: #00ff41; border-bottom: 1px dashed #00ff41; text-shadow: 0 0 8px rgba(0,255,65,0.5); letter-spacing: 2px; position: relative; }
-        .live-clock-wrapper { font-size: 32px; text-align: center; font-weight: bold; margin-bottom: 25px; color: #00ff41; text-shadow: 0 0 12px rgba(0, 255, 65, 0.95), 0 0 20px rgba(0, 255, 65, 0.6); letter-spacing: 1px; }
-        .data-box { border: 1px solid #00ff41; padding: 15px; background: rgba(0, 25, 5, 0.12); box-shadow: 0 0 12px rgba(0,255,65,0.15); position: relative; display: flex; flex-direction: column; gap: 10px; }
-        .data-row span:last-child { color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 12px rgba(0,255,65,0.5); }
-        .condition-group { border: 1px solid #00ff41; padding: 15px; background: rgba(0,0,0,0.5); box-shadow: 0 0 10px rgba(0,255,65,0.1); position: relative; display: flex; flex-direction: column; gap: 12px; }
+        body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.45) 50%); z-index: 99999; opacity: 0.4; pointer-events: none; background-size: 100% 8px; }
+        .container { background-color: #030303; border: 1px solid #00ff41; padding: 25px; border-radius: 4px; width: 100%; max-width: 850px; position: relative; box-shadow: 0 0 25px rgba(0, 255, 65, 0.35), inset 0 0 10px rgba(0,255,65,0.05); box-sizing: border-box; }
+        h1 { font-size: 24px; text-align: center; margin-top: 0; margin-bottom: 20px; padding-bottom: 10px; color: #00ff41; border-bottom: 1px dashed #00ff41; text-shadow: 0 0 8px rgba(0,255,65,0.5); letter-spacing: 2px; }
+        .live-clock-wrapper { font-size: 32px; text-align: center; font-weight: bold; margin-bottom: 20px; color: #00ff41; text-shadow: 0 0 12px rgba(0, 255, 65, 0.95), 0 0 20px rgba(0, 255, 65, 0.6); }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .data-box { border: 1px solid #00ff41; padding: 15px; background: rgba(0, 25, 5, 0.12); box-shadow: 0 0 12px rgba(0,255,65,0.15); position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; box-sizing: border-box; }
+        .data-row span:last-child { color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,1); }
+        .condition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .condition-group { border: 1px solid #00ff41; padding: 15px; background: rgba(0,0,0,0.5); position: relative; display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; }
         .condition-title { color: #00ff41; }
-        .corner-decor::before, .corner-decor::after, .container::before, .container::after, .pnl-box::before, .pnl-box::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #00ff41 !important; border-width: 1.5px !important; }
+        .corner-decor::before, .corner-decor::after, .container::before, .container::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #00ff41 !important; border-width: 1.5px !important; }
         input[type="checkbox"] { accent-color: #00ff41; }
-        select, input[type="number"], input[type="text"] { background-color: #000000; color: #00ff41; border: 1px solid #00ff41; box-shadow: 0 0 5px rgba(0,255,65,0.3); }
-        .btn-core { background-color: #00ff41; color: #000000; box-shadow: 0 0 15px rgba(0, 255, 65, 0.6); }
-        .status { color: #00ff41; border: 1px solid #00ff41; background: none; text-shadow: 0 0 5px rgba(0,255,65,0.5); }
+        select, input[type="number"], input[type="text"] { background-color: #000000; color: #00ff41; border: 1px solid #00ff41; }
+        .btn-core { background-color: #00ff41; color: #000000; box-shadow: 0 0 15px rgba(0, 255, 65, 0.6); width: 100%; max-width: 450px; }
+        .status { color: #00ff41; border: 1px solid #00ff41; background: none; width: 100%; max-width: 450px; }
         .log { background: #000000; border: 1px solid #00ff41; color: #00ff41; }
-        .pnl-box { border: 1px solid #00ff41; background: rgba(0, 20, 5, 0.06); }
-        .window-alias-box { border-bottom: 1px dashed rgba(0, 255, 65, 0.5); color: #00ff41; }
+        .window-alias-box { border-bottom: 1px dashed rgba(0, 255, 65, 0.5); }
         #sub-countdown-row { border-top: 1px dashed rgba(0, 255, 65, 0.5); color: rgba(0,255,65,0.7); }
-        .modal-overlay { background-color: rgba(0,0,0,0.8); background-image: repeating-linear-gradient(45deg, rgba(0,255,65,0.05) 0px, rgba(0,255,65,0.05) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
-        .modal-content { background-color: #00ff41; border: 1px solid #00ff41; color: #000000; box-shadow: 0 0 40px rgba(0, 255, 65, 0.85); }
-        .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000000 !important; }
-        .modal-body { border: 2px solid #00ff41; background: #000000; color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.8); }
-        .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #00ff41 !important; }
+        .modal-overlay { background-color: rgba(0,0,0,0.9); background-image: repeating-linear-gradient(45deg, rgba(0,255,65,0.05) 0px, rgba(0,255,65,0.05) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
+        .modal-content { background-color: #00ff41; box-shadow: 0 0 40px rgba(0, 255, 65, 0.85); }
+        .modal-body { border: 1px solid #000000; background: #000000; color: #00ff41; }
         .modal-close-btn { background-color: #000000; color: #00ff41; border: 1px solid #00ff41; }
     `
 };
@@ -308,14 +471,12 @@ let audioIntervalId = null;
 let nextCheckTime = 0;
 let isSystemRunning = false;
 
-// 실시간 시계 기동 함수
 function startClock() {
     setInterval(() => {
         const now = new Date();
         const timeStr = now.toTimeString().split(' ')[0];
         document.getElementById('live-clock').innerText = timeStr;
         
-        // 데이터 인프라 카운트다운 추적 계산 내부 연동
         if (isSystemRunning && nextCheckTime > 0) {
             const diff = Math.max(0, Math.ceil((nextCheckTime - Date.now()) / 1000));
             document.getElementById('countdown').innerText = diff + "초 후 동기화";
@@ -325,7 +486,6 @@ function startClock() {
     }, 1000);
 }
 
-// 오디오 컨텍스트 초기화 및 비프음 루프 재생기 (경보 발생 전용)
 function startRepeatingAlertSound() {
     if (audioIntervalId) return;
     if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -335,7 +495,7 @@ function startRepeatingAlertSound() {
         const osc = audioContext.createOscillator();
         const gain = audioContext.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, audioContext.currentTime); // 고주파 비프 경고음
+        osc.frequency.setValueAtTime(880, audioContext.currentTime);
         gain.gain.setValueAtTime(0.15, audioContext.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2);
         osc.connect(gain);
@@ -352,7 +512,6 @@ function stopRepeatingAlertSound() {
     }
 }
 
-// 로그 박스 인하우스 덤프함수
 function log(msg) {
     const box = document.getElementById('log-box');
     const time = new Date().toTimeString().split(' ')[0];
@@ -360,9 +519,8 @@ function log(msg) {
     box.scrollTop = box.scrollHeight;
 }
 
-// 팝업 모달 토글 유틸리티
 function openPopup(htmlContent) {
-    document.getElementById('modal-info').innerHTML = `<div class="corner-decor"></div>${htmlContent}`;
+    document.getElementById('modal-info').innerHTML = htmlContent;
     document.getElementById('alert-modal').style.display = 'flex';
 }
 
@@ -371,7 +529,6 @@ function closePopup() {
     stopRepeatingAlertSound();
 }
 
-// 포지션 방향 변경 시 테마 연동 구조
 function onPositionSideChanged() {
     const side = document.getElementById('pnl-side').value;
     if (side === 'long') switchTheme('matrix'); else switchTheme('nerv_operational');
@@ -390,7 +547,7 @@ function switchTheme(themeName) {
         'lbl-bb': { matrix: 'BOLL_BAND(U/L):', nerv_operational: 'BOLL_BAND_LIMIT :' },
         'lbl-vol': { matrix: 'VOL / VOL_MA :', nerv_operational: 'VOL / MA_RATIO  :' },
         'lbl-next': { matrix: 'NEXT_SCAN_IN :', nerv_operational: 'NEXT_DATA_INTERCEPT :' },
-        'section-desc': { matrix: '> CONFIGURE_TARGET_STRATEGY', nerv_operational: '&gt; MAGI CENTRAL_LOGIC' }
+        'section-desc': { matrix: '> CONFIGURE_TARGET_STRATEGY', nerv_operational: '> MAGI CENTRAL_LOGIC' }
     };
     
     for (let id in elements) {
@@ -402,7 +559,6 @@ function switchTheme(themeName) {
     updateSystemStatusUI();
 }
 
-// 실시간 미러 포지션 PNL 계산 및 UI 랜더링 엔진
 function calculateLivePnl() {
     const entryPrice = parseFloat(document.getElementById('pnl-entry-price').value);
     const qty = parseFloat(document.getElementById('pnl-qty').value);
@@ -440,7 +596,6 @@ function calculateLivePnl() {
     }
 }
 
-// UI 가동 유무 시각 갱신용 래퍼
 function updateSystemStatusUI() {
     const btn = document.getElementById('btn-toggle');
     const statusText = document.getElementById('status-text');
@@ -454,7 +609,6 @@ function updateSystemStatusUI() {
     }
 }
 
-// Bybit 인터셉터 및 프론트 브로커 보고 파이프라인
 async function fetchBybitAndReport() {
     if (!isSystemRunning) return;
     try {
@@ -501,11 +655,10 @@ async function fetchBybitAndReport() {
         });
 
     } catch (e) {
-        console.error("안전 브로커 수신 장애 복구 중:", e);
+        console.error("바이비트 데이터 처리 수신 대기 중:", e);
     }
 }
 
-// 서버 동기화 코어 엔진 수조
 async function syncServer() {
     try {
         const res = await fetch('/api/config');
@@ -519,7 +672,6 @@ async function syncServer() {
 
         calculateLivePnl();
 
-        // 인하우스 경고창 모달 호출
         if (data.lastData.triggerPopup) {
             log(`⚡ [CRITICAL] STRATEGY_PATTERN_MATCHED`);
             startRepeatingAlertSound();
@@ -535,7 +687,6 @@ async function syncServer() {
             openPopup(popupHtml);
         }
 
-        // 로컬 설정 객체가 비었거나 원격 상태가 바뀐 경우 동기화 인터페이스 주입
         if (!localConfig) {
             document.getElementById('window-alias').value = data.config.windowAlias;
             document.getElementById('pnl-side').value = data.config.side;
@@ -560,7 +711,7 @@ async function syncServer() {
         }
 
         localConfig = data.config;
-        nextCheckTime = Date.now() + 5000; // 5초 간격 리프레시 스케줄링
+        nextCheckTime = Date.now() + 5000;
         updateSystemStatusUI();
 
     } catch (e) {
@@ -568,7 +719,6 @@ async function syncServer() {
     }
 }
 
-// 끊겨 있던 인풋 상태 변경 보고 파이프라인 완공
 async function onLocalSettingsChanged() {
     const payload = {
         windowAlias: document.getElementById('window-alias').value,
@@ -597,11 +747,10 @@ async function onLocalSettingsChanged() {
         });
         localConfig = payload;
     } catch (e) {
-        console.error("원격 설정 동기화 실패:", e);
+        console.error("서버 동기화 오류:", e);
     }
 }
 
-// 시스템 마스터 스위치 토글 함수 구현
 async function toggleSystem() {
     isSystemRunning = !isSystemRunning;
     updateSystemStatusUI();
@@ -609,12 +758,9 @@ async function toggleSystem() {
     await onLocalSettingsChanged();
 }
 
-// 초기 기동 수조 개방
 window.addEventListener('DOMContentLoaded', () => {
     startClock();
     syncServer();
-    
-    // 루프 파이프라인 스케줄러 등록
     setInterval(syncServer, 5000);
     setInterval(fetchBybitAndReport, 5000);
 });
