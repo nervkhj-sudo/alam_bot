@@ -3,126 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TACTICAL_REMOTE_MONITOR_v5.1</title>
+    <title>TACTICAL_REMOTE_MONITOR_v5.5</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Orbitron:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght=400;700&family=Orbitron:wght=400;700;900&display=swap');
     </style>
     <style id="theme-style">
-        body { 
-            font-family: 'Courier New', 'Courier Prime', monospace; 
-            background-color: #050201; 
-            color: #ff5500; 
-            text-shadow: 0 0 3px rgba(255, 85, 0, 0.4); 
-        }
-        body::before { 
-            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; 
-            background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.5) 50%); 
-            z-index: 99999; opacity: 0.6; pointer-events: none; background-size: 100% 8px; 
-            transform: translateZ(0); will-change: transform;
-        }
-        .container { background-color: #0c0502; border: 2px solid #aa3700; box-shadow: 0 0 20px rgba(255, 85, 0, 0.15); }
-        h1 { color: #ff5500; border-bottom: 2px double #ff5500; padding-bottom: 8px; font-weight: 900; }
-        .live-clock-wrapper { color: #ff5500; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 12px rgba(255, 85, 0, 0.7); font-weight: 900; }
-        .data-box { border: 1px solid #aa3700; background: rgba(170, 55, 0, 0.05); }
-        .data-row span:last-child { color: #ffffff; font-weight: 700; text-shadow: 0 0 5px rgba(255,255,255,0.8); }
-        .condition-group { border: 1px solid #aa3700; background: rgba(12, 5, 2, 0.6); }
-        .condition-title { color: #ff5500; }
-        input[type="checkbox"] { accent-color: #ff5500; }
-        select, input[type="number"], input[type="text"] { background-color: #050201; color: #ff5500; border: 1px solid #aa3700; font-family: 'Courier New', monospace; }
-        .btn-core { background-color: #ff5500; color: #0c0502; border: none; font-family: 'Courier New', monospace; font-weight: 900; box-shadow: 0 0 10px rgba(255, 85, 0, 0.4); }
-        .btn-core:hover { background-color: #ffffff; color: #0c0502; box-shadow: 0 0 15px #ffffff; }
-        .status { color: #ff5500; border: 1px dashed #aa3700; background: rgba(170, 55, 0, 0.03); }
-        .log { background: #050201; border: 1px solid #aa3700; color: #aa3700; }
-        #sub-countdown-row { border-top: 1px dashed #aa3700; color: #aa3700; }
-        #countdown { color:#ffffff !important; }
-        .nerv-tag { font-size: 9px; color: #ff5500; border: 1px solid #ff5500; padding: 1px 4px; position: absolute; top: 4px; left: 6px; background: rgba(255,85,0,0.1); }
-        .pnl-box { border: 1px double #aa3700; background: rgba(170, 55, 0, 0.02); }
-        .window-alias-box { border-bottom: 1px dashed rgba(170,55,0,0.4); color: #ff5500; }
-    </style>
-    <style>
-        * { box-sizing: border-box; }
-        body { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; margin: 0; padding: 25px 15px 40px 15px; }
-        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type="number"] { -moz-appearance: textfield; }
-
-        .container { width: 380px; padding: 20px; position: relative; }
-        .container::before, .container::after {
-            content: ""; position: absolute; width: 12px; height: 12px; border-color: inherit; border-style: solid; pointer-events: none;
-        }
-        .container::before { top: -2px; left: -2px; border-width: 3px 0 0 3px; }
-        .container::after { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
-
-        h1 { font-size: 16px; font-weight: 700; text-align: center; margin-top: 5px; margin-bottom: 15px; letter-spacing: 0.5px; }
-        .live-clock-wrapper { text-align: center; font-size: 26px; font-weight: 700; margin-bottom: 15px; letter-spacing: 2px; }
-
-        .pnl-box { padding: 12px; margin-bottom: 15px; border-radius: 2px; }
-        .pnl-title { font-size: 11px; font-weight: bold; margin-bottom: 8px; opacity: 0.85; text-align: center; letter-spacing: 0.5px; }
-        .pnl-direction-wrapper { display: flex; align-items: center; justify-content: center; margin-bottom: 8px; gap: 8px; font-size: 11px; }
-        .pnl-direction-wrapper select { height: 26px; font-size: 12px; padding: 0 6px; font-weight: bold; width: 100%; outline: none; }
-        .pnl-inputs { display: flex; gap: 8px; margin-bottom: 10px; justify-content: space-between; }
-        .pnl-inputs div { display: flex; flex-direction: column; width: 48%; font-size: 11px; gap: 3px; }
-        .pnl-inputs input { height: 26px; font-size: 12px; outline: none; text-align: center; padding: 2px; }
-        .pnl-display { display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.1); }
-        .pnl-plus { color: #00ff66 !important; text-shadow: 0 0 5px rgba(0,255,102,0.6); }
-        .pnl-minus { color: #ff1100 !important; text-shadow: 0 0 5px rgba(255,17,0,0.6); }
-
-        .data-box { padding: 12px; margin-bottom: 15px; position: relative; }
-        .data-box::before { content: ""; position: absolute; top: -1px; left: -1px; width: 6px; height: 6px; border-top: 2px solid currentColor; border-left: 2px solid currentColor; }
-        .data-box::after { content: ""; position: absolute; bottom: -1px; right: -1px; width: 6px; height: 6px; border-bottom: 2px solid currentColor; border-right: 2px solid currentColor; }
-
-        .data-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; line-height: 1.4; }
-        .data-row:last-child { margin-bottom: 0; }
-        .section-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-
-        .condition-group { padding: 12px; margin-bottom: 12px; }
-        .condition-group:last-of-type { margin-bottom: 15px; }
-        .condition-title { font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; font-size: 13px; }
-        .condition-title input[type="checkbox"] { margin-right: 6px; transform: scale(1.1); cursor: pointer; }
-        .input-inline { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; }
-        
-        select, input[type="number"], input[type="text"] { padding: 4px 6px; font-size: 12px; height: 28px; outline: none; text-align: center; }
-        
-        .control-wrapper { display: flex; gap: 10px; margin-bottom: 12px; }
-        .btn-core { width: 100%; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
-        .status { text-align: center; font-size: 12px; font-weight: 700; margin-bottom: 10px; padding: 6px; }
-        
-        .log { max-height: 120px; overflow-y: auto; padding: 8px; font-size: 12px; line-height: 1.4; }
-        .window-alias-box { margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; padding-bottom: 8px; }
-        .window-alias-box input { height: 24px; font-size: 11px; width: 180px; }
+        body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; }
+        body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.5) 50%); z-index: 99999; opacity: 0.4; pointer-events: none; background-size: 100% 8px; }
+        .container { background-color: #0c0502; border: 2px solid #ff5500; box-shadow: 0 0 20px rgba(255, 85, 0, 0.15); width: 380px; padding: 20px; position: relative; margin: 0 auto; }
+        h1 { color: #ff5500; border-bottom: 2px double #ff5500; text-align: center; font-size: 16px; padding-bottom: 8px; }
+        .live-clock-wrapper { text-align: center; font-size: 26px; font-family: 'Orbitron', sans-serif; color: #ff5500; margin-bottom: 15px; }
+        .data-box { border: 1px solid #aa3700; background: rgba(170, 55, 0, 0.05); padding: 12px; margin-bottom: 15px; }
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
+        .data-row span:last-child { color: #ffffff; font-weight: bold; }
+        .condition-group { border: 1px solid #aa3700; background: rgba(12, 5, 2, 0.6); padding: 12px; margin-bottom: 12px; }
+        .condition-title { color: #ff5500; font-weight: bold; font-size: 13px; display: flex; align-items: center; }
+        .input-inline { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px; }
+        select, input[type="number"], input[type="text"] { background-color: #050201; color: #ff5500; border: 1px solid #aa3700; height: 28px; text-align: center; }
+        .btn-core { width: 100%; padding: 12px; font-weight: bold; background-color: #ff5500; color: #0c0502; border: none; cursor: pointer; font-size: 14px; }
+        .status { text-align: center; font-size: 12px; margin-bottom: 10px; padding: 6px; border: 1px dashed #aa3700; color: #ff5500; }
+        .log { background: #050201; border: 1px solid #aa3700; color: #aa3700; max-height: 100px; overflow-y: auto; padding: 8px; font-size: 11px; }
+        .pnl-box { border: 1px double #aa3700; padding: 12px; margin-bottom: 15px; font-size: 12px; }
+        .pnl-inputs { display: flex; justify-content: space-between; margin: 8px 0; }
+        .pnl-inputs div { display: flex; flex-direction: column; width: 48%; gap: 2px; }
+        .pnl-display { display: flex; justify-content: space-between; font-weight: bold; font-size: 13px; margin-top: 4px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 4px; }
+        .window-alias-box { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container" id="main-container">
-    <div class="nerv-tag" id="nerv-only-tag" style="display:block;">NERV ONLY</div>
-    <h1 id="main-title">MAGI_SYS://TACTICAL_MONITOR</h1>
+<div class="container">
+    <h1>MAGI_SYS://TACTICAL_MONITOR</h1>
     
     <div class="window-alias-box">
-        <span id="lbl-alias">MONITOR_TAG:</span>
-        <input type="text" id="window-alias" value="원격 작전 노드" placeholder="예: 1번 창 (BTC)" oninput="onLocalSettingsChanged()">
+        <span>MONITOR_TAG:</span>
+        <input type="text" id="window-alias" value="" oninput="onLocalSettingsChanged()">
     </div>
 
     <div class="live-clock-wrapper" id="live-clock">00:00:00</div>
 
-    <div class="pnl-box" id="pnl-container">
-        <div class="pnl-title" id="lbl-pnl-title">⚡ REALTIME POSITION PNL TRACKER</div>
-        
-        <div class="pnl-direction-wrapper">
-            <select id="pnl-side" onchange="onLocalSettingsChanged()">
-                <option value="long">🟩 POSITION: LONG (매수) -> MATRIX THEME</option>
-                <option value="short" selected>🟥 POSITION: SHORT (매도) -> EVANGELION THEME</option>
-            </select>
-        </div>
-
+    <div class="pnl-box">
+        <select id="pnl-side" onchange="onLocalSettingsChanged()" style="width:100%; height:26px; margin-bottom:6px;">
+            <option value="long">🟩 LONG (매수 포지션)</option>
+            <option value="short" selected>🟥 SHORT (매도 포지션)</option>
+        </select>
         <div class="pnl-inputs">
-            <div>
-                <span id="lbl-pnl-entry">진입 가격 (USDT)</span>
-                <input type="number" id="pnl-entry-price" placeholder="예: 95000" oninput="calculateLivePnl()">
-            </div>
-            <div>
-                <span id="lbl-pnl-qty">보유 수량 (BTC)</span>
-                <input type="number" id="pnl-qty" placeholder="예: 0.05" step="0.001" oninput="calculateLivePnl()">
-            </div>
+            <div><span>진입가 (USDT)</span><input type="number" id="pnl-entry-price" oninput="calculateLivePnl()"></div>
+            <div><span>수량 (BTC)</span><input type="number" id="pnl-qty" step="0.001" oninput="calculateLivePnl()"></div>
         </div>
         <div class="pnl-display">
             <div>ROE: <span id="pnl-roe-val">0.00%</span></div>
@@ -131,369 +58,166 @@
     </div>
 
     <div class="data-box">
-        <div class="data-row"><span id="lbl-price">MONITORING_PRICE :</span> <span id="current-price">서버 통신 중...</span></div>
-        <div class="data-row"><span id="lbl-rsi">ANALYSIS_RSI(14):</span> <span id="current-rsi">-</span></div>
-        <div class="data-row"><span id="lbl-bb">BOLL_BAND_LIMIT :</span> <span id="bb-status">-</span></div>
-        <div class="data-row"><span id="lbl-vol">VOL / MA_RATIO  :</span> <span id="volume-status">-</span></div>
+        <div class="data-row"><span>MONITORING_PRICE :</span> <span id="current-price">연동 중...</span></div>
+        <div class="data-row"><span>ANALYSIS_RSI(14):</span> <span id="current-rsi">-</span></div>
+        <div class="data-row"><span>BOLL_BAND_LIMIT :</span> <span id="bb-status">-</span></div>
+        <div class="data-row"><span>VOL / MA_RATIO  :</span> <span id="volume-status">-</span></div>
     </div>
 
-    <div id="section-desc" class="section-title">&gt; MAGI CENTRAL_LOGIC</div>
-
     <div class="condition-group">
-        <label class="condition-title"><input type="checkbox" id="cond-price-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c1">[MELCHIOR] PRICE_THRESHOLD</span></label>
+        <label class="condition-title"><input type="checkbox" id="cond-price-atv" onchange="onLocalSettingsChanged()"> PRICE_THRESHOLD</label>
         <div class="input-inline">
             <select id="cond-price-type" onchange="onLocalSettingsChanged()">
                 <option value="above">PRICE ≥</option>
                 <option value="below">PRICE ≤</option>
             </select>
-            <input type="number" id="cond-price-val" value="" placeholder="가격 입력" style="max-width: 110px;" oninput="onLocalSettingsChanged()">
-            <span>USDT</span>
+            <input type="number" id="cond-price-val" style="width:110px;" oninput="onLocalSettingsChanged()"> USDT
         </div>
     </div>
 
     <div class="condition-group">
-        <label class="condition-title"><input type="checkbox" id="cond-rsi-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c2">[BALTHASAR] RSI_INDEX_LIMIT</span></label>
+        <label class="condition-title"><input type="checkbox" id="cond-rsi-atv" onchange="onLocalSettingsChanged()"> RSI_INDEX_LIMIT</label>
         <div class="input-inline">
             <select id="cond-rsi-type" onchange="onLocalSettingsChanged()">
-                <option value="above">RSI ≥ (과매수)</option>
-                <option value="below" selected>RSI ≤ (과매도)</option>
+                <option value="above">RSI ≥</option>
+                <option value="below" selected>RSI ≤</option>
             </select>
-            <input type="number" id="cond-rsi-val" value="50" style="max-width: 60px;" oninput="onLocalSettingsChanged()">
+            <input type="number" id="cond-rsi-val" style="width:60px;" oninput="onLocalSettingsChanged()">
         </div>
     </div>
 
     <div class="condition-group">
-        <div id="lbl-bb-sub" style="font-size: 12px; margin-bottom: 6px; opacity:0.8;">&gt; BOLLINGER_ENVELOPE_SYSTEM</div>
-        <div class="input-inline" style="margin-bottom: 10px;">
-            <span>P:</span> <input type="number" id="cond-bb-period" value="200" style="max-width: 55px;" oninput="onLocalSettingsChanged()">
-            <span>★:</span> <input type="number" id="cond-bb-std" value="2" step="0.1" style="max-width: 50px;" oninput="onLocalSettingsChanged()">
+        <span style="font-size:11px; display:block; margin-bottom:4px;">&gt; BOLLINGER BAND PARAMS</span>
+        <div class="input-inline" style="margin-bottom:8px;">
+            Std: <input type="number" id="cond-bb-std" style="width:50px;" oninput="onLocalSettingsChanged()">
         </div>
-
-        <label class="condition-title"><input type="checkbox" id="cond-bb-upper-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c3a">[CASPER-A] UPPER_BAND_BREACH</span></label>
-        <div class="input-inline" style="margin-left: 18px; margin-bottom: 6px;">
-            <select id="cond-bb-upper-target" onchange="onLocalSettingsChanged()">
-                <option value="close">CLOSE ≥ UPPER</option>
-                <option value="high" selected>HIGH ≥ UPPER</option>
-            </select>
-        </div>
-
-        <label class="condition-title"><input type="checkbox" id="cond-bb-lower-atv" checked onchange="onLocalSettingsChanged()"> <span id="lbl-c3b">[CASPER-B] LOWER_BAND_BREACH</span></label>
-        <div class="input-inline" style="margin-left: 18px;">
-            <select id="cond-bb-lower-target" onchange="onLocalSettingsChanged()">
-                <option value="close">CLOSE ≤ LOWER</option>
-                <option value="low" selected>LOW ≤ LOWER</option>
-            </select>
-        </div>
+        <label class="condition-title"><input type="checkbox" id="cond-bb-upper-atv" onchange="onLocalSettingsChanged()"> UPPER_BAND_BREACH (상단 탈출)</label>
+        <label class="condition-title" style="margin-top:6px;"><input type="checkbox" id="cond-bb-lower-atv" onchange="onLocalSettingsChanged()"> LOWER_BAND_BREACH (하단 이탈)</label>
     </div>
 
     <div class="condition-group">
-        <label class="condition-title"><input type="checkbox" id="cond-vol-atv" checked onchange="onLocalSettingsChanged()"> <span id="lbl-c4">[MAGI_SYS] QUANTITY_SPIKE</span></label>
+        <label class="condition-title"><input type="checkbox" id="cond-vol-atv" onchange="onLocalSettingsChanged()"> QUANTITY_SPIKE</label>
         <div class="input-inline">
-            <span>MA:</span> <input type="number" id="cond-vol-ma-period" value="30" style="max-width:50px;" oninput="onLocalSettingsChanged()">
-            <span>비율:</span> <input type="number" id="cond-vol-ratio" value="1.5" step="0.1" style="max-width:55px;" oninput="onLocalSettingsChanged()">
-            <span>배 이상</span>
+            <span>비율:</span> <input type="number" id="cond-vol-ratio" step="0.1" style="width:60px;" oninput="onLocalSettingsChanged()"> <span>배 이상</span>
         </div>
     </div>
 
-    <div class="status" id="status-text">SYSTEM: CONNECTING...</div>
-    <div class="control-wrapper">
-        <button class="btn-core" onclick="toggleSystem()" id="btn-toggle">SYNCING CONFIG...</button>
-    </div>
+    <div class="status" id="status-text">SYSTEM: OFF-LINE</div>
+    <button class="btn-core" onclick="toggleSystem()" id="btn-toggle">CONNECTING...</button>
     
-    <div class="log" id="log-box">원격 전술 보드 연동 시도 중...</div>
+    <div class="log" id="log-box">시스템 초기화 대기 중...</div>
 </div>
 
 <script>
-    const themes = {
-        nerv_operational: `
-            body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 3px rgba(255, 85, 0, 0.4); }
-            body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.5) 50%); z-index: 99999; opacity: 0.6; pointer-events: none; background-size: 100% 8px; transform: translateZ(0); will-change: transform; }
-            .container { background-color: #0c0502; border: 2px solid #aa3700; box-shadow: 0 0 20px rgba(255, 85, 0, 0.15); border-color: #ff5500; }
-            h1 { color: #ff5500; border-bottom: 2px double #ff5500; }
-            .live-clock-wrapper { color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.7); }
-            .data-box { border: 1px solid #aa3700; background: rgba(170, 55, 0, 0.05); }
-            .data-row span:last-child { color: #ffffff; text-shadow: 0 0 5px rgba(255,255,255,0.8); }
-            .condition-group { border: 1px solid #aa3700; background: rgba(12, 5, 2, 0.6); }
-            .condition-title { color: #ff5500; }
-            input[type="checkbox"] { accent-color: #ff5500; }
-            select, input[type="number"], input[type="text"] { background-color: #050201; color: #ff5500; border: 1px solid #aa3700; }
-            .btn-core { background-color: #ff5500; color: #0c0502; box-shadow: 0 0 10px rgba(255, 85, 0, 0.4); }
-            .status { color: #ff5500; border: 1px dashed #aa3700; background: rgba(170, 55, 0, 0.03); }
-            .log { background: #050201; border: 1px solid #aa3700; color: #aa3700; }
-            .pnl-box { border: 1px double #aa3700; background: rgba(170, 55, 0, 0.02); }
-            .window-alias-box { border-bottom: 1px dashed rgba(170,55,0,0.4); color: #ff5500; }
-        `,
-        matrix: `
-            body { font-family: 'Courier New', monospace; background-color: #000000; color: #00ff41; text-shadow: 0 0 3px rgba(0, 255, 65, 0.5); }
-            body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.45) 50%); z-index: 99999; opacity: 0.55; pointer-events: none; background-size: 100% 8px; transform: translateZ(0); will-change: transform; }
-            .container { background-color: #030303; border: 1px solid #00ff41; box-shadow: 0 0 10px rgba(0, 255, 65, 0.3); border-color: #00ff41; }
-            h1 { color:#00ff41; border-bottom: 1px dashed #00ff41; text-shadow: none; }
-            .live-clock-wrapper { color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.8); }
-            .data-box { border: 1px solid #00ff41; background: rgba(0, 20, 5, 0.15); }
-            .data-row span:last-child { color: #ffffff; text-shadow: 0 0 3px #fff; }
-            .condition-group { border: 1px dashed #00ff41; background: rgba(0,0,0,0.4); }
-            .condition-title { color: #00ff41; }
-            input[type="checkbox"] { accent-color: #00ff41; }
-            select, input[type="number"], input[type="text"] { background-color: #000000; color: #00ff41; border: 1px solid #00ff41; }
-            .btn-core { background-color: #00ff41; color: #000000; box-shadow: 0 0 6px rgba(0, 255, 65, 0.4); }
-            .status { color: #00ff41; border: 1px solid #00ff41; background: none; }
-            .log { background: #000000; border: 1px solid #00ff41; color: #00cc33; }
-            .pnl-box { border: 1px solid #00ff41; background: rgba(0, 20, 5, 0.1); }
-            .window-alias-box { border-bottom: 1px dashed rgba(0, 255, 65, 0.4); color: #00ff41; }
-        `
-    };
+    let localConfig = null;
+    let livePrice = 0;
 
-    let localGlobalConfig = null;
-    let currentGlobalPrice = 0;
-    let lastAlertTriggerTime = 0; // 프론트 팝업 중복 방지용 타임스탬프
+    // 대시보드 전용 가상 시계 가동
+    setInterval(() => {
+        const d = new Date();
+        document.getElementById('live-clock').innerText = 
+            String(d.getHours()).padStart(2, '0') + ":" + String(d.getMinutes()).padStart(2, '0') + ":" + String(d.getSeconds()).padStart(2, '0');
+    }, 1000);
 
-    function startLiveClock() {
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('live-clock').innerText = 
-                String(now.getHours()).padStart(2, '0') + ":" + 
-                String(now.getMinutes()).padStart(2, '0') + ":" + 
-                String(now.getSeconds()).padStart(2, '0');
-        }, 1000);
-    }
-
-    async function syncWithServer() {
+    // 백엔드와 데이터 싱크 2초 주기로 동기화
+    async function syncServer() {
         try {
             const res = await fetch('/api/config');
             const data = await res.json();
             
-            currentGlobalPrice = data.lastData.price;
-            document.getElementById('current-price').innerText = currentGlobalPrice > 0 ? currentGlobalPrice.toLocaleString() + " USDT" : "로딩 중...";
+            // 1. 화면에 연산된 최신 지표 실시간 매핑
+            livePrice = data.lastData.price;
+            document.getElementById('current-price').innerText = livePrice > 0 ? livePrice.toLocaleString() + " USDT" : "로딩 중...";
             document.getElementById('current-rsi').innerText = data.lastData.rsi > 0 ? data.lastData.rsi.toFixed(1) : "-";
             document.getElementById('bb-status').innerText = data.lastData.bbUpper > 0 ? `${Math.floor(data.lastData.bbUpper)} / ${Math.floor(data.lastData.bbLower)}` : "-";
             document.getElementById('volume-status').innerText = data.lastData.volRatio > 0 ? `${data.lastData.volRatio.toFixed(1)}x` : "-";
 
             calculateLivePnl();
 
-            // 실시간 브라우저 단 팝업/로그 판단 엔진 (★추가된 핵심 레이어)
-            if (data.config.isSystemRunning && currentGlobalPrice > 0) {
-                checkClientSideAlert(data.config, data.lastData);
+            // 2. 5분봉 마감 시 조건이 성립하여 백엔드 팝업 신호(triggerPopup)가 떨어지면 브라우저 경고창 트리거
+            if (data.lastData.triggerPopup) {
+                log(`💥 TARGET CONDITION MATCHED! Price: ${livePrice.toLocaleString()}`);
+                alert(`🚨 [전략 만족 알람]\n노드: ${data.config.windowAlias}\n현재 5분봉 마감 조건이 만족되었습니다!\n가격: ${livePrice.toLocaleString()} USDT\nRSI: ${data.lastData.rsi.toFixed(1)}`);
             }
 
-            if (!localGlobalConfig || localGlobalConfig.isSystemRunning !== data.config.isSystemRunning || localGlobalConfig.side !== data.config.side) {
-                document.getElementById('pnl-side').value = data.config.side;
+            // 인풋 UI 데이터 세팅값 동기화
+            if (!localConfig || localConfig.isSystemRunning !== data.config.isSystemRunning) {
                 document.getElementById('window-alias').value = data.config.windowAlias;
+                document.getElementById('pnl-side').value = data.config.side;
                 document.getElementById('cond-price-atv').checked = data.config.priceAtv;
                 document.getElementById('cond-price-type').value = data.config.priceType;
-                document.getElementById('cond-price-val').value = data.config.priceVal || Math.floor(currentGlobalPrice);
+                document.getElementById('cond-price-val').value = data.config.priceVal || Math.floor(livePrice);
                 document.getElementById('cond-rsi-atv').checked = data.config.rsiAtv;
                 document.getElementById('cond-rsi-type').value = data.config.rsiType;
                 document.getElementById('cond-rsi-val').value = data.config.rsiVal;
-                document.getElementById('cond-bb-period').value = data.config.bbPeriod;
                 document.getElementById('cond-bb-std').value = data.config.bbStd;
                 document.getElementById('cond-bb-upper-atv').checked = data.config.bbUpperAtv;
-                document.getElementById('cond-bb-upper-target').value = data.config.bbUpperTarget;
                 document.getElementById('cond-bb-lower-atv').checked = data.config.bbLowerAtv;
-                document.getElementById('cond-bb-lower-target').value = data.config.bbLowerTarget;
                 document.getElementById('cond-vol-atv').checked = data.config.volAtv;
-                document.getElementById('cond-vol-ma-period').value = data.config.volMaPeriod;
                 document.getElementById('cond-vol-ratio').value = data.config.volRatio;
-                
-                switchTheme(data.config.side === 'long' ? 'matrix' : 'nerv_operational');
             }
 
-            localGlobalConfig = data.config;
-            updateSystemStatusUI(localGlobalConfig.isSystemRunning);
+            localConfig = data.config;
+            document.getElementById('status-text').innerText = localConfig.isSystemRunning ? "MAGI_ONLINE // MONITORING ACTIVE" : "SYSTEM: CLOUD_OFF_LINE";
+            document.getElementById('btn-toggle').innerText = localConfig.isSystemRunning ? "TERMINATE MONITOR SYSTEM" : "ACTIVATE MAGI CLOUD";
 
         } catch (e) {
-            document.getElementById('status-text').innerText = "NODE_CONN_FAULT";
-        }
-    }
-
-    // 🚨 프론트엔드 실시간 팝업 감시 장치
-    function checkClientSideAlert(cfg, snap) {
-        let match = true;
-        
-        if (cfg.priceAtv) {
-            match = match && (cfg.priceType === 'above' ? snap.price >= cfg.priceVal : snap.price <= cfg.priceVal);
-        }
-        if (cfg.rsiAtv && snap.rsi > 0) {
-            match = match && (cfg.rsiType === 'above' ? snap.rsi >= cfg.rsiVal : snap.rsi <= cfg.rsiVal);
-        }
-        if (cfg.bbUpperAtv && snap.bbUpper > 0) {
-            match = match && (snap.price >= snap.bbUpper);
-        }
-        if (cfg.bbLowerAtv && snap.bbLower > 0) {
-            match = match && (snap.price <= snap.bbLower);
-        }
-        if (cfg.volAtv && snap.volRatio > 0) {
-            match = match && (snap.volRatio >= cfg.volRatio);
-        }
-
-        // 모든 조건 충족 시 브라우저 Alert 팝업 발생 (1분간 연속 중복 차단)
-        if (match && (Date.now() - lastAlertTriggerTime > 60000)) {
-            lastAlertTriggerTime = Date.now();
-            
-            const alertMsg = `💥 TARGET CAPTURED!!\n[${cfg.windowAlias}] 조건 만족\n현재가: ${snap.price.toLocaleString()} USDT\nRSI: ${snap.rsi.toFixed(1)}`;
-            log(`ALERT TRIGGERED: Price ${snap.price.toLocaleString()}`);
-            
-            // 브라우저 경고창 출력
-            alert(alertMsg);
-        }
-    }
-
-    function switchTheme(themeName) {
-        document.getElementById('theme-style').innerHTML = themes[themeName];
-        
-        const elements = {
-            'main-title': { matrix: 'SYS_MATRIX://REMOTE_ALARM_BAT', nerv_operational: 'MAGI_SYS://TACTICAL_MONITOR' },
-            'lbl-alias': { matrix: 'WINDOW_IDENTIFIER:', nerv_operational: 'MONITOR_TAG:' },
-            'lbl-price': { matrix: 'SERVER_PRICE (WS):', nerv_operational: 'MONITORING_PRICE :' },
-            'lbl-rsi': { matrix: 'CANDLE_RSI(14):', nerv_operational: 'ANALYSIS_RSI(14):' },
-            'lbl-bb': { matrix: 'BOLL_BAND(U/L):', nerv_operational: 'BOLL_BAND_LIMIT :' },
-            'lbl-vol': { matrix: 'VOL / VOL_MA :', nerv_operational: 'VOL / MA_RATIO  :' },
-            'section-desc': { matrix: '> CONFIGURE_TARGET_STRATEGY', nerv_operational: '&gt; MAGI CENTRAL_LOGIC' }
-        };
-
-        for (let id in elements) {
-            if(elements[id][themeName]) document.getElementById(id).innerText = elements[id][themeName];
-        }
-
-        const tag = document.getElementById('nerv-only-tag');
-        if (themeName === 'nerv_operational') {
-            tag.innerText = "NERV REMOTE ONLY"; tag.style.display = "block";
-        } else {
-            tag.style.display = "none";
-        }
-    }
-
-    function updateSystemStatusUI(isRunning) {
-        const btn = document.getElementById('btn-toggle');
-        const statusTxt = document.getElementById('status-text');
-        const theme = document.getElementById('pnl-side').value;
-
-        if (isRunning) {
-            statusTxt.innerText = (theme==='long') ? 'STATUS: REMOTE ACTIVE' : 'MAGI_ONLINE // CLOUD MONITORING';
-            btn.innerText = (theme==='long') ? 'HALT_REMOTE_SYSTEM.BAT' : 'TERMINATE REMOTE MONITORING';
-        } else {
-            statusTxt.innerText = (theme==='long') ? 'STATUS: REMOTE HALTED' : 'SYSTEM: CLOUD_OFF_LINE';
-            btn.innerText = (theme==='long') ? 'INITIALIZE_REMOTE.BAT' : 'ACTIVATE MAGI CLOUD SYSTEM';
+            document.getElementById('status-text').innerText = "CONNECT_FAULT";
         }
     }
 
     async function onLocalSettingsChanged() {
-        if (!localGlobalConfig) return;
-        
+        if (!localConfig) return;
         const payload = {
-            isSystemRunning: localGlobalConfig.isSystemRunning,
-            side: document.getElementById('pnl-side').value,
+            isSystemRunning: localConfig.isSystemRunning,
             windowAlias: document.getElementById('window-alias').value,
+            side: document.getElementById('pnl-side').value,
             priceAtv: document.getElementById('cond-price-atv').checked,
             priceType: document.getElementById('cond-price-type').value,
             priceVal: parseFloat(document.getElementById('cond-price-val').value) || 0,
             rsiAtv: document.getElementById('cond-rsi-atv').checked,
             rsiType: document.getElementById('cond-rsi-type').value,
-            rsiVal: parseFloat(document.getElementById('cond-rsi-val').value) || 50,
-            bbPeriod: parseInt(document.getElementById('cond-bb-period').value) || 200,
+            rsiVal: parseFloat(document.getElementById('cond-rsi-val').value) || 30,
             bbStd: parseFloat(document.getElementById('cond-bb-std').value) || 2,
             bbUpperAtv: document.getElementById('cond-bb-upper-atv').checked,
-            bbUpperTarget: document.getElementById('cond-bb-upper-target').value,
             bbLowerAtv: document.getElementById('cond-bb-lower-atv').checked,
-            bbLowerTarget: document.getElementById('cond-bb-lower-target').value,
             volAtv: document.getElementById('cond-vol-atv').checked,
-            volMaPeriod: parseInt(document.getElementById('cond-vol-ma-period').value) || 30,
-            volRatio: parseFloat(document.getElementById('cond-vol-ratio').value) || 1.5
+            volRatio: parseFloat(document.getElementById('cond-vol-ratio').value) || 1.5,
+            telegramToken: localConfig.telegramToken,
+            telegramChatId: localConfig.telegramChatId
         };
-
-        try {
-            await fetch('/api/config', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            switchTheme(payload.side === 'long' ? 'matrix' : 'nerv_operational');
-        } catch(e) { console.error("Config send failed"); }
+        await fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     }
 
     async function toggleSystem() {
-        if (!localGlobalConfig) return;
-        
-        const targetState = !localGlobalConfig.isSystemRunning;
-        
-        const payload = {
-            isSystemRunning: targetState,
-            side: document.getElementById('pnl-side').value,
-            windowAlias: document.getElementById('window-alias').value,
-            priceAtv: document.getElementById('cond-price-atv').checked,
-            priceType: document.getElementById('cond-price-type').value,
-            priceVal: parseFloat(document.getElementById('cond-price-val').value) || 0,
-            rsiAtv: document.getElementById('cond-rsi-atv').checked,
-            rsiType: document.getElementById('cond-rsi-type').value,
-            rsiVal: parseFloat(document.getElementById('cond-rsi-val').value) || 50,
-            bbPeriod: parseInt(document.getElementById('cond-bb-period').value) || 200,
-            bbStd: parseFloat(document.getElementById('cond-bb-std').value) || 2,
-            bbUpperAtv: document.getElementById('cond-bb-upper-atv').checked,
-            bbUpperTarget: document.getElementById('cond-bb-upper-target').value,
-            bbLowerAtv: document.getElementById('cond-bb-lower-atv').checked,
-            bbLowerTarget: document.getElementById('cond-bb-lower-target').value,
-            volAtv: document.getElementById('cond-vol-atv').checked,
-            volMaPeriod: parseInt(document.getElementById('cond-vol-ma-period').value) || 30,
-            volRatio: parseFloat(document.getElementById('cond-vol-ratio').value) || 1.5
-        };
-
-        try {
-            const res = await fetch('/api/config', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const data = await res.json();
-            if(data.success) {
-                localGlobalConfig.isSystemRunning = targetState;
-                updateSystemStatusUI(targetState);
-                log(targetState ? "MAGI MONITOR SYSTEM ONLINE." : "MONITOR INTERRUPTED.");
-            }
-        } catch(e) { log("DISPATCH FAULT."); }
+        if (!localConfig) return;
+        localConfig.isSystemRunning = !localConfig.isSystemRunning;
+        await onLocalSettingsChanged();
+        log(localConfig.isSystemRunning ? "MONITORING SYSTEM ONLINE." : "SYSTEM SUSPENDED.");
+        syncServer();
     }
 
     function calculateLivePnl() {
-        const side = document.getElementById('pnl-side').value; 
-        const entryPrice = parseFloat(document.getElementById('pnl-entry-price').value);
+        const side = document.getElementById('pnl-side').value;
+        const entry = parseFloat(document.getElementById('pnl-entry-price').value);
         const qty = parseFloat(document.getElementById('pnl-qty').value);
-        const roeEl = document.getElementById('pnl-roe-val');
-        const amtEl = document.getElementById('pnl-amt-val');
+        if (!entry || !qty || livePrice <= 0) return;
 
-        if (!entryPrice || !qty || currentGlobalPrice <= 0) {
-            roeEl.innerText = "0.00%"; roeEl.className = "";
-            amtEl.innerText = "0.00 USDT"; amtEl.className = "";
-            return;
-        }
+        let amt = side === 'long' ? (livePrice - entry) * qty : (entry - livePrice) * qty;
+        let roe = side === 'long' ? ((livePrice - entry) / entry) * 100 : ((entry - livePrice) / entry) * 100;
 
-        let pnlAmt = 0; let pnlRoe = 0;
-        if (side === 'long') {
-            pnlAmt = (currentGlobalPrice - entryPrice) * qty;
-            pnlRoe = ((currentGlobalPrice - entryPrice) / entryPrice) * 100;
-        } else {
-            pnlAmt = (entryPrice - currentGlobalPrice) * qty;
-            pnlRoe = ((entryPrice - currentGlobalPrice) / entryPrice) * 100;
-        }
-
-        roeEl.innerText = `${pnlRoe >= 0 ? '+' : ''}${pnlRoe.toFixed(2)}%`;
-        amtEl.innerText = `${pnlAmt >= 0 ? '+' : ''}${pnlAmt.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} USDT`;
-
-        if (pnlAmt > 0) {
-            roeEl.className = "pnl-plus"; amtEl.className = "pnl-plus";
-        } else if (pnlAmt < 0) {
-            roeEl.className = "pnl-minus"; amtEl.className = "pnl-minus";
-        } else {
-            roeEl.className = ""; amtEl.className = "";
-        }
+        document.getElementById('pnl-roe-val').innerText = `${roe >= 0 ? '+' : ''}${roe.toFixed(2)}%`;
+        document.getElementById('pnl-amt-val').innerText = `${amt >= 0 ? '+' : ''}${amt.toLocaleString(undefined, {maximumFractionDigits:2})} USDT`;
     }
 
-    function log(msg) {
-        const box = document.getElementById('log-box');
-        box.innerHTML = `:: ${msg}<br>` + box.innerHTML;
+    function log(m) {
+        const b = document.getElementById('log-box');
+        b.innerHTML = `:: ${m}<br>` + b.innerHTML;
     }
 
-    startLiveClock();
-    syncWithServer();
-    setInterval(syncWithServer, 2000); 
+    // 루틴 2초 주기 배치 가동
+    syncServer();
+    setInterval(syncServer, 2000);
 </script>
-
 </body>
 </html>
