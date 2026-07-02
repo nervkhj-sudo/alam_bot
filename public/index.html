@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TACTICAL_POSITION_MONITOR_v5.7_CRT</title>
+    <title>TACTICAL_POSITION_MONITOR_v5.7_CRT_FINAL</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght=400;700&family=Orbitron:wght=400;700;900&display=swap');
     </style>
     <style id="theme-style">
+        /* 초기값은 에반게리온 (SHORT) 테마로 시작 */
         body { 
             font-family: 'Courier New', 'Courier Prime', monospace; 
             background-color: #050201; 
             color: #ff5500; 
-            text-shadow: 0 0 3px rgba(255, 85, 0, 0.4); 
+            text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); 
         }
         body::before { 
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; 
@@ -22,49 +23,61 @@
         }
         .container { 
             background-color: #0c0502; 
-            border: 1px solid rgba(255, 85, 0, 0.5); 
-            box-shadow: 0 0 20px rgba(255, 85, 0, 0.15); 
+            border: 1px solid #ff5500; 
+            box-shadow: 0 0 25px rgba(255, 85, 0, 0.35), inset 0 0 15px rgba(255, 85, 0, 0.1); 
         }
-        h1 { color: #ff5500; border-bottom: 2px double #ff5500; padding-bottom: 8px; font-weight: 900; }
-        .data-box { border: 1px solid rgba(255, 85, 0, 0.45); background: rgba(170, 55, 0, 0.05); }
-        .pnl-box { border: 1px solid rgba(255, 85, 0, 0.45); background: rgba(170, 55, 0, 0.02); }
-        .condition-group { border: 1px solid rgba(255, 85, 0, 0.45); background: rgba(12, 5, 2, 0.6); }
+        h1 { color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.6); }
+        .live-clock-wrapper { color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); }
+        .data-box { border: 1px solid #ff5500; background: rgba(170, 55, 0, 0.08); box-shadow: 0 0 12px rgba(170, 55, 0, 0.2); }
+        .pnl-box { border: 1px solid #ff5500; background: rgba(170, 55, 0, 0.04); box-shadow: 0 0 10px rgba(170, 55, 0, 0.15); }
+        .condition-group { border: 1px solid #ff5500; background: rgba(12, 5, 2, 0.7); box-shadow: 0 0 10px rgba(170, 55, 0, 0.15); }
         .corner-decor::before, .corner-decor::after,
-        .container::before, .container::after { border-color: #ff5500 !important; border-width: 1.5px !important; }
-        .data-row span:last-child { color: #ffffff; font-weight: 700; text-shadow: 0 0 5px rgba(255,255,255,0.8); }
+        .container::before, .container::after,
+        .pnl-box::before, .pnl-box::after,
+        .data-box::before, .data-box::after,
+        .condition-group::before, .condition-group::after { border-color: #ff5500 !important; border-width: 1.5px !important; }
+        .data-row span:last-child { color: #ffffff; font-weight: 900; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 15px rgba(255,255,255,0.6); }
         .condition-title { color: #ff5500; }
         input[type="checkbox"] { accent-color: #ff5500; }
-        select, input[type="number"], input[type="text"] { background-color: #050201; color: #ff5500; border: 1px solid rgba(255, 85, 0, 0.6); font-family: 'Courier New', monospace; }
-        .btn-core { background-color: #ff5500; color: #0c0502; border: none; font-family: 'Courier New', monospace; font-weight: 900; box-shadow: 0 0 10px rgba(255, 85, 0, 0.4); }
-        .btn-core:hover { background-color: #ffffff; color: #0c0502; box-shadow: 0 0 15px #ffffff; }
-        .status { color: #ff5500; border: 1px dashed #aa3700; background: rgba(170, 55, 0, 0.03); }
-        .log { background: #050201; border: 1px solid rgba(255, 85, 0, 0.45); color: #aa3700; }
-        #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.4); color: #aa3700; }
+        select, input[type="number"], input[type="text"] { background-color: #050201; color: #ff5500; border: 1px solid #ff5500; box-shadow: 0 0 5px rgba(255,85,0,0.3); }
+        .btn-core { background-color: #ff5500; color: #0c0502; border: none; font-weight: 900; box-shadow: 0 0 15px rgba(255, 85, 0, 0.6); text-shadow: none; }
+        .btn-core:hover { background-color: #ffffff; color: #0c0502; box-shadow: 0 0 20px #ffffff; }
+        .status { color: #ff5500; border: 1px dashed #ff5500; background: rgba(170, 55, 0, 0.05); text-shadow: 0 0 5px rgba(255,85,0,0.5); }
+        .log { background: #050201; border: 1px solid #ff5500; color: #ff5500; opacity: 0.8; }
+        #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.5); color: rgba(255,85,0,0.7); }
         #countdown { color:#ffffff !important; }
-        .modal-overlay { background-color: #000000; background-image: repeating-linear-gradient(45deg, rgba(255,17,0,0.06) 0px, rgba(255,17,0,0.06) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
-        .modal-content { background-color: #ff1100; border: 1px solid rgba(0,0,0,0.5); color: #000000; font-weight: 900; box-shadow: 0 0 50px rgba(255, 17, 0, 0.6); }
+        
+        /* 팝업 모달 크리티컬 글로우 스타일 */
+        .modal-overlay { background-color: rgba(0,0,0,0.75); background-image: repeating-linear-gradient(45deg, rgba(255,17,0,0.08) 0px, rgba(255,17,0,0.08) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
+        .modal-content { background-color: #ff1100; border: 1px solid #ff1100; color: #000000; font-weight: 900; box-shadow: 0 0 40px rgba(255, 17, 0, 0.85); }
         .modal-content .corner-decor::before, .modal-content .corner-decor::after { border-color: #000000 !important; }
-        .modal-body { border: 2px solid #ff1100; background: #000000; color: #ff1100; text-shadow: 0 0 5px rgba(255, 17, 0, 0.5); position: relative; }
+        .modal-body { border: 2px solid #ff1100; background: #000000; color: #ff1100; text-shadow: 0 0 8px rgba(255, 17, 0, 0.8); box-shadow: inset 0 0 15px rgba(255,17,0,0.3); }
         .modal-body .corner-decor::before, .modal-body .corner-decor::after { border-color: #ff1100 !important; }
-        .modal-close-btn { background-color: #000000; color: #ff1100; font-family: 'Courier New', monospace; border: 1px solid #ff1100; }
-        .modal-close-btn:hover { background-color: #ff1100; color: #000000; }
-        .nerv-tag { font-size: 9px; color: #ff5500; border: 1px solid #ff5500; padding: 1px 4px; position: absolute; top: 4px; left: 6px; background: rgba(255,85,0,0.1); }
-        .window-alias-box { border-bottom: 1px dashed rgba(255, 85, 0, 0.4); color: #ff5500; }
+        .modal-close-btn { background-color: #000000; color: #ff1100; border: 1px solid #ff1100; font-weight: 900; box-shadow: 0 0 10px rgba(255,17,0,0.4); }
+        .modal-close-btn:hover { background-color: #ff1100; color: #000000; box-shadow: 0 0 15px #ff1100; }
+        .nerv-tag { font-size: 9px; color: #ff5500; border: 1px solid #ff5500; padding: 1px 4px; position: absolute; top: 4px; left: 6px; background: rgba(255,85,0,0.15); box-shadow: 0 0 5px rgba(255,85,0,0.3); }
+        .window-alias-box { border-bottom: 1px dashed rgba(255, 85, 0, 0.5); color: #ff5500; }
     </style>
     <style>
         * { box-sizing: border-box; }
         body { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; margin: 0; padding: 15px 10px 30px 10px; }
         input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
+        
         .container, .pnl-box, .data-box, .condition-group, .modal-content, .modal-body { position: relative; }
         .corner-decor { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
         .corner-decor::before { content: ""; position: absolute; top: -1px; left: -1px; width: 10px; height: 10px; border-top: 1.5px solid #ff5500; border-left: 1.5px solid #ff5500; }
         .corner-decor::after { content: ""; position: absolute; top: -1px; right: -1px; width: 10px; height: 10px; border-top: 1.5px solid #ff5500; border-right: 1.5px solid #ff5500; }
+        
         .container::before, .pnl-box::before, .data-box::before, .condition-group::before, .modal-content::before, .modal-body::before { content: ""; position: absolute; bottom: -1px; left: -1px; width: 10px; height: 10px; border-bottom: 1.5px solid #ff5500; border-left: 1.5px solid #ff5500; pointer-events: none; z-index: 10; }
         .container::after, .pnl-box::after, .data-box::after, .condition-group::after, .modal-content::after, .modal-body::after { content: ""; position: absolute; bottom: -1px; right: -1px; width: 10px; height: 10px; border-bottom: 1.5px solid #ff5500; border-right: 1.5px solid #ff5500; pointer-events: none; z-index: 10; }
+        
         .container { width: 380px; padding: 15px; }
         h1 { font-size: 16px; font-weight: 700; text-align: center; margin-top: 5px; margin-bottom: 15px; letter-spacing: 0.5px; }
+        
+        /* 시계 폰트 Orbitron 헤비 웨이트 리얼 복구 */
         .live-clock-wrapper { text-align: center; font-size: 26px; font-weight: 900 !important; margin-bottom: 15px; letter-spacing: 2px; font-family: 'Orbitron', sans-serif !important; }
+        
         .pnl-box { padding: 12px; margin-bottom: 15px; }
         .pnl-title { font-size: 11px; font-weight: bold; margin-bottom: 8px; opacity: 0.85; text-align: center; letter-spacing: 0.5px; }
         .pnl-direction-wrapper { display: flex; align-items: center; justify-content: center; margin-bottom: 8px; gap: 8px; font-size: 11px; }
@@ -73,8 +86,9 @@
         .pnl-inputs div { display: flex; flex-direction: column; width: 48%; font-size: 11px; gap: 3px; }
         .pnl-inputs input { height: 26px; font-size: 12px; outline: none; text-align: center; padding: 2px; }
         .pnl-display { display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.1); }
-        .pnl-plus { color: #00ff66 !important; text-shadow: 0 0 5px rgba(0,255,102,0.6); }
-        .pnl-minus { color: #ff1100 !important; text-shadow: 0 0 5px rgba(255,17,0,0.6); }
+        .pnl-plus { color: #00ff66 !important; text-shadow: 0 0 8px rgba(0,255,102,1), 0 0 15px rgba(0,255,102,0.5) !important; }
+        .pnl-minus { color: #ff1100 !important; text-shadow: 0 0 8px rgba(255,17,0,1), 0 0 15px rgba(255,17,0,0.5) !important; }
+        
         .data-box { padding: 12px; margin-bottom: 15px; }
         .data-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; line-height: 1.4; }
         .section-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
@@ -87,6 +101,8 @@
         .btn-core { width: 100%; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
         .status { text-align: center; font-size: 12px; font-weight: 700; margin-bottom: 10px; padding: 6px; }
         .log { max-height: 120px; overflow-y: auto; padding: 8px; font-size: 12px; line-height: 1.4; }
+        
+        /* 인하우스 팝업 레이어 배치 스타일 */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; justify-content: center; align-items: center; z-index: 1000000; }
         .modal-content { padding: 25px; width: 340px; text-align: center; }
         .modal-title { font-size: 22px; font-weight: 900; margin-bottom: 15px; letter-spacing: 1px; }
@@ -221,57 +237,58 @@
 </div>
 
 <script>
+    // 오리지널 파일의 강렬한 CRT 뿌연 글로우 스타일 딕셔너리 100% 미러링 복구
     const themes = {
         nerv_operational: `
-            body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 3px rgba(255, 85, 0, 0.4); }
+            body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); }
             body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.5) 50%); z-index: 99999; opacity: 0.6; pointer-events: none; background-size: 100% 8px; transform: translateZ(0); will-change: transform; }
-            .container { background-color: #0c0502; border: 1px solid rgba(255, 85, 0, 0.5); box-shadow: 0 0 20px rgba(255, 85, 0, 0.15); }
-            h1 { color: #ff5500; border-bottom: 2px double #ff5500; }
-            .live-clock-wrapper { color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.7); }
-            .data-box { border: 1px solid rgba(255, 85, 0, 0.45); background: rgba(170, 55, 0, 0.05); }
-            .data-row span:last-child { color: #ffffff; text-shadow: 0 0 5px rgba(255,255,255,0.8); }
-            .condition-group { border: 1px solid rgba(255, 85, 0, 0.45); background: rgba(12, 5, 2, 0.6); }
+            .container { background-color: #0c0502; border: 1px solid #ff5500; box-shadow: 0 0 25px rgba(255, 85, 0, 0.35), inset 0 0 15px rgba(255, 85, 0, 0.1); }
+            h1 { color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.6); }
+            .live-clock-wrapper { color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); }
+            .data-box { border: 1px solid #ff5500; background: rgba(170, 55, 0, 0.08); box-shadow: 0 0 12px rgba(170, 55, 0, 0.2); }
+            .data-row span:last-child { color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 15px rgba(255,255,255,0.6); }
+            .condition-group { border: 1px solid #ff5500; background: rgba(12, 5, 2, 0.7); box-shadow: 0 0 10px rgba(170, 55, 0, 0.15); }
             .condition-title { color: #ff5500; }
             .corner-decor::before, .corner-decor::after, .container::before, .container::after, .pnl-box::before, .pnl-box::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #ff5500 !important; border-width: 1.5px !important; }
             input[type="checkbox"] { accent-color: #ff5500; }
-            select, input[type="number"], input[type="text"] { background-color: #050201; color: #ff5500; border: 1px solid rgba(255, 85, 0, 0.6); }
-            .btn-core { background-color: #ff5500; color: #0c0502; box-shadow: 0 0 10px rgba(255, 85, 0, 0.4); }
-            .status { color: #ff5500; border: 1px dashed #aa3700; background: rgba(170, 55, 0, 0.03); }
-            .log { background: #050201; border: 1px solid rgba(255, 85, 0, 0.45); color: #aa3700; }
-            .pnl-box { border: 1px solid rgba(255, 85, 0, 0.45); background: rgba(170, 55, 0, 0.02); }
-            .window-alias-box { border-bottom: 1px dashed rgba(255, 85, 0, 0.4); color: #ff5500; }
-            #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.4); color: #aa3700; }
-            .modal-overlay { background-color: #000000; background-image: repeating-linear-gradient(45deg, rgba(255,85,0,0.06) 0px, rgba(255,85,0,0.06) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
-            .modal-content { background-color: #ff5500; border: 1px solid rgba(0,0,0,0.5); color: #000000; box-shadow: 0 0 50px rgba(255, 85, 0, 0.7); }
-            .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000000 !important; border-width: 1.5px !important; }
-            .modal-body { border: 2px solid #ff5500; background: #000000; color: #ff5500; text-shadow: 0 0 5px rgba(255, 85, 0, 0.5); }
-            .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #ff5500 !important; border-width: 1.5px !important; }
+            select, input[type="number"], input[type="text"] { background-color: #050201; color: #ff5500; border: 1px solid #ff5500; box-shadow: 0 0 5px rgba(255,85,0,0.3); }
+            .btn-core { background-color: #ff5500; color: #0c0502; box-shadow: 0 0 15px rgba(255, 85, 0, 0.6); }
+            .status { color: #ff5500; border: 1px dashed #ff5500; background: rgba(170, 55, 0, 0.05); text-shadow: 0 0 5px rgba(255,85,0,0.5); }
+            .log { background: #050201; border: 1px solid #ff5500; color: #ff5500; }
+            .pnl-box { border: 1px solid #ff5500; background: rgba(170, 55, 0, 0.04); }
+            .window-alias-box { border-bottom: 1px dashed rgba(255, 85, 0, 0.5); color: #ff5500; }
+            #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.5); color: rgba(255,85,0,0.7); }
+            .modal-overlay { background-color: rgba(0,0,0,0.75); background-image: repeating-linear-gradient(45deg, rgba(255,85,0,0.08) 0px, rgba(255,85,0,0.08) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
+            .modal-content { background-color: #ff5500; border: 1px solid #ff5500; color: #000000; box-shadow: 0 0 40px rgba(255, 85, 0, 0.85); }
+            .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000000 !important; }
+            .modal-body { border: 2px solid #ff5500; background: #000000; color: #ff5500; text-shadow: 0 0 8px rgba(255, 85, 0, 0.8); }
+            .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #ff5500 !important; }
             .modal-close-btn { background-color: #000000; color: #ff5500; border: 1px solid #ff5500; }
         `,
         matrix: `
-            body { font-family: 'Courier New', monospace; background-color: #000000; color: #00ff41; text-shadow: 0 0 3px rgba(0, 255, 65, 0.5); }
+            body { font-family: 'Courier New', monospace; background-color: #000000; color: #00ff41; text-shadow: 0 0 6px rgba(0, 255, 65, 0.8), 0 0 12px rgba(0, 255, 65, 0.4); }
             body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.45) 50%); z-index: 99999; opacity: 0.55; pointer-events: none; background-size: 100% 8px; transform: translateZ(0); will-change: transform; }
-            .container { background-color: #030303; border: 1px solid rgba(0, 255, 65, 0.5); box-shadow: 0 0 10px rgba(0, 255, 65, 0.3); }
-            h1 { color:#00ff41; border-bottom: 1px dashed #00ff41; text-shadow: none; }
-            .live-clock-wrapper { color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.8); }
-            .data-box { border: 1px solid rgba(0, 255, 65, 0.5); background: rgba(0, 20, 5, 0.15); }
-            .data-row span:last-child { color: #ffffff; text-shadow: 0 0 3px #fff; }
-            .condition-group { border: 1px solid rgba(0, 255, 65, 0.5); background: rgba(0,0,0,0.4); }
+            .container { background-color: #030303; border: 1px solid #00ff41; box-shadow: 0 0 25px rgba(0, 255, 65, 0.35), inset 0 0 10px rgba(0,255,65,0.05); }
+            h1 { color:#00ff41; border-bottom: 1px dashed #00ff41; text-shadow: 0 0 8px rgba(0,255,65,0.5); }
+            .live-clock-wrapper { color: #00ff41; text-shadow: 0 0 12px rgba(0, 255, 65, 0.95), 0 0 20px rgba(0, 255, 65, 0.6); }
+            .data-box { border: 1px solid #00ff41; background: rgba(0, 25, 5, 0.12); box-shadow: 0 0 12px rgba(0,255,65,0.15); }
+            .data-row span:last-child { color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 12px rgba(0,255,65,0.5); }
+            .condition-group { border: 1px solid #00ff41; background: rgba(0,0,0,0.5); box-shadow: 0 0 10px rgba(0,255,65,0.1); }
             .condition-title { color: #00ff41; }
             .corner-decor::before, .corner-decor::after, .container::before, .container::after, .pnl-box::before, .pnl-box::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #00ff41 !important; border-width: 1.5px !important; }
             input[type="checkbox"] { accent-color: #00ff41; }
-            select, input[type="number"], input[type="text"] { background-color: #000000; color: #00ff41; border: 1px solid rgba(0, 255, 65, 0.6); }
-            .btn-core { background-color: #00ff41; color: #000000; box-shadow: 0 0 6px rgba(0, 255, 65, 0.4); }
-            .status { color: #00ff41; border: 1px solid #00ff41; background: none; }
-            .log { background: #000000; border: 1px solid rgba(0, 255, 65, 0.5); color: #00cc33; }
-            .pnl-box { border: 1px solid rgba(0, 255, 65, 0.5); background: rgba(0, 20, 5, 0.1); }
+            select, input[type="number"], input[type="text"] { background-color: #000000; color: #00ff41; border: 1px solid #00ff41; box-shadow: 0 0 5px rgba(0,255,65,0.3); }
+            .btn-core { background-color: #00ff41; color: #000000; box-shadow: 0 0 15px rgba(0, 255, 65, 0.6); }
+            .status { color: #00ff41; border: 1px solid #00ff41; background: none; text-shadow: 0 0 5px rgba(0,255,65,0.5); }
+            .log { background: #000000; border: 1px solid #00ff41; color: #00ff41; }
+            .pnl-box { border: 1px solid #00ff41; background: rgba(0, 20, 5, 0.06); }
             .window-alias-box { border-bottom: 1px dashed rgba(0, 255, 65, 0.5); color: #00ff41; }
-            #sub-countdown-row { border-top: 1px dashed rgba(0, 255, 65, 0.5); color: #00ff41;}
-            .modal-overlay { background-color: #000000; background-image: repeating-linear-gradient(45deg, rgba(0,255,65,0.04) 0px, rgba(0,255,65,0.04) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
-            .modal-content { background-color: #00ff41; border: 1px solid rgba(0,0,0,0.5); color: #000000; box-shadow: 0 0 50px rgba(0, 255, 65, 0.6); }
-            .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000000 !important; border-width: 1.5px !important; }
-            .modal-body { border: 2px solid #00ff41; background: #000000; color: #00ff41; text-shadow: 0 0 5px rgba(0, 255, 65, 0.5); }
-            .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #00ff41 !important; border-width: 1.5px !important; }
+            #sub-countdown-row { border-top: 1px dashed rgba(0, 255, 65, 0.5); color: rgba(0,255,65,0.7); }
+            .modal-overlay { background-color: rgba(0,0,0,0.8); background-image: repeating-linear-gradient(45deg, rgba(0,255,65,0.05) 0px, rgba(0,255,65,0.05) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
+            .modal-content { background-color: #00ff41; border: 1px solid #00ff41; color: #000000; box-shadow: 0 0 40px rgba(0, 255, 65, 0.85); }
+            .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000000 !important; }
+            .modal-body { border: 2px solid #00ff41; background: #000000; color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.8); }
+            .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #00ff41 !important; }
             .modal-close-btn { background-color: #000000; color: #00ff41; border: 1px solid #00ff41; }
         `
     };
@@ -282,8 +299,9 @@
     let livePrice = 0;
     let audioIntervalId = null;
     let nextCheckTime = 0;
-    let ws = null;
+    let isSystemRunning = false;
 
+    // 포지션 방향 변경 시 테마 체인저 연동 함수 완벽 롤백
     function onPositionSideChanged() {
         const side = document.getElementById('pnl-side').value;
         if (side === 'long') switchTheme('matrix'); else switchTheme('nerv_operational');
@@ -293,6 +311,7 @@
     function switchTheme(themeName) {
         activeTheme = themeName;
         document.getElementById('theme-style').innerHTML = themes[themeName];
+        
         const elements = {
             'main-title': { matrix: 'SYS_MATRIX://BYBIT_ALARM.EXE', nerv_operational: 'MAGI_SYS://TACTICAL_MONITOR' },
             'lbl-alias': { matrix: 'WINDOW_IDENTIFIER:', nerv_operational: 'MONITOR_TAG:' },
@@ -303,22 +322,17 @@
             'lbl-next': { matrix: 'NEXT_SCAN_IN :', nerv_operational: 'NEXT_DATA_INTERCEPT :' },
             'section-desc': { matrix: '> CONFIGURE_TARGET_STRATEGY', nerv_operational: '&gt; MAGI CENTRAL_LOGIC' }
         };
+        
         for (let id in elements) {
             if(elements[id][themeName]) document.getElementById(id).innerText = elements[id][themeName];
         }
+        
         const tag = document.getElementById('nerv-only-tag');
         if (themeName === 'nerv_operational') { tag.innerText = "NERV ONLY"; tag.style.display = "block"; } else { tag.style.display = "none"; }
         updateSystemStatusUI();
     }
 
-    // 브라우저 내부 시계 가동
-    setInterval(() => {
-        const d = new Date();
-        document.getElementById('live-clock').innerText = 
-            String(d.getHours()).padStart(2, '0') + ":" + String(d.getMinutes()).padStart(2, '0') + ":" + String(d.getSeconds()).padStart(2, '0');
-    }, 1000);
-
-    // [우회 핵심] 브라우저의 안전한 개인 IP로 바이비트를 조회한 뒤 백엔드 관제소로 밀어주는 핵심 비동기 브로커
+    // 브라우저 프론트엔드가 직접 안전망 우회 수신 후 백엔드 서버로 밀어주는 핵심 통신 파이프라인
     async function fetchBybitAndReport() {
         try {
             const url = 'https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=5&limit=200';
@@ -334,7 +348,6 @@
             const allCloses = list.map(c => parseFloat(c[4])).reverse();
             const allVolumes = list.map(c => parseFloat(c[5])).reverse();
 
-            // 1. 순수 RSI(14) 계산 구현
             const rsiCloses = allCloses.slice(0, -1);
             let gains = 0, losses = 0;
             for (let i = rsiCloses.length - 14; i < rsiCloses.length; i++) {
@@ -343,7 +356,6 @@
             }
             const rsi = losses === 0 ? 100 : 100 - (100 / (1 + (gains / losses)));
 
-            // 2. 볼린저 밴드 연산
             const bbPeriod = localConfig ? localConfig.bbPeriod : 200;
             const bbSample = rsiCloses.slice(-bbPeriod);
             const ma = bbSample.reduce((a, b) => a + b, 0) / bbSample.length;
@@ -353,14 +365,12 @@
             const bbUpper = ma + (bbStdParam * std);
             const bbLower = ma - (bbStdParam * std);
 
-            // 3. 거래량 비율 마감봉 검증
             const targetVol = parseFloat(list[1][5]);
             const volMaPeriod = localConfig ? localConfig.volMaPeriod : 30;
             const prevVols = allVolumes.slice(-(volMaPeriod + 2), -2);
             const volMa = prevVols.reduce((a, b) => a + b, 0) / prevVols.length;
             const volRatio = volMa > 0 ? (targetVol / volMa) : 1;
 
-            // 가공된 정밀 팩 데이터를 관제소(/api/report-metrics)로 역전송
             await fetch('/api/report-metrics', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -368,34 +378,32 @@
             });
 
         } catch (e) {
-            console.error("클라이언트 파이프라인 수신 장애:", e);
+            console.error("안전 브로커 수신 장애 수동 복구 중:", e);
         }
     }
 
-    // 서버 모니터링 상태 조회 및 동기화 스케줄러
     async function syncServer() {
         try {
             const res = await fetch('/api/config');
             const data = await res.json();
             
-            // 데이터 실시간 출력 바인딩
             livePrice = data.lastData.price;
-            document.getElementById('current-price').innerText = livePrice > 0 ? livePrice.toLocaleString() + " USDT" : "로딩 중...";
+            document.getElementById('current-price').innerText = livePrice > 0 ? livePrice.toLocaleString() + " USDT" : "로딩 중... ";
             document.getElementById('current-rsi').innerText = data.lastData.rsi > 0 ? data.lastData.rsi.toFixed(1) : "-";
             document.getElementById('bb-status').innerText = data.lastData.bbUpper > 0 ? `${Math.floor(data.lastData.bbUpper)} / ${Math.floor(data.lastData.bbLower)}` : "-";
             document.getElementById('volume-status').innerText = data.lastData.volRatio > 0 ? `${data.lastData.volRatio.toFixed(1)}x` : "-";
 
             calculateLivePnl();
 
-            // 백엔드가 마감봉 조건 만족 사인을 주면 비주얼 CRT 경고 창 팝업 가동
+            // 백엔드로부터 알람 조건 성립 신호 포착 시, 원본 인하우스 팝업 모달창 오픈 로직 복구
             if (data.lastData.triggerPopup) {
-                log(`⚡ [CRITICAL] PATTERN_BLUE_MATCHED`);
+                log(`⚡ [CRITICAL] STRATEGY_PATTERN_MATCHED`);
                 startRepeatingAlertSound();
                 
                 const currentThemeColor = activeTheme === 'matrix' ? '#00ff41' : '#ff5500';
                 const popupHtml = `
-                    <div style="font-size:11px; opacity:0.5; margin-bottom:6px; color:#ffffff;">SYS_NODE: ${data.config.windowAlias}</div>
-                    <div style="color:${currentThemeColor}; font-weight:900; font-size:15px; margin-bottom:10px; border-bottom:1px dashed ${currentThemeColor}; padding-bottom:5px;">⚠️ TARGET_CONDITION_UNLOCKED</div>
+                    <div style="font-size:11px; opacity:0.6; margin-bottom:6px; color:#ffffff;">SYS_NODE: ${data.config.windowAlias}</div>
+                    <div style="color:${currentThemeColor}; font-weight:900; font-size:15px; margin-bottom:10px; border-bottom:1px dashed ${currentThemeColor}; padding-bottom:5px; text-shadow:0 0 5px ${currentThemeColor};">⚠️ TARGET CONDITION COMPLIED</div>
                     <div style="margin: 4px 0;">&gt; PRICE: <span style="color:#ffffff;">${livePrice.toLocaleString()} USDT</span></div>
                     <div style="margin: 4px 0;">&gt; RSI  : <span style="color:#ffffff;">${data.lastData.rsi.toFixed(1)}</span></div>
                     <div style="margin: 4px 0;">&gt; VOL  : <span style="color:#ffffff;">${data.lastData.volRatio.toFixed(1)}x</span></div>
@@ -403,7 +411,6 @@
                 openPopup(popupHtml);
             }
 
-            // 인풋값 양방향 상태 동기화 검증
             if (!localConfig || localConfig.isSystemRunning !== data.config.isSystemRunning) {
                 document.getElementById('window-alias').value = data.config.windowAlias;
                 document.getElementById('pnl-side').value = data.config.side;
@@ -420,7 +427,6 @@
                 document.getElementById('cond-vol-atv').checked = data.config.volAtv;
                 document.getElementById('cond-vol-ratio').value = data.config.volRatio;
                 
-                // 로컬 테마 싱크 맞춤
                 if (data.config.side === 'long') switchTheme('matrix'); else switchTheme('nerv_operational');
             }
 
@@ -466,11 +472,11 @@
         onLocalSettingsChanged();
         
         if (isSystemRunning) {
-            log("TACTICAL COMPUTE DISPATCHED.");
+            log("TACTICAL CORE DEPLOYED.");
             playThemeSound();
         } else {
             stopRepeatingAlertSound();
-            log("MONITORING HALTED.");
+            log("SYSTEM ANALYSIS SUSPENDED.");
         }
         syncServer();
     }
@@ -511,7 +517,6 @@
         else { roeEl.className = ""; amtEl.className = ""; }
     }
 
-    // 오디오 비프음 관제 엔진
     function playThemeSound() {
         if (!audioContext) return;
         const now = audioContext.currentTime;
@@ -539,7 +544,12 @@
 
     function setNextTargetTime() { const now = new Date(); const nextMinutes = Math.ceil((now.getMinutes() + 0.05) / 5) * 5; const target = new Date(now); target.setMinutes(nextMinutes); target.setSeconds(1); target.setMilliseconds(0); nextCheckTime = target.getTime(); }
 
-    // 인터셉트 카운트다운 스케줄러 구현
+    setInterval(() => {
+        const d = new Date();
+        document.getElementById('live-clock').innerText = 
+            String(d.getHours()).padStart(2, '0') + ":" + String(d.getMinutes()).padStart(2, '0') + ":" + String(d.getSeconds()).padStart(2, '0');
+    }, 1000);
+
     setInterval(() => {
         if (nextCheckTime === 0 || !isSystemRunning) {
             document.getElementById('countdown').innerText = "STANDBY";
@@ -552,11 +562,10 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         setNextTargetTime();
-        // 1. 브라우저 안전 IP 기반 실시간 바이비트 데이터 탈취 패치 스케줄러 (3초 주기)
+        
         fetchBybitAndReport();
         setInterval(fetchBybitAndReport, 3000);
 
-        // 2. 서버 설정 정보 및 알람 상태 동기화 스케줄러 (2초 주기)
         syncServer();
         setInterval(syncServer, 2000);
     });
