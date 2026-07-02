@@ -1,0 +1,14 @@
+{
+  "name": "bybit-monitor-bot",
+  "version": "1.0.0",
+  "description": "24/7 Bybit Monitoring System",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.4.0",
+    "ws": "^8.13.0"
+  }
+}
