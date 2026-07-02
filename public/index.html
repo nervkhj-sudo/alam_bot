@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TACTICAL_REMOTE_MONITOR_v5.0</title>
+    <title>TACTICAL_REMOTE_MONITOR_v5.1</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Orbitron:wght@400;700;900&display=swap');
     </style>
@@ -99,7 +99,7 @@
     
     <div class="window-alias-box">
         <span id="lbl-alias">MONITOR_TAG:</span>
-        <input type="text" id="window-alias" value="원격 작전 노드" placeholder="예: 1번 창 (BTC)">
+        <input type="text" id="window-alias" value="원격 작전 노드" placeholder="예: 1번 창 (BTC)" oninput="onLocalSettingsChanged()">
     </div>
 
     <div class="live-clock-wrapper" id="live-clock">00:00:00</div>
@@ -243,8 +243,9 @@
         `
     };
 
-    let localGlobalConfig = null; // 서버에서 받은 원본 세팅값 캐싱
-    let currentGlobalPrice = 0;   // 실시간 ROE 갱신용 전역 변수
+    let localGlobalConfig = null;
+    let currentGlobalPrice = 0;
+    let lastAlertTriggerTime = 0; // 프론트 팝업 중복 방지용 타임스탬프
 
     function startLiveClock() {
         setInterval(() => {
@@ -256,23 +257,24 @@
         }, 1000);
     }
 
-    // 🔄 2초 주기로 서버에서 실시간 연산 데이터 및 유저 세팅을 수신 및 싱크
     async function syncWithServer() {
         try {
             const res = await fetch('/api/config');
             const data = await res.json();
             
-            // 1. 실시간 데이터 스트리밍 UI 반영
             currentGlobalPrice = data.lastData.price;
             document.getElementById('current-price').innerText = currentGlobalPrice > 0 ? currentGlobalPrice.toLocaleString() + " USDT" : "로딩 중...";
             document.getElementById('current-rsi').innerText = data.lastData.rsi > 0 ? data.lastData.rsi.toFixed(1) : "-";
             document.getElementById('bb-status').innerText = data.lastData.bbUpper > 0 ? `${Math.floor(data.lastData.bbUpper)} / ${Math.floor(data.lastData.bbLower)}` : "-";
-            document.getElementById('volume-status').innerText = data.lastData.volRatio > 0 ? `${data.lastData.volRatio.toFixed(1)}x 돌파 중` : "-";
+            document.getElementById('volume-status').innerText = data.lastData.volRatio > 0 ? `${data.lastData.volRatio.toFixed(1)}x` : "-";
 
-            // 실시간 ROE/PNL 계산기 트리거
             calculateLivePnl();
 
-            // 2. 최초 로드 혹은 원격에서 상태 변경 시 UI 강제 동기화 (사용자 입력 방해 차단용)
+            // 실시간 브라우저 단 팝업/로그 판단 엔진 (★추가된 핵심 레이어)
+            if (data.config.isSystemRunning && currentGlobalPrice > 0) {
+                checkClientSideAlert(data.config, data.lastData);
+            }
+
             if (!localGlobalConfig || localGlobalConfig.isSystemRunning !== data.config.isSystemRunning || localGlobalConfig.side !== data.config.side) {
                 document.getElementById('pnl-side').value = data.config.side;
                 document.getElementById('window-alias').value = data.config.windowAlias;
@@ -300,7 +302,38 @@
 
         } catch (e) {
             document.getElementById('status-text').innerText = "NODE_CONN_FAULT";
-            log("BACKEND SERVER SYNC DISCONNECTED.");
+        }
+    }
+
+    // 🚨 프론트엔드 실시간 팝업 감시 장치
+    function checkClientSideAlert(cfg, snap) {
+        let match = true;
+        
+        if (cfg.priceAtv) {
+            match = match && (cfg.priceType === 'above' ? snap.price >= cfg.priceVal : snap.price <= cfg.priceVal);
+        }
+        if (cfg.rsiAtv && snap.rsi > 0) {
+            match = match && (cfg.rsiType === 'above' ? snap.rsi >= cfg.rsiVal : snap.rsi <= cfg.rsiVal);
+        }
+        if (cfg.bbUpperAtv && snap.bbUpper > 0) {
+            match = match && (snap.price >= snap.bbUpper);
+        }
+        if (cfg.bbLowerAtv && snap.bbLower > 0) {
+            match = match && (snap.price <= snap.bbLower);
+        }
+        if (cfg.volAtv && snap.volRatio > 0) {
+            match = match && (snap.volRatio >= cfg.volRatio);
+        }
+
+        // 모든 조건 충족 시 브라우저 Alert 팝업 발생 (1분간 연속 중복 차단)
+        if (match && (Date.now() - lastAlertTriggerTime > 60000)) {
+            lastAlertTriggerTime = Date.now();
+            
+            const alertMsg = `💥 TARGET CAPTURED!!\n[${cfg.windowAlias}] 조건 만족\n현재가: ${snap.price.toLocaleString()} USDT\nRSI: ${snap.rsi.toFixed(1)}`;
+            log(`ALERT TRIGGERED: Price ${snap.price.toLocaleString()}`);
+            
+            // 브라우저 경고창 출력
+            alert(alertMsg);
         }
     }
 
@@ -343,12 +376,11 @@
         }
     }
 
-    // 🚀 사용자가 값을 수정하거나 체크박스를 건드릴 때마다 백엔드로 즉시 동기화 패킷 전송
     async function onLocalSettingsChanged() {
         if (!localGlobalConfig) return;
         
         const payload = {
-            isSystemRunning: localGlobalConfig.isSystemRunning, // 가동 여부는 유지
+            isSystemRunning: localGlobalConfig.isSystemRunning,
             side: document.getElementById('pnl-side').value,
             windowAlias: document.getElementById('window-alias').value,
             priceAtv: document.getElementById('cond-price-atv').checked,
@@ -378,7 +410,6 @@
         } catch(e) { console.error("Config send failed"); }
     }
 
-    // ⚡ 전술 서버 가동 스위치 조종 버튼
     async function toggleSystem() {
         if (!localGlobalConfig) return;
         
@@ -415,12 +446,11 @@
             if(data.success) {
                 localGlobalConfig.isSystemRunning = targetState;
                 updateSystemStatusUI(targetState);
-                log(targetState ? "CLOUD MONITOR ENGINE ALIVE." : "CLOUD SYSTEM INTERRUPTED.");
+                log(targetState ? "MAGI MONITOR SYSTEM ONLINE." : "MONITOR INTERRUPTED.");
             }
-        } catch(e) { log("COMMAND DISPATCH SYSTEM ERROR."); }
+        } catch(e) { log("DISPATCH FAULT."); }
     }
 
-    // 로컬 계산 전용 PNL 로직 (서버 부하 분산용 대시보드 연산)
     function calculateLivePnl() {
         const side = document.getElementById('pnl-side').value; 
         const entryPrice = parseFloat(document.getElementById('pnl-entry-price').value);
@@ -460,7 +490,6 @@
         box.innerHTML = `:: ${msg}<br>` + box.innerHTML;
     }
 
-    // 구동 대기
     startLiveClock();
     syncWithServer();
     setInterval(syncWithServer, 2000); 
