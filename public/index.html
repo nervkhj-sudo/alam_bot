@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TACTICAL_POSITION_MONITOR_v5.7_CRT_FINAL</title>
+    <title>TACTICAL_POSITION_MONITOR_v5.7_GLASS_FINAL</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght=400;700&family=Orbitron:wght=400;700;900&display=swap');
     </style>
@@ -13,50 +13,59 @@
             font-family: 'Courier New', 'Courier Prime', monospace; 
             background-color: #050201; 
             color: #ff5500; 
-            text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); 
+            text-shadow: 0 0 6px rgba(255, 85, 0, 0.4), 0 0 12px rgba(255, 85, 0, 0.2); 
         }
         body::before { 
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; 
             background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.5) 50%); 
-            z-index: 99999; opacity: 0.6; pointer-events: none; background-size: 100% 8px; 
+            z-index: 99999; opacity: 0.4; pointer-events: none; background-size: 100% 8px; 
             transform: translateZ(0); will-change: transform;
         }
+        /* 1. 가장 바깥쪽 큰 박스 (ㄱ자 타겟팅 브라켓 완전 제거, 반투명 유리 효과 적용, 0.5px 테두리) */
         .container { 
-            background-color: #0c0502; 
-            border: 1px solid #ff5500; 
-            box-shadow: 0 0 25px rgba(255, 85, 0, 0.35), inset 0 0 15px rgba(255, 85, 0, 0.1); 
+            background-color: rgba(12, 5, 2, 0.5); 
+            border: 0.5px solid #ff5500; 
+            box-shadow: 0 0 30px rgba(255, 85, 0, 0.25); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
         h1 { color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.6); }
         .live-clock-wrapper { color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); }
-        .data-box { border: 1px solid #ff5500; background: rgba(170, 55, 0, 0.08); box-shadow: 0 0 12px rgba(170, 55, 0, 0.2); }
-        .pnl-box { border: 1px solid #ff5500; background: rgba(170, 55, 0, 0.04); box-shadow: 0 0 10px rgba(170, 55, 0, 0.15); }
-        .condition-group { border: 1px solid #ff5500; background: rgba(12, 5, 2, 0.7); box-shadow: 0 0 10px rgba(170, 55, 0, 0.15); }
+        
+        /* 2. 내부 핵심 박스들 (반투명 유리 효과 및 0.5px 테두리 정밀 세팅) */
+        .data-box { border: 0.5px solid #ff5500; background: rgba(170, 55, 0, 0.06); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: 0 0 12px rgba(170, 55, 0, 0.1); }
+        .pnl-box { border: 0.5px solid #ff5500; background: rgba(170, 55, 0, 0.04); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: 0 0 10px rgba(170, 55, 0, 0.1); }
+        .condition-group { border: 0.5px solid #ff5500; background: rgba(12, 5, 2, 0.5); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: 0 0 10px rgba(170, 55, 0, 0.1); }
+        
+        /* 내부 박스용 모서리 데코레이션 스타일 정의 (가장 바깥쪽 .container는 상속 배제됨) */
         .corner-decor::before, .corner-decor::after,
-        .container::before, .container::after,
         .pnl-box::before, .pnl-box::after,
         .data-box::before, .data-box::after,
-        .condition-group::before, .condition-group::after { border-color: #ff5500 !important; border-width: 3px !important; }
+        .condition-group::before, .condition-group::after,
+        .modal-content::before, .modal-content::after,
+        .modal-body::before, .modal-body::after { border-color: #ff5500 !important; border-width: 3px !important; }
+        
         .data-row span:last-child { color: #ffffff; font-weight: 900; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 15px rgba(255,255,255,0.6); }
         .condition-title { color: #ff5500; }
         input[type="checkbox"] { accent-color: #ff5500; }
-        select, input[type="number"], input[type="text"] { background-color: #050201; color: #ff5500; border: 1px solid #ff5500; box-shadow: 0 0 5px rgba(255,85,0,0.3); }
-        .btn-core { background-color: #ff5500; color: #0c0502; border: none; font-weight: 900; box-shadow: 0 0 15px rgba(255, 85, 0, 0.6); text-shadow: none; }
+        select, input[type="number"], input[type="text"] { background-color: rgba(5, 2, 1, 0.7); color: #ff5500; border: 0.5px solid #ff5500; box-shadow: 0 0 5px rgba(255,85,0,0.2); backdrop-filter: blur(4px); }
+        .btn-core { background-color: #ff5500; color: #0c0502; border: none; font-weight: 900; box-shadow: 0 0 15px rgba(255, 85, 0, 0.5); text-shadow: none; }
         .btn-core:hover { background-color: #ffffff; color: #0c0502; box-shadow: 0 0 20px #ffffff; }
-        .status { color: #ff5500; border: 1px dashed #ff5500; background: rgba(170, 55, 0, 0.05); text-shadow: 0 0 5px rgba(255,85,0,0.5); }
-        .log { background: #050201; border: 1px solid #ff5500; color: #ff5500; opacity: 0.8; }
-        #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.5); color: rgba(255,85,0,0.7); }
+        .status { color: #ff5500; border: 0.5px dashed #ff5500; background: rgba(170, 55, 0, 0.03); text-shadow: 0 0 5px rgba(255,85,0,0.5); }
+        .log { background: rgba(5, 2, 1, 0.7); border: 0.5px solid #ff5500; color: #ff5500; opacity: 0.85; backdrop-filter: blur(4px); }
+        #sub-countdown-row { border-top: 0.5px dashed rgba(255, 85, 0, 0.5); color: rgba(255,85,0,0.7); }
         #countdown { color:#ffffff !important; }
         
         /* 팝업 모달 크리티컬 글로우 스타일 */
         .modal-overlay { background-color: rgba(0,0,0,0.75); background-image: repeating-linear-gradient(45deg, rgba(255,17,0,0.08) 0px, rgba(255,17,0,0.08) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
-        .modal-content { background-color: #ff1100; border: 1px solid #ff1100; color: #000000; font-weight: 900; box-shadow: 0 0 40px rgba(255, 17, 0, 0.85); }
+        .modal-content { background-color: #ff1100; border: 0.5px solid #ff1100; color: #000000; font-weight: 900; box-shadow: 0 0 40px rgba(255, 17, 0, 0.85); }
         .modal-content .corner-decor::before, .modal-content .corner-decor::after { border-color: #000000 !important; }
         .modal-body { border: 2px solid #ff1100; background: #000000; color: #ff1100; text-shadow: 0 0 8px rgba(255, 17, 0, 0.8); box-shadow: inset 0 0 15px rgba(255,17,0,0.3); }
         .modal-body .corner-decor::before, .modal-body .corner-decor::after { border-color: #ff1100 !important; }
-        .modal-close-btn { background-color: #000000; color: #ff1100; border: 1px solid #ff1100; font-weight: 900; box-shadow: 0 0 10px rgba(255,17,0,0.4); }
+        .modal-close-btn { background-color: #000000; color: #ff1100; border: 0.5px solid #ff1100; font-weight: 900; box-shadow: 0 0 10px rgba(255,17,0,0.4); }
         .modal-close-btn:hover { background-color: #ff1100; color: #000000; box-shadow: 0 0 15px #ff1100; }
-        .nerv-tag { font-size: 9px; color: #ff5500; border: 1px solid #ff5500; padding: 1px 4px; position: absolute; top: 4px; left: 6px; background: rgba(255,85,0,0.15); box-shadow: 0 0 5px rgba(255,85,0,0.3); }
-        .window-alias-box { border-bottom: 1px dashed rgba(255, 85, 0, 0.5); color: #ff5500; }
+        .nerv-tag { font-size: 9px; color: #ff5500; border: 0.5px solid #ff5500; padding: 1px 4px; position: absolute; top: 4px; left: 6px; background: rgba(255,85,0,0.15); box-shadow: 0 0 5px rgba(255,85,0,0.3); }
+        .window-alias-box { border-bottom: 0.5px dashed rgba(255, 85, 0, 0.5); color: #ff5500; }
     </style>
     <style>
         * { box-sizing: border-box; }
@@ -67,12 +76,13 @@
         .container, .pnl-box, .data-box, .condition-group, .modal-content, .modal-body { position: relative; }
         .corner-decor { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
         
-        /* 모서리 "ㄱ"자 디자인 강조 (크기 및 두께 수정) */
+        /* 내부 핵심 타겟팅 요소의 모서리 "ㄱ"자 공통 로직 조절 */
         .corner-decor::before { content: ""; position: absolute; top: -2px; left: -2px; width: 14px; height: 14px; border-top: 3px solid #ff5500; border-left: 3px solid #ff5500; }
         .corner-decor::after { content: ""; position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; border-top: 3px solid #ff5500; border-right: 3px solid #ff5500; }
         
-        .container::before, .pnl-box::before, .data-box::before, .condition-group::before, .modal-content::before, .modal-body::before { content: ""; position: absolute; bottom: -2px; left: -2px; width: 14px; height: 14px; border-bottom: 3px solid #ff5500; border-left: 3px solid #ff5500; pointer-events: none; z-index: 10; }
-        .container::after, .pnl-box::after, .data-box::after, .condition-group::after, .modal-content::after, .modal-body::after { content: ""; position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; border-bottom: 3px solid #ff5500; border-right: 3px solid #ff5500; pointer-events: none; z-index: 10; }
+        /* 아래 가상 선택자 배치에서 .container 항목을 완벽히 격리 및 배제 처리 */
+        .pnl-box::before, .data-box::before, .condition-group::before, .modal-content::before, .modal-body::before { content: ""; position: absolute; bottom: -2px; left: -2px; width: 14px; height: 14px; border-bottom: 3px solid #ff5500; border-left: 3px solid #ff5500; pointer-events: none; z-index: 10; }
+        .pnl-box::after, .data-box::after, .condition-group::after, .modal-content::after, .modal-body::after { content: ""; position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; border-bottom: 3px solid #ff5500; border-right: 3px solid #ff5500; pointer-events: none; z-index: 10; }
         
         .container { width: 380px; padding: 15px; }
         h1 { font-size: 16px; font-weight: 700; text-align: center; margin-top: 5px; margin-bottom: 15px; letter-spacing: 0.5px; }
@@ -125,8 +135,8 @@
     </div>
 </div>
 
+<!-- 가장 바깥쪽 컨테이너 박스 (가상 클래스 모서리 요소 제거됨) -->
 <div class="container" id="main-container">
-    <div class="corner-decor"></div>
     <div class="nerv-tag" id="nerv-only-tag" style="display:block;">NERV ONLY</div>
     <h1 id="main-title">MAGI_SYS://TACTICAL_MONITOR</h1>
     
@@ -239,59 +249,59 @@
 </div>
 
 <script>
-    // 오리지널 파일의 강렬한 CRT 뿌연 글로우 스타일 딕셔너리 100% 미러링 복구 (ㄱ자 디자인 두께 3px 반영)
+    // 테마 전환 데이터 사전에 글래스모피즘 효과(backdrop-filter) 및 0.5px 세밀 보더 전격 적용
     const themes = {
         nerv_operational: `
-            body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); }
-            body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.5) 50%); z-index: 99999; opacity: 0.6; pointer-events: none; background-size: 100% 8px; transform: translateZ(0); will-change: transform; }
-            .container { background-color: #0c0502; border: 1px solid #ff5500; box-shadow: 0 0 25px rgba(255, 85, 0, 0.35), inset 0 0 15px rgba(255, 85, 0, 0.1); }
+            body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.4), 0 0 12px rgba(255, 85, 0, 0.2); }
+            body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.5) 50%); z-index: 99999; opacity: 0.4; pointer-events: none; background-size: 100% 8px; transform: translateZ(0); will-change: transform; }
+            .container { background-color: rgba(12, 5, 2, 0.5); border: 0.5px solid #ff5500; box-shadow: 0 0 30px rgba(255, 85, 0, 0.25); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
             h1 { color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.6); }
             .live-clock-wrapper { color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); }
-            .data-box { border: 1px solid #ff5500; background: rgba(170, 55, 0, 0.08); box-shadow: 0 0 12px rgba(170, 55, 0, 0.2); }
+            .data-box { border: 0.5px solid #ff5500; background: rgba(170, 55, 0, 0.06); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: 0 0 12px rgba(170, 55, 0, 0.1); }
             .data-row span:last-child { color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 15px rgba(255,255,255,0.6); }
-            .condition-group { border: 1px solid #ff5500; background: rgba(12, 5, 2, 0.7); box-shadow: 0 0 10px rgba(170, 55, 0, 0.15); }
+            .condition-group { border: 0.5px solid #ff5500; background: rgba(12, 5, 2, 0.5); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: 0 0 10px rgba(170, 55, 0, 0.1); }
             .condition-title { color: #ff5500; }
-            .corner-decor::before, .corner-decor::after, .container::before, .container::after, .pnl-box::before, .pnl-box::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #ff5500 !important; border-width: 3px !important; }
+            .corner-decor::before, .corner-decor::after, .pnl-box::before, .pnl-box::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #ff5500 !important; border-width: 3px !important; }
             input[type="checkbox"] { accent-color: #ff5500; }
-            select, input[type="number"], input[type="text"] { background-color: #050201; color: #ff5500; border: 1px solid #ff5500; box-shadow: 0 0 5px rgba(255,85,0,0.3); }
-            .btn-core { background-color: #ff5500; color: #0c0502; box-shadow: 0 0 15px rgba(255, 85, 0, 0.6); }
-            .status { color: #ff5500; border: 1px dashed #ff5500; background: rgba(170, 55, 0, 0.05); text-shadow: 0 0 5px rgba(255,85,0,0.5); }
-            .log { background: #050201; border: 1px solid #ff5500; color: #ff5500; }
-            .pnl-box { border: 1px solid #ff5500; background: rgba(170, 55, 0, 0.04); }
-            .window-alias-box { border-bottom: 1px dashed rgba(255, 85, 0, 0.5); color: #ff5500; }
-            #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.5); color: rgba(255,85,0,0.7); }
+            select, input[type="number"], input[type="text"] { background-color: rgba(5, 2, 1, 0.7); color: #ff5500; border: 0.5px solid #ff5500; box-shadow: 0 0 5px rgba(255,85,0,0.2); backdrop-filter: blur(4px); }
+            .btn-core { background-color: #ff5500; color: #0c0502; box-shadow: 0 0 15px rgba(255, 85, 0, 0.5); }
+            .status { color: #ff5500; border: 0.5px dashed #ff5500; background: rgba(170, 55, 0, 0.03); text-shadow: 0 0 5px rgba(255,85,0,0.5); }
+            .log { background: rgba(5, 2, 1, 0.7); border: 0.5px solid #ff5500; color: #ff5500; backdrop-filter: blur(4px); }
+            .pnl-box { border: 0.5px solid #ff5500; background: rgba(170, 55, 0, 0.04); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+            .window-alias-box { border-bottom: 0.5px dashed rgba(255, 85, 0, 0.5); color: #ff5500; }
+            #sub-countdown-row { border-top: 0.5px dashed rgba(255, 85, 0, 0.5); color: rgba(255,85,0,0.7); }
             .modal-overlay { background-color: rgba(0,0,0,0.75); background-image: repeating-linear-gradient(45deg, rgba(255,85,0,0.08) 0px, rgba(255,85,0,0.08) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
-            .modal-content { background-color: #ff5500; border: 1px solid #ff5500; color: #000000; box-shadow: 0 0 40px rgba(255, 85, 0, 0.85); }
+            .modal-content { background-color: #ff5500; border: 0.5px solid #ff5500; color: #000000; box-shadow: 0 0 40px rgba(255, 85, 0, 0.85); }
             .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000000 !important; }
             .modal-body { border: 2px solid #ff5500; background: #000000; color: #ff5500; text-shadow: 0 0 8px rgba(255, 85, 0, 0.8); }
             .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #ff5500 !important; }
-            .modal-close-btn { background-color: #000000; color: #ff5500; border: 1px solid #ff5500; }
+            .modal-close-btn { background-color: #000000; color: #ff5500; border: 0.5px solid #ff5500; }
         `,
         matrix: `
-            body { font-family: 'Courier New', monospace; background-color: #000000; color: #00ff41; text-shadow: 0 0 6px rgba(0, 255, 65, 0.8), 0 0 12px rgba(0, 255, 65, 0.4); }
-            body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.45) 50%); z-index: 99999; opacity: 0.55; pointer-events: none; background-size: 100% 8px; transform: translateZ(0); will-change: transform; }
-            .container { background-color: #030303; border: 1px solid #00ff41; box-shadow: 0 0 25px rgba(0, 255, 65, 0.35), inset 0 0 10px rgba(0,255,65,0.05); }
+            body { font-family: 'Courier New', monospace; background-color: #000000; color: #00ff41; text-shadow: 0 0 6px rgba(0, 255, 65, 0.4), 0 0 12px rgba(0, 255, 65, 0.2); }
+            body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.45) 50%); z-index: 99999; opacity: 0.4; pointer-events: none; background-size: 100% 8px; transform: translateZ(0); will-change: transform; }
+            .container { background-color: rgba(3, 3, 3, 0.5); border: 0.5px solid #00ff41; box-shadow: 0 0 30px rgba(0, 255, 65, 0.25); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
             h1 { color:#00ff41; border-bottom: 1px dashed #00ff41; text-shadow: 0 0 8px rgba(0,255,65,0.5); }
             .live-clock-wrapper { color: #00ff41; text-shadow: 0 0 12px rgba(0, 255, 65, 0.95), 0 0 20px rgba(0, 255, 65, 0.6); }
-            .data-box { border: 1px solid #00ff41; background: rgba(0, 25, 5, 0.12); box-shadow: 0 0 12px rgba(0,255,65,0.15); }
+            .data-box { border: 0.5px solid #00ff41; background: rgba(0, 25, 5, 0.08); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: 0 0 12px rgba(0,255,65,0.1); }
             .data-row span:last-child { color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 12px rgba(0,255,65,0.5); }
-            .condition-group { border: 1px solid #00ff41; background: rgba(0,0,0,0.5); box-shadow: 0 0 10px rgba(0,255,65,0.1); }
+            .condition-group { border: 0.5px solid #00ff41; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: 0 0 10px rgba(0,255,65,0.1); }
             .condition-title { color: #00ff41; }
-            .corner-decor::before, .corner-decor::after, .container::before, .container::after, .pnl-box::before, .pnl-box::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #00ff41 !important; border-width: 3px !important; }
+            .corner-decor::before, .corner-decor::after, .pnl-box::before, .pnl-box::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #00ff41 !important; border-width: 3px !important; }
             input[type="checkbox"] { accent-color: #00ff41; }
-            select, input[type="number"], input[type="text"] { background-color: #000000; color: #00ff41; border: 1px solid #00ff41; box-shadow: 0 0 5px rgba(0,255,65,0.3); }
-            .btn-core { background-color: #00ff41; color: #000000; box-shadow: 0 0 15px rgba(0, 255, 65, 0.6); }
-            .status { color: #00ff41; border: 1px solid #00ff41; background: none; text-shadow: 0 0 5px rgba(0,255,65,0.5); }
-            .log { background: #000000; border: 1px solid #00ff41; color: #00ff41; }
-            .pnl-box { border: 1px solid #00ff41; background: rgba(0, 20, 5, 0.06); }
-            .window-alias-box { border-bottom: 1px dashed rgba(0, 255, 65, 0.5); color: #00ff41; }
-            #sub-countdown-row { border-top: 1px dashed rgba(0, 255, 65, 0.5); color: rgba(0,255,65,0.7); }
+            select, input[type="number"], input[type="text"] { background-color: rgba(0, 0, 0, 0.7); color: #00ff41; border: 0.5px solid #00ff41; box-shadow: 0 0 5px rgba(0,255,65,0.2); backdrop-filter: blur(4px); }
+            .btn-core { background-color: #00ff41; color: #000000; box-shadow: 0 0 15px rgba(0, 255, 65, 0.5); }
+            .status { color: #00ff41; border: 0.5px solid #00ff41; background: none; text-shadow: 0 0 5px rgba(0,255,65,0.5); }
+            .log { background: rgba(0, 0, 0, 0.7); border: 0.5px solid #00ff41; color: #00ff41; backdrop-filter: blur(4px); }
+            .pnl-box { border: 0.5px solid #00ff41; background: rgba(0, 20, 5, 0.04); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+            .window-alias-box { border-bottom: 0.5px dashed rgba(0, 255, 65, 0.5); color: #00ff41; }
+            #sub-countdown-row { border-top: 0.5px dashed rgba(0, 255, 65, 0.5); color: rgba(0,255,65,0.7); }
             .modal-overlay { background-color: rgba(0,0,0,0.8); background-image: repeating-linear-gradient(45deg, rgba(0,255,65,0.05) 0px, rgba(0,255,65,0.05) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
-            .modal-content { background-color: #00ff41; border: 1px solid #00ff41; color: #000000; box-shadow: 0 0 40px rgba(0, 255, 65, 0.85); }
+            .modal-content { background-color: #00ff41; border: 0.5px solid #00ff41; color: #000000; box-shadow: 0 0 40px rgba(0, 255, 65, 0.85); }
             .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000000 !important; }
             .modal-body { border: 2px solid #00ff41; background: #000000; color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.8); }
             .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #00ff41 !important; }
-            .modal-close-btn { background-color: #000000; color: #00ff41; border: 1px solid #00ff41; }
+            .modal-close-btn { background-color: #000000; color: #00ff41; border: 0.5px solid #00ff41; }
         `
     };
 
@@ -303,7 +313,6 @@
     let nextCheckTime = 0;
     let isSystemRunning = false;
 
-    // 포지션 방향 변경 시 테마 체인저 연동 함수 완벽 롤백
     function onPositionSideChanged() {
         const side = document.getElementById('pnl-side').value;
         if (side === 'long') switchTheme('matrix'); else switchTheme('nerv_operational');
@@ -334,7 +343,6 @@
         updateSystemStatusUI();
     }
 
-    // 브라우저 프론트엔드가 직접 안전망 우회 수신 후 백엔드 서버로 밀어주는 핵심 통신 파이프라인
     async function fetchBybitAndReport() {
         try {
             const url = 'https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=5&limit=200';
@@ -375,13 +383,11 @@
             const volMa = prevVols.reduce((a, b) => a + b, 0) / prevVols.length;
             const volRatio = volMa > 0 ? (targetVol / volMa) : 1;
 
-            // 프론트엔드 체크박스 조건 실시간 엄격 검증 (AND 연산)
             let triggerPopup = false;
             if (isSystemRunning) {
                 let conditionMet = true;
                 let activeConditionsCount = 0;
 
-                // 1. 가격 조건
                 if (document.getElementById('cond-price-atv').checked) {
                     activeConditionsCount++;
                     const pType = document.getElementById('cond-price-type').value;
@@ -390,7 +396,6 @@
                     if (pType === 'below' && !(price <= pVal)) conditionMet = false;
                 }
 
-                // 2. RSI 조건
                 if (document.getElementById('cond-rsi-atv').checked) {
                     activeConditionsCount++;
                     const rType = document.getElementById('cond-rsi-type').value;
@@ -399,26 +404,22 @@
                     if (rType === 'below' && !(rsi <= rVal)) conditionMet = false;
                 }
 
-                // 3-1. 볼밴 상단 돌파 조건
                 if (document.getElementById('cond-bb-upper-atv').checked) {
                     activeConditionsCount++;
                     if (!(highPrice >= bbUpper)) conditionMet = false;
                 }
 
-                // 3-2. 볼밴 하단 돌파 조건
                 if (document.getElementById('cond-bb-lower-atv').checked) {
                     activeConditionsCount++;
                     if (!(lowPrice <= bbLower)) conditionMet = false;
                 }
 
-                // 4. 거래량 조건
                 if (document.getElementById('cond-vol-atv').checked) {
                     activeConditionsCount++;
                     const vRatioThreshold = parseFloat(document.getElementById('cond-vol-ratio').value) || 1.5;
                     if (!(volRatio >= vRatioThreshold)) conditionMet = false;
                 }
 
-                // 체크된 조건이 최소 하나 이상 있고, 그 조건들을 모두 충족한 경우에만 알람 활성화
                 if (activeConditionsCount > 0 && conditionMet) {
                     triggerPopup = true;
                 }
@@ -448,7 +449,6 @@
 
             calculateLivePnl();
 
-            // 백엔드 또는 실시간 계산 검증 결과에 따라 인하우스 팝업 모달창 오픈
             if (data.lastData.triggerPopup && isSystemRunning) {
                 if (document.getElementById('alert-modal').style.display !== 'flex') {
                     log(`⚡ [CRITICAL] STRATEGY_PATTERN_MATCHED`);
