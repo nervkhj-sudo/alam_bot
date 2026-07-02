@@ -343,6 +343,8 @@
 
             const list = data.result.list;
             const price = parseFloat(list[0][4]);
+            const highPrice = parseFloat(list[0][2]);
+            const lowPrice = parseFloat(list[0][3]);
             const closedCandleTime = parseInt(list[1][0]);
 
             const allCloses = list.map(c => parseFloat(c[4])).reverse();
@@ -371,10 +373,59 @@
             const volMa = prevVols.reduce((a, b) => a + b, 0) / prevVols.length;
             const volRatio = volMa > 0 ? (targetVol / volMa) : 1;
 
+            // 프론트엔드 체크박스 조건 실시간 엄격 검증 (AND 연산)
+            let triggerPopup = false;
+            if (isSystemRunning) {
+                let conditionMet = true;
+                let activeConditionsCount = 0;
+
+                // 1. 가격 조건
+                if (document.getElementById('cond-price-atv').checked) {
+                    activeConditionsCount++;
+                    const pType = document.getElementById('cond-price-type').value;
+                    const pVal = parseFloat(document.getElementById('cond-price-val').value) || 0;
+                    if (pType === 'above' && !(price >= pVal)) conditionMet = false;
+                    if (pType === 'below' && !(price <= pVal)) conditionMet = false;
+                }
+
+                // 2. RSI 조건
+                if (document.getElementById('cond-rsi-atv').checked) {
+                    activeConditionsCount++;
+                    const rType = document.getElementById('cond-rsi-type').value;
+                    const rVal = parseFloat(document.getElementById('cond-rsi-val').value) || 0;
+                    if (rType === 'above' && !(rsi >= rVal)) conditionMet = false;
+                    if (rType === 'below' && !(rsi <= rVal)) conditionMet = false;
+                }
+
+                // 3-1. 볼밴 상단 돌파 조건
+                if (document.getElementById('cond-bb-upper-atv').checked) {
+                    activeConditionsCount++;
+                    if (!(highPrice >= bbUpper)) conditionMet = false;
+                }
+
+                // 3-2. 볼밴 하단 돌파 조건
+                if (document.getElementById('cond-bb-lower-atv').checked) {
+                    activeConditionsCount++;
+                    if (!(lowPrice <= bbLower)) conditionMet = false;
+                }
+
+                // 4. 거래량 조건
+                if (document.getElementById('cond-vol-atv').checked) {
+                    activeConditionsCount++;
+                    const vRatioThreshold = parseFloat(document.getElementById('cond-vol-ratio').value) || 1.5;
+                    if (!(volRatio >= vRatioThreshold)) conditionMet = false;
+                }
+
+                // 체크된 조건이 최소 하나 이상 있고, 그 조건들을 모두 충족한 경우에만 알람 활성화
+                if (activeConditionsCount > 0 && conditionMet) {
+                    triggerPopup = true;
+                }
+            }
+
             await fetch('/api/report-metrics', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ price, rsi, bbUpper, bbLower, volRatio, closedCandleTime })
+                body: JSON.stringify({ price, rsi, bbUpper, bbLower, volRatio, closedCandleTime, triggerPopup })
             });
 
         } catch (e) {
@@ -395,20 +446,22 @@
 
             calculateLivePnl();
 
-            // 백엔드로부터 알람 조건 성립 신호 포착 시, 원본 인하우스 팝업 모달창 오픈 로직 복구
-            if (data.lastData.triggerPopup) {
-                log(`⚡ [CRITICAL] STRATEGY_PATTERN_MATCHED`);
-                startRepeatingAlertSound();
-                
-                const currentThemeColor = activeTheme === 'matrix' ? '#00ff41' : '#ff5500';
-                const popupHtml = `
-                    <div style="font-size:11px; opacity:0.6; margin-bottom:6px; color:#ffffff;">SYS_NODE: ${data.config.windowAlias}</div>
-                    <div style="color:${currentThemeColor}; font-weight:900; font-size:15px; margin-bottom:10px; border-bottom:1px dashed ${currentThemeColor}; padding-bottom:5px; text-shadow:0 0 5px ${currentThemeColor};">⚠️ TARGET CONDITION COMPLIED</div>
-                    <div style="margin: 4px 0;">&gt; PRICE: <span style="color:#ffffff;">${livePrice.toLocaleString()} USDT</span></div>
-                    <div style="margin: 4px 0;">&gt; RSI  : <span style="color:#ffffff;">${data.lastData.rsi.toFixed(1)}</span></div>
-                    <div style="margin: 4px 0;">&gt; VOL  : <span style="color:#ffffff;">${data.lastData.volRatio.toFixed(1)}x</span></div>
-                `;
-                openPopup(popupHtml);
+            // 백엔드 또는 실시간 계산 검증 결과에 따라 인하우스 팝업 모달창 오픈
+            if (data.lastData.triggerPopup && isSystemRunning) {
+                if (document.getElementById('alert-modal').style.display !== 'flex') {
+                    log(`⚡ [CRITICAL] STRATEGY_PATTERN_MATCHED`);
+                    startRepeatingAlertSound();
+                    
+                    const currentThemeColor = activeTheme === 'matrix' ? '#00ff41' : '#ff5500';
+                    const popupHtml = `
+                        <div style="font-size:11px; opacity:0.6; margin-bottom:6px; color:#ffffff;">SYS_NODE: ${data.config.windowAlias}</div>
+                        <div style="color:${currentThemeColor}; font-weight:900; font-size:15px; margin-bottom:10px; border-bottom:1px dashed ${currentThemeColor}; padding-bottom:5px; text-shadow:0 0 5px ${currentThemeColor};">⚠️ TARGET CONDITION COMPLIED</div>
+                        <div style="margin: 4px 0;">&gt; PRICE: <span style="color:#ffffff;">${livePrice.toLocaleString()} USDT</span></div>
+                        <div style="margin: 4px 0;">&gt; RSI  : <span style="color:#ffffff;">${data.lastData.rsi.toFixed(1)}</span></div>
+                        <div style="margin: 4px 0;">&gt; VOL  : <span style="color:#ffffff;">${data.lastData.volRatio.toFixed(1)}x</span></div>
+                    `;
+                    openPopup(popupHtml);
+                }
             }
 
             if (!localConfig || localConfig.isSystemRunning !== data.config.isSystemRunning) {
