@@ -12,10 +12,6 @@
             text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); 
             margin: 0; 
             padding: 20px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
             box-sizing: border-box; 
         }
         body::before { 
@@ -36,6 +32,7 @@
             border-radius: 4px; 
             width: 100%; 
             max-width: 850px; 
+            margin: 0 auto;
             position: relative; 
             box-shadow: 0 0 25px rgba(255, 85, 0, 0.35), inset 0 0 15px rgba(255, 85, 0, 0.1); 
             box-sizing: border-box; 
@@ -125,7 +122,7 @@
             outline: none; 
             box-sizing: border-box; 
         }
-        input[type="number"] { width: 100%; max-width: 100px; }
+        input[type="number"] { width: 100%; max-width: 120px; }
         input[type="text"] { width: 100%; max-width: 200px; }
         
         .control-section { 
@@ -189,11 +186,11 @@
 
         .nerv-tag { position: absolute; top: 10px; left: 15px; font-size: 10px; font-weight: bold; border: 1px solid #ff5500; padding: 2px 5px; letter-spacing: 1px; }
 
-        /* 최상위 레이어로 완전히 격리 배치된 고정 팝업 */
+        /* 완벽한 고정 배치 레이어 팝업 (본문 간섭 0%) */
         .modal-overlay { 
             position: fixed; 
             top: 0; left: 0; 
-            width: 100vw; height: 100vh; 
+            width: 100%; height: 100%; 
             background-color: rgba(0,0,0,0.85); 
             background-image: repeating-linear-gradient(45deg, rgba(255,85,0,0.05) 0px, rgba(255,85,0,0.05) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); 
             z-index: 100000; 
@@ -298,7 +295,7 @@
         </div>
     </div>
 
-    <!-- 조건 매트릭스 설정 영역 (깨진 마크다운 부호 완전 수정) -->
+    <!-- 조건 매트릭스 설정 영역 -->
     <div class="condition-section">
         <div class="section-title" id="section-desc">> MAGI CENTRAL_LOGIC</div>
         <div class="condition-grid">
@@ -392,15 +389,13 @@
     </div>
 </div>
 
-<!-- 알림 팝업 레이어 (body 다이렉트 하위 이동으로 격리 완료) -->
+<!-- 알림 팝업 레이어 (디스플레이 차단 해제 및 레이아웃 간섭 완벽 격리) -->
 <div class="modal-overlay" id="alert-modal">
     <div class="modal-content">
         <div class="corner-decor"></div>
         <div class="modal-body">
             <div class="corner-decor"></div>
-            <div id="modal-info">
-                <!-- 자바스크립트 동적 매핑 구역 -->
-            </div>
+            <div id="modal-info"></div>
             <button class="modal-close-btn" onclick="closePopup()">CONFIRM & TERMINATE ALERT</button>
         </div>
     </div>
@@ -409,9 +404,9 @@
 <script>
 const themes = {
     nerv_operational: `
-        body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); margin: 0; padding: 20px; box-sizing: border-box; }
         body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.5) 50%); z-index: 99999; opacity: 0.4; pointer-events: none; background-size: 100% 8px; }
-        .container { background-color: #0c0502; border: 1px solid #ff5500; padding: 25px; border-radius: 4px; width: 100%; max-width: 850px; position: relative; box-shadow: 0 0 25px rgba(255, 85, 0, 0.35), inset 0 0 15px rgba(255, 85, 0, 0.1); box-sizing: border-box; }
+        .container { background-color: #0c0502; border: 1px solid #ff5500; padding: 25px; border-radius: 4px; width: 100%; max-width: 850px; margin: 0 auto; position: relative; box-shadow: 0 0 25px rgba(255, 85, 0, 0.35), inset 0 0 15px rgba(255, 85, 0, 0.1); box-sizing: border-box; }
         h1 { font-size: 24px; text-align: center; margin-top: 0; margin-bottom: 20px; padding-bottom: 10px; color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.6); letter-spacing: 2px; }
         .live-clock-wrapper { font-size: 32px; text-align: center; font-weight: bold; margin-bottom: 20px; color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); }
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
@@ -428,15 +423,15 @@ const themes = {
         .log { background: #050201; border: 1px solid #ff5500; color: #ff5500; }
         .window-alias-box { border-bottom: 1px dashed rgba(255, 85, 0, 0.4); }
         #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.3); color: rgba(255,85,0,0.7); }
-        .modal-overlay { background-color: rgba(0,0,0,0.85); background-image: repeating-linear-gradient(45deg, rgba(255,85,0,0.05) 0px, rgba(255,85,0,0.05) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
-        .modal-content { background-color: #ff5500; box-shadow: 0 0 40px rgba(255, 85, 0, 0.85); }
-        .modal-body { border: 1px solid #000000; background: #000000; color: #ff5500; }
-        .modal-close-btn { background-color: #000000; color: #ff5500; border: 1px solid #ff5500; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); background-image: repeating-linear-gradient(45deg, rgba(255,85,0,0.05) 0px, rgba(255,85,0,0.05) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); z-index: 100000; display: none; justify-content: center; align-items: center; }
+        .modal-content { background-color: #ff5500; padding: 2px; position: relative; box-shadow: 0 0 40px rgba(255, 85, 0, 0.85); width: 90%; max-width: 400px; box-sizing: border-box; }
+        .modal-body { border: 1px solid #000000; background: #000000; color: #ff5500; padding: 20px; display: flex; flex-direction: column; gap: 15px; position: relative; }
+        .modal-close-btn { background-color: #000000; color: #ff5500; border: 1px solid #ff5500; width: 100%; box-sizing: border-box; margin-top: 5px; }
     `,
     matrix: `
-        body { font-family: 'Courier New', monospace; background-color: #000000; color: #00ff41; text-shadow: 0 0 6px rgba(0, 255, 65, 0.8), 0 0 12px rgba(0, 255, 65, 0.4); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        body { font-family: 'Courier New', monospace; background-color: #000000; color: #00ff41; text-shadow: 0 0 6px rgba(0, 255, 65, 0.8), 0 0 12px rgba(0, 255, 65, 0.4); margin: 0; padding: 20px; box-sizing: border-box; }
         body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.45) 50%); z-index: 99999; opacity: 0.4; pointer-events: none; background-size: 100% 8px; }
-        .container { background-color: #030303; border: 1px solid #00ff41; padding: 25px; border-radius: 4px; width: 100%; max-width: 850px; position: relative; box-shadow: 0 0 25px rgba(0, 255, 65, 0.35), inset 0 0 10px rgba(0,255,65,0.05); box-sizing: border-box; }
+        .container { background-color: #030303; border: 1px solid #00ff41; padding: 25px; border-radius: 4px; width: 100%; max-width: 850px; margin: 0 auto; position: relative; box-shadow: 0 0 25px rgba(0, 255, 65, 0.35), inset 0 0 10px rgba(0,255,65,0.05); box-sizing: border-box; }
         h1 { font-size: 24px; text-align: center; margin-top: 0; margin-bottom: 20px; padding-bottom: 10px; color: #00ff41; border-bottom: 1px dashed #00ff41; text-shadow: 0 0 8px rgba(0,255,65,0.5); letter-spacing: 2px; }
         .live-clock-wrapper { font-size: 32px; text-align: center; font-weight: bold; margin-bottom: 20px; color: #00ff41; text-shadow: 0 0 12px rgba(0, 255, 65, 0.95), 0 0 20px rgba(0, 255, 65, 0.6); }
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
@@ -448,15 +443,15 @@ const themes = {
         .corner-decor::before, .corner-decor::after, .container::before, .container::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #00ff41 !important; border-width: 1.5px !important; }
         input[type="checkbox"] { accent-color: #00ff41; }
         select, input[type="number"], input[type="text"] { background-color: #000000; color: #00ff41; border: 1px solid #00ff41; }
-        .btn-core { background-color: #00ff41; color: #000000; box-shadow: 0 0 15px rgba(0, 255, 65, 0.6); width: 100%; max-width: 450px; }
+        .btn-core { background-color: #00ff41; color: #000000; box-shadow: 0 0 15px rgba(0, 25, 65, 0.6); width: 100%; max-width: 450px; }
         .status { color: #00ff41; border: 1px solid #00ff41; background: none; width: 100%; max-width: 450px; }
         .log { background: #000000; border: 1px solid #00ff41; color: #00ff41; }
         .window-alias-box { border-bottom: 1px dashed rgba(0, 255, 65, 0.5); }
         #sub-countdown-row { border-top: 1px dashed rgba(0, 255, 65, 0.5); color: rgba(0,255,65,0.7); }
-        .modal-overlay { background-color: rgba(0,0,0,0.9); background-image: repeating-linear-gradient(45deg, rgba(0,255,65,0.05) 0px, rgba(0,255,65,0.05) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
-        .modal-content { background-color: #00ff41; box-shadow: 0 0 40px rgba(0, 255, 65, 0.85); }
-        .modal-body { border: 1px solid #000000; background: #000000; color: #00ff41; }
-        .modal-close-btn { background-color: #000000; color: #00ff41; border: 1px solid #00ff41; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); background-image: repeating-linear-gradient(45deg, rgba(0,255,65,0.05) 0px, rgba(0,255,65,0.05) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); z-index: 100000; display: none; justify-content: center; align-items: center; }
+        .modal-content { background-color: #00ff41; padding: 2px; position: relative; box-shadow: 0 0 40px rgba(0, 255, 65, 0.85); width: 90%; max-width: 400px; box-sizing: border-box; }
+        .modal-body { border: 1px solid #000000; background: #000000; color: #00ff41; padding: 20px; display: flex; flex-direction: column; gap: 15px; position: relative; }
+        .modal-close-btn { background-color: #000000; color: #00ff41; border: 1px solid #00ff41; width: 100%; box-sizing: border-box; margin-top: 5px; }
     `
 };
 
