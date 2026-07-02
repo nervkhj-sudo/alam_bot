@@ -48,7 +48,9 @@ async function checkStrategy() {
     if (!config.isSystemRunning) return;
 
     try {
-        const res = await axios.get('https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=5&limit=400');
+        const res = await axios.get('https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=5&limit=400', {
+    headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+});
         const klines = res.data.result.list.reverse();
         const closed = klines.slice(0, -1);
         const closes = closed.map(k => parseFloat(k[4]));
