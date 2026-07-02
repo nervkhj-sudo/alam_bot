@@ -1,44 +1,605 @@
-// [수정된 부분] 설정이 바뀔 때마다 서버에 즉시 전송
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TACTICAL_POSITION_MONITOR_v5.8_CRT_FIXED</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght=400;700&family=Orbitron:wght=400;700;900&display=swap');
+    </style>
+    <style id="theme-style">
+        /* 초기값은 에반게리온 (SHORT) 테마로 시작 */
+        body { 
+            font-family: 'Courier New', 'Courier Prime', monospace; 
+            background-color: #050201; 
+            color: #ff5500; 
+            text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); 
+        }
+        body::before { 
+            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; 
+            background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.5) 50%); 
+            z-index: 99999; opacity: 0.6; pointer-events: none; background-size: 100% 8px; 
+            transform: translateZ(0); will-change: transform;
+        }
+        .container { 
+            background-color: #0c0502; 
+            border: 1px solid #ff5500; 
+            box-shadow: 0 0 25px rgba(255, 85, 0, 0.35), inset 0 0 15px rgba(255, 85, 0, 0.1); 
+        }
+        h1 { color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.6); }
+        .live-clock-wrapper { color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); }
+        .data-box { border: 1px solid #ff5500; background: rgba(170, 55, 0, 0.08); box-shadow: 0 0 12px rgba(170, 55, 0, 0.2); }
+        .pnl-box { border: 1px solid #ff5500; background: rgba(170, 55, 0, 0.04); box-shadow: 0 0 10px rgba(170, 55, 0, 0.15); }
+        .condition-group { border: 1px solid #ff5500; background: rgba(12, 5, 2, 0.7); box-shadow: 0 0 10px rgba(170, 55, 0, 0.15); }
+        .corner-decor::before, .corner-decor::after,
+        .container::before, .container::after,
+        .pnl-box::before, .pnl-box::after,
+        .data-box::before, .data-box::after,
+        .condition-group::before, .condition-group::after { border-color: #ff5500 !important; border-width: 1.5px !important; }
+        .data-row span:last-child { color: #ffffff; font-weight: 900; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 15px rgba(255,255,255,0.6); }
+        .condition-title { color: #ff5500; }
+        input[type="checkbox"] { accent-color: #ff5500; }
+        select, input[type="number"], input[type="text"] { background-color: #050201; color: #ff5500; border: 1px solid #ff5500; box-shadow: 0 0 5px rgba(255,85,0,0.3); }
+        .btn-core { background-color: #ff5500; color: #0c0502; border: none; font-weight: 900; box-shadow: 0 0 15px rgba(255, 85, 0, 0.6); text-shadow: none; }
+        .btn-core:hover { background-color: #ffffff; color: #0c0502; box-shadow: 0 0 20px #ffffff; }
+        .status { color: #ff5500; border: 1px dashed #ff5500; background: rgba(170, 55, 0, 0.05); text-shadow: 0 0 5px rgba(255,85,0,0.5); }
+        .log { background: #050201; border: 1px solid #ff5500; color: #ff5500; opacity: 0.8; }
+        #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.5); color: rgba(255,85,0,0.7); }
+        #countdown { color:#ffffff !important; }
+        
+        /* 팝업 모달 크리티컬 글로우 스타일 */
+        .modal-overlay { background-color: rgba(0,0,0,0.75); background-image: repeating-linear-gradient(45deg, rgba(255,17,0,0.08) 0px, rgba(255,17,0,0.08) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
+        .modal-content { background-color: #ff1100; border: 1px solid #ff1100; color: #000000; font-weight: 900; box-shadow: 0 0 40px rgba(255, 17, 0, 0.85); }
+        .modal-content .corner-decor::before, .modal-content .corner-decor::after { border-color: #000000 !important; }
+        .modal-body { border: 2px solid #ff1100; background: #000000; color: #ff1100; text-shadow: 0 0 8px rgba(255, 17, 0, 0.8); box-shadow: inset 0 0 15px rgba(255,17,0,0.3); }
+        .modal-body .corner-decor::before, .modal-body .corner-decor::after { border-color: #ff1100 !important; }
+        .modal-close-btn { background-color: #000000; color: #ff1100; border: 1px solid #ff1100; font-weight: 900; box-shadow: 0 0 10px rgba(255,17,0,0.4); }
+        .modal-close-btn:hover { background-color: #ff1100; color: #000000; box-shadow: 0 0 15px #ff1100; }
+        .nerv-tag { font-size: 9px; color: #ff5500; border: 1px solid #ff5500; padding: 1px 4px; position: absolute; top: 4px; left: 6px; background: rgba(255,85,0,0.15); box-shadow: 0 0 5px rgba(255,85,0,0.3); }
+        .window-alias-box { border-bottom: 1px dashed rgba(255, 85, 0, 0.5); color: #ff5500; }
+    </style>
+    <style>
+        * { box-sizing: border-box; }
+        body { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; margin: 0; padding: 15px 10px 30px 10px; }
+        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+        
+        .container, .pnl-box, .data-box, .condition-group, .modal-content, .modal-body { position: relative; }
+        .corner-decor { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+        .corner-decor::before { content: ""; position: absolute; top: -1px; left: -1px; width: 10px; height: 10px; border-top: 1.5px solid #ff5500; border-left: 1.5px solid #ff5500; }
+        .corner-decor::after { content: ""; position: absolute; top: -1px; right: -1px; width: 10px; height: 10px; border-top: 1.5px solid #ff5500; border-right: 1.5px solid #ff5500; }
+        
+        .container::before, .pnl-box::before, .data-box::before, .condition-group::before, .modal-content::before, .modal-body::before { content: ""; position: absolute; bottom: -1px; left: -1px; width: 10px; height: 10px; border-bottom: 1.5px solid #ff5500; border-left: 1.5px solid #ff5500; pointer-events: none; z-index: 10; }
+        .container::after, .pnl-box::after, .data-box::after, .condition-group::after, .modal-content::after, .modal-body::after { content: ""; position: absolute; bottom: -1px; right: -1px; width: 10px; height: 10px; border-bottom: 1.5px solid #ff5500; border-right: 1.5px solid #ff5500; pointer-events: none; z-index: 10; }
+        
+        .container { width: 380px; padding: 15px; }
+        h1 { font-size: 16px; font-weight: 700; text-align: center; margin-top: 5px; margin-bottom: 15px; letter-spacing: 0.5px; }
+        
+        /* 시계 폰트 Orbitron 헤비 웨이트 리얼 복구 */
+        .live-clock-wrapper { text-align: center; font-size: 26px; font-weight: 900 !important; margin-bottom: 15px; letter-spacing: 2px; font-family: 'Orbitron', sans-serif !important; }
+        
+        .pnl-box { padding: 12px; margin-bottom: 15px; }
+        .pnl-title { font-size: 11px; font-weight: bold; margin-bottom: 8px; opacity: 0.85; text-align: center; letter-spacing: 0.5px; }
+        .pnl-direction-wrapper { display: flex; align-items: center; justify-content: center; margin-bottom: 8px; gap: 8px; font-size: 11px; }
+        .pnl-direction-wrapper select { height: 26px; font-size: 12px; padding: 0 6px; font-weight: bold; width: 100%; outline: none; }
+        .pnl-inputs { display: flex; gap: 8px; margin-bottom: 10px; justify-content: space-between; }
+        .pnl-inputs div { display: flex; flex-direction: column; width: 48%; font-size: 11px; gap: 3px; }
+        .pnl-inputs input { height: 26px; font-size: 12px; outline: none; text-align: center; padding: 2px; }
+        .pnl-display { display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.1); }
+        .pnl-plus { color: #00ff66 !important; text-shadow: 0 0 8px rgba(0,255,102,1), 0 0 15px rgba(0,255,102,0.5) !important; }
+        .pnl-minus { color: #ff1100 !important; text-shadow: 0 0 8px rgba(255,17,0,1), 0 0 15px rgba(255,17,0,0.5) !important; }
+        
+        .data-box { padding: 12px; margin-bottom: 15px; }
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; line-height: 1.4; }
+        .section-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+        .condition-group { padding: 12px; margin-bottom: 12px; }
+        .condition-title { font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; font-size: 13px; }
+        .condition-title input[type="checkbox"] { margin-right: 6px; transform: scale(1.1); cursor: pointer; }
+        .input-inline { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; }
+        select, input[type="number"], input[type="text"] { padding: 4px 6px; font-size: 12px; height: 28px; outline: none; text-align: center; }
+        .control-wrapper { display: flex; gap: 10px; margin-bottom: 12px; }
+        .btn-core { width: 100%; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
+        .status { text-align: center; font-size: 12px; font-weight: 700; margin-bottom: 10px; padding: 6px; }
+        .log { max-height: 120px; overflow-y: auto; padding: 8px; font-size: 12px; line-height: 1.4; }
+        
+        /* 인하우스 팝업 레이어 배치 스타일 */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; justify-content: center; align-items: center; z-index: 1000000; }
+        .modal-content { padding: 25px; width: 340px; text-align: center; }
+        .modal-title { font-size: 22px; font-weight: 900; margin-bottom: 15px; letter-spacing: 1px; }
+        .modal-body { font-size: 13px; line-height: 1.6; text-align: left; padding: 15px; margin-bottom: 18px; font-weight: 700; font-family: 'Courier New', monospace; }
+        .modal-close-btn { width: 100%; padding: 10px; font-size: 14px; font-weight: 900; cursor: pointer; }
+        .window-alias-box { margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; padding-bottom: 8px; }
+        .window-alias-box input { height: 24px; font-size: 11px; width: 180px; }
+    </style>
+</head>
+<body>
+
+<!-- 대화창 형태의 원본 인하우스 모달 팝업 -->
+<div class="modal-overlay" id="alert-modal">
+    <div class="modal-content" id="modal-box">
+        <div class="corner-decor"></div>
+        <div class="modal-title" id="modal-title-text">EMERGENCY ALERT</div>
+        <div class="modal-body" id="modal-info"><div class="corner-decor"></div></div>
+        <button class="modal-close-btn" id="modal-close-action" onclick="closePopup()">DISMISS</button>
+    </div>
+</div>
+
+<div class="container" id="main-container">
+    <div class="corner-decor"></div>
+    <div class="nerv-tag" id="nerv-only-tag" style="display:block;">NERV ONLY</div>
+    <h1 id="main-title">MAGI_SYS://TACTICAL_MONITOR</h1>
+    
+    <div class="window-alias-box">
+        <span id="lbl-alias">MONITOR_TAG:</span>
+        <input type="text" id="window-alias" value="작전 1호기 (BTC-5분봉)" oninput="onLocalSettingsChanged()">
+    </div>
+
+    <!-- Orbitron 글꼴 및 발광효과 활성화 -->
+    <div class="live-clock-wrapper" id="live-clock">00:00:00</div>
+
+    <div class="pnl-box" id="pnl-container">
+        <div class="corner-decor"></div>
+        <div class="pnl-title" id="lbl-pnl-title">⚡ REALTIME POSITION PNL TRACKER</div>
+        <div class="pnl-direction-wrapper">
+            <!-- 숏/롱 선택에 따라 전체 CRT 테마가 복구/전환되는 양방향 스위치 -->
+            <select id="pnl-side" onchange="onPositionSideChanged()">
+                <option value="long">🟩 POSITION: LONG (매수) -> MATRIX THEME</option>
+                <option value="short" selected>🟥 POSITION: SHORT (매도) -> EVANGELION THEME</option>
+            </select>
+        </div>
+        <div class="pnl-inputs">
+            <div>
+                <span id="lbl-pnl-entry">진입 가격 (USDT)</span>
+                <input type="number" id="pnl-entry-price" oninput="calculateLivePnl()">
+            </div>
+            <div>
+                <span id="lbl-pnl-qty">보유 수량 (BTC)</span>
+                <input type="number" id="pnl-qty" step="0.001" oninput="calculateLivePnl()">
+            </div>
+        </div>
+        <div class="pnl-display">
+            <div>ROE: <span id="pnl-roe-val">0.00%</span></div>
+            <div>PNL: <span id="pnl-amt-val">0.00 USDT</span></div>
+        </div>
+    </div>
+
+    <div class="data-box">
+        <div class="corner-decor"></div>
+        <div class="data-row"><span id="lbl-price">MONITORING_PRICE :</span> <span id="current-price">로딩 중...</span></div>
+        <div class="data-row"><span id="lbl-rsi">ANALYSIS_RSI(14):</span> <span id="current-rsi">-</span></div>
+        <div class="data-row"><span id="lbl-bb">BOLL_BAND_LIMIT :</span> <span id="bb-status">-</span></div>
+        <div class="data-row"><span id="lbl-vol">VOL / MA_RATIO  :</span> <span id="volume-status">-</span></div>
+        <div class="data-row" id="sub-countdown-row" style="margin-top:6px; padding-top:6px;">
+            <span id="lbl-next">NEXT_DATA_INTERCEPT :</span> <span id="countdown">계산 중...</span>
+        </div>
+    </div>
+
+    <div id="section-desc" class="section-title">&gt; MAGI CENTRAL_LOGIC</div>
+
+    <div class="condition-group">
+        <div class="corner-decor"></div>
+        <label class="condition-title"><input type="checkbox" id="cond-price-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c1">[MELCHIOR] PRICE_THRESHOLD</span></label>
+        <div class="input-inline">
+            <select id="cond-price-type" onchange="onLocalSettingsChanged()">
+                <option value="above">PRICE ≥</option>
+                <option value="below">PRICE ≤</option>
+            </select>
+            <input type="number" id="cond-price-val" style="max-width: 110px;" oninput="onLocalSettingsChanged()">
+            <span>USDT</span>
+        </div>
+    </div>
+
+    <div class="condition-group">
+        <div class="corner-decor"></div>
+        <label class="condition-title"><input type="checkbox" id="cond-rsi-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c2">[BALTHASAR] RSI_INDEX_LIMIT</span></label>
+        <div class="input-inline">
+            <select id="cond-rsi-type" onchange="onLocalSettingsChanged()">
+                <option value="above">RSI ≥</option>
+                <option value="below" selected>RSI ≤</option>
+            </select>
+            <input type="number" id="cond-rsi-val" value="30" style="max-width: 60px;" oninput="onLocalSettingsChanged()">
+        </div>
+    </div>
+
+    <div class="condition-group">
+        <div class="corner-decor"></div>
+        <div id="lbl-bb-sub" style="font-size: 12px; margin-bottom: 6px; opacity:0.8;">&gt; BOLLINGER_ENVELOPE_SYSTEM</div>
+        <div class="input-inline" style="margin-bottom: 10px;">
+            <span>P:</span> <input type="number" id="cond-bb-period" value="200" style="max-width: 55px;" oninput="onLocalSettingsChanged()">
+            <span>★:</span> <input type="number" id="cond-bb-std" value="2" step="0.1" style="max-width: 50px;" oninput="onLocalSettingsChanged()">
+        </div>
+        <label class="condition-title"><input type="checkbox" id="cond-bb-upper-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c3a">[CASPER-A] UPPER_BAND_BREACH</span></label>
+        <div class="input-inline" style="margin-left: 18px; margin-bottom: 6px;">
+            <select id="cond-bb-upper-target" disabled>
+                <option value="high" selected>HIGH ≥ UPPER</option>
+            </select>
+        </div>
+        <label class="condition-title"><input type="checkbox" id="cond-bb-lower-atv" checked onchange="onLocalSettingsChanged()"> <span id="lbl-c3b">[CASPER-B] LOWER_BAND_BREACH</span></label>
+        <div class="input-inline" style="margin-left: 18px;">
+            <select id="cond-bb-lower-target" disabled>
+                <option value="low" selected>LOW ≤ LOWER</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="condition-group">
+        <div class="corner-decor"></div>
+        <label class="condition-title"><input type="checkbox" id="cond-vol-atv" checked onchange="onLocalSettingsChanged()"> <span id="lbl-c4">[MAGI_SYS] QUANTITY_SPIKE</span></label>
+        <div class="input-inline">
+            <span>MA:</span> <input type="number" id="cond-vol-ma-period" value="30" style="max-width:50px;" disabled>
+            <span>비율:</span> <input type="number" id="cond-vol-ratio" value="1.5" step="0.1" style="max-width:55px;" oninput="onLocalSettingsChanged()">
+            <span>배 이상</span>
+        </div>
+    </div>
+
+    <div class="status" id="status-text">SYSTEM: OFF_LINE</div>
+    <div class="control-wrapper">
+        <button class="btn-core" onclick="toggleSystem()" id="btn-toggle">ACTIVATE MAGI SYSTEM</button>
+    </div>
+    <div class="log" id="log-box">전술 서버 동기화 대기 중...</div>
+</div>
+
+<script>
+    // CRT 뿌연 글로우 스타일 딕셔너리 미러링
+    const themes = {
+        nerv_operational: `
+            body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); }
+            body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.5) 50%); z-index: 99999; opacity: 0.6; pointer-events: none; background-size: 100% 8px; transform: translateZ(0); will-change: transform; }
+            .container { background-color: #0c0502; border: 1px solid #ff5500; box-shadow: 0 0 25px rgba(255, 85, 0, 0.35), inset 0 0 15px rgba(255, 85, 0, 0.1); }
+            h1 { color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.6); }
+            .live-clock-wrapper { color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); }
+            .data-box { border: 1px solid #ff5500; background: rgba(170, 55, 0, 0.08); box-shadow: 0 0 12px rgba(170, 55, 0, 0.2); }
+            .data-row span:last-child { color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 15px rgba(255,255,255,0.6); }
+            .condition-group { border: 1px solid #ff5500; background: rgba(12, 5, 2, 0.7); box-shadow: 0 0 10px rgba(170, 55, 0, 0.15); }
+            .condition-title { color: #ff5500; }
+            .corner-decor::before, .corner-decor::after, .container::before, .container::after, .pnl-box::before, .pnl-box::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #ff5500 !important; border-width: 1.5px !important; }
+            input[type="checkbox"] { accent-color: #ff5500; }
+            select, input[type="number"], input[type="text"] { background-color: #050201; color: #ff5500; border: 1px solid #ff5500; box-shadow: 0 0 5px rgba(255,85,0,0.3); }
+            .btn-core { background-color: #ff5500; color: #0c0502; box-shadow: 0 0 15px rgba(255, 85, 0, 0.6); }
+            .status { color: #ff5500; border: 1px dashed #ff5500; background: rgba(170, 55, 0, 0.05); text-shadow: 0 0 5px rgba(255,85,0,0.5); }
+            .log { background: #050201; border: 1px solid #ff5500; color: #ff5500; }
+            .pnl-box { border: 1px solid #ff5500; background: rgba(170, 55, 0, 0.04); }
+            .window-alias-box { border-bottom: 1px dashed rgba(255, 85, 0, 0.5); color: #ff5500; }
+            #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.5); color: rgba(255,85,0,0.7); }
+            .modal-overlay { background-color: rgba(0,0,0,0.75); background-image: repeating-linear-gradient(45deg, rgba(255,85,0,0.08) 0px, rgba(255,85,0,0.08) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
+            .modal-content { background-color: #ff5500; border: 1px solid #ff5500; color: #000000; box-shadow: 0 0 40px rgba(255, 85, 0, 0.85); }
+            .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000000 !important; }
+            .modal-body { border: 2px solid #ff5500; background: #000000; color: #ff5500; text-shadow: 0 0 8px rgba(255, 85, 0, 0.8); }
+            .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #ff5500 !important; }
+            .modal-close-btn { background-color: #000000; color: #ff5500; border: 1px solid #ff5500; }
+        `,
+        matrix: `
+            body { font-family: 'Courier New', monospace; background-color: #000000; color: #00ff41; text-shadow: 0 0 6px rgba(0, 255, 65, 0.8), 0 0 12px rgba(0, 255, 65, 0.4); }
+            body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.45) 50%); z-index: 99999; opacity: 0.55; pointer-events: none; background-size: 100% 8px; transform: translateZ(0); will-change: transform; }
+            .container { background-color: #030303; border: 1px solid #00ff41; box-shadow: 0 0 25px rgba(0, 255, 65, 0.35), inset 0 0 10px rgba(0,255,65,0.05); }
+            h1 { color:#00ff41; border-bottom: 1px dashed #00ff41; text-shadow: 0 0 8px rgba(0,255,65,0.5); }
+            .live-clock-wrapper { color: #00ff41; text-shadow: 0 0 12px rgba(0, 255, 65, 0.95), 0 0 20px rgba(0, 255, 65, 0.6); }
+            .data-box { border: 1px solid #00ff41; background: rgba(0, 25, 5, 0.12); box-shadow: 0 0 12px rgba(0,255,65,0.15); }
+            .data-row span:last-child { color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 12px rgba(0,255,65,0.5); }
+            .condition-group { border: 1px solid #00ff41; background: rgba(0,0,0,0.5); box-shadow: 0 0 10px rgba(0,255,65,0.1); }
+            .condition-title { color: #00ff41; }
+            .corner-decor::before, .corner-decor::after, .container::before, .container::after, .pnl-box::before, .pnl-box::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #00ff41 !important; border-width: 1.5px !important; }
+            input[type="checkbox"] { accent-color: #00ff41; }
+            select, input[type="number"], input[type="text"] { background-color: #000000; color: #00ff41; border: 1px solid #00ff41; box-shadow: 0 0 5px rgba(0,255,65,0.3); }
+            .btn-core { background-color: #00ff41; color: #000000; box-shadow: 0 0 15px rgba(0, 255, 65, 0.6); }
+            .status { color: #00ff41; border: 1px solid #00ff41; background: none; text-shadow: 0 0 5px rgba(0,255,65,0.5); }
+            .log { background: #000000; border: 1px solid #00ff41; color: #00ff41; }
+            .pnl-box { border: 1px solid #00ff41; background: rgba(0, 20, 5, 0.06); }
+            .window-alias-box { border-bottom: 1px dashed rgba(0, 255, 65, 0.5); color: #00ff41; }
+            #sub-countdown-row { border-top: 1px dashed rgba(0, 255, 65, 0.5); color: rgba(0,255,65,0.7); }
+            .modal-overlay { background-color: rgba(0,0,0,0.8); background-image: repeating-linear-gradient(45deg, rgba(0,255,65,0.05) 0px, rgba(0,255,65,0.05) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
+            .modal-content { background-color: #00ff41; border: 1px solid #00ff41; color: #000000; box-shadow: 0 0 40px rgba(0, 255, 65, 0.85); }
+            .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000000 !important; }
+            .modal-body { border: 2px solid #00ff41; background: #000000; color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.8); }
+            .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #00ff41 !important; }
+            .modal-close-btn { background-color: #000000; color: #00ff41; border: 1px solid #00ff41; }
+        `
+    };
+
+    let activeTheme = "nerv_operational";
+    let audioContext = null;
+    let localConfig = null;
+    let livePrice = 0;
+    let audioIntervalId = null;
+    let nextCheckTime = 0;
+    let isSystemRunning = false;
+
+    // 포지션 방향 변경 시 테마 연동 구조
+    function onPositionSideChanged() {
+        const side = document.getElementById('pnl-side').value;
+        if (side === 'long') switchTheme('matrix'); else switchTheme('nerv_operational');
+        onLocalSettingsChanged();
+    }
+
+    function switchTheme(themeName) {
+        activeTheme = themeName;
+        document.getElementById('theme-style').innerHTML = themes[themeName];
+        
+        const elements = {
+            'main-title': { matrix: 'SYS_MATRIX://BYBIT_ALARM.EXE', nerv_operational: 'MAGI_SYS://TACTICAL_MONITOR' },
+            'lbl-alias': { matrix: 'WINDOW_IDENTIFIER:', nerv_operational: 'MONITOR_TAG:' },
+            'lbl-price': { matrix: 'SYS_PRICE (WS):', nerv_operational: 'MONITORING_PRICE :' },
+            'lbl-rsi': { matrix: 'CANDLE_RSI(14):', nerv_operational: 'ANALYSIS_RSI(14):' },
+            'lbl-bb': { matrix: 'BOLL_BAND(U/L):', nerv_operational: 'BOLL_BAND_LIMIT :' },
+            'lbl-vol': { matrix: 'VOL / VOL_MA :', nerv_operational: 'VOL / MA_RATIO  :' },
+            'lbl-next': { matrix: 'NEXT_SCAN_IN :', nerv_operational: 'NEXT_DATA_INTERCEPT :' },
+            'section-desc': { matrix: '> CONFIGURE_TARGET_STRATEGY', nerv_operational: '&gt; MAGI CENTRAL_LOGIC' }
+        };
+        
+        for (let id in elements) {
+            if(elements[id][themeName]) document.getElementById(id).innerText = elements[id][themeName];
+        }
+        
+        const tag = document.getElementById('nerv-only-tag');
+        if (themeName === 'nerv_operational') { tag.innerText = "NERV ONLY"; tag.style.display = "block"; } else { tag.style.display = "none"; }
+        updateSystemStatusUI();
+    }
+
+    // Bybit 인터셉터 및 프론트 브로커 보고 파이프라인
+    async function fetchBybitAndReport() {
+        try {
+            const url = 'https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=5&limit=200';
+            const res = await fetch(url);
+            const data = await res.json();
+            
+            if (!data || !data.result || !data.result.list || data.result.list.length === 0) return;
+
+            const list = data.result.list;
+            const price = parseFloat(list[0][4]);
+            const closedCandleTime = parseInt(list[1][0]);
+
+            const allCloses = list.map(c => parseFloat(c[4])).reverse();
+            const allVolumes = list.map(c => parseFloat(c[5])).reverse();
+
+            const rsiCloses = allCloses.slice(0, -1);
+            let gains = 0, losses = 0;
+            for (let i = rsiCloses.length - 14; i < rsiCloses.length; i++) {
+                let diff = rsiCloses[i] - rsiCloses[i-1];
+                if (diff > 0) gains += diff; else losses -= diff;
+            }
+            const rsi = losses === 0 ? 100 : 100 - (100 / (1 + (gains / losses)));
+
+            const bbPeriod = localConfig ? localConfig.bbPeriod : 200;
+            const bbSample = rsiCloses.slice(-bbPeriod);
+            const ma = bbSample.reduce((a, b) => a + b, 0) / bbSample.length;
+            const variance = bbSample.reduce((a, b) => a + Math.pow(b - ma, 2), 0) / bbSample.length;
+            const std = Math.sqrt(variance);
+            const bbStdParam = localConfig ? localConfig.bbStd : 2;
+            const bbUpper = ma + (bbStdParam * std);
+            const bbLower = ma - (bbStdParam * std);
+
+            const targetVol = parseFloat(list[1][5]);
+            const volMaPeriod = localConfig ? localConfig.volMaPeriod : 30;
+            const prevVols = allVolumes.slice(-(volMaPeriod + 2), -2);
+            const volMa = prevVols.reduce((a, b) => a + b, 0) / prevVols.length;
+            const volRatio = volMa > 0 ? (targetVol / volMa) : 1;
+
+            await fetch('/api/report-metrics', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ price, rsi, bbUpper, bbLower, volRatio, closedCandleTime })
+            });
+
+        } catch (e) {
+            console.error("안전 브로커 수신 장애 복구 중:", e);
+        }
+    }
+
+    async function syncServer() {
+        try {
+            const res = await fetch('/api/config');
+            const data = await res.json();
+            
+            livePrice = data.lastData.price;
+            document.getElementById('current-price').innerText = livePrice > 0 ? livePrice.toLocaleString() + " USDT" : "로딩 중... ";
+            document.getElementById('current-rsi').innerText = data.lastData.rsi > 0 ? data.lastData.rsi.toFixed(1) : "-";
+            document.getElementById('bb-status').innerText = data.lastData.bbUpper > 0 ? `${Math.floor(data.lastData.bbUpper)} / ${Math.floor(data.lastData.bbLower)}` : "-";
+            document.getElementById('volume-status').innerText = data.lastData.volRatio > 0 ? `${data.lastData.volRatio.toFixed(1)}x` : "-";
+
+            calculateLivePnl();
+
+            // 인하우스 경고창 모달 호출
+            if (data.lastData.triggerPopup) {
+                log(`⚡ [CRITICAL] STRATEGY_PATTERN_MATCHED`);
+                startRepeatingAlertSound();
+                
+                const currentThemeColor = activeTheme === 'matrix' ? '#00ff41' : '#ff5500';
+                const popupHtml = `
+                    <div style="font-size:11px; opacity:0.6; margin-bottom:6px; color:#ffffff;">SYS_NODE: ${data.config.windowAlias}</div>
+                    <div style="color:${currentThemeColor}; font-weight:900; font-size:15px; margin-bottom:10px; border-bottom:1px dashed ${currentThemeColor}; padding-bottom:5px; text-shadow:0 0 5px ${currentThemeColor};">⚠️ TARGET CONDITION COMPLIED</div>
+                    <div style="margin: 4px 0;">&gt; PRICE: <span style="color:#ffffff;">${livePrice.toLocaleString()} USDT</span></div>
+                    <div style="margin: 4px 0;">&gt; RSI  : <span style="color:#ffffff;">${data.lastData.rsi.toFixed(1)}</span></div>
+                    <div style="margin: 4px 0;">&gt; VOL  : <span style="color:#ffffff;">${data.lastData.volRatio.toFixed(1)}x</span></div>
+                `;
+                openPopup(popupHtml);
+            }
+
+            // 로컬 설정 객체가 비었거나 원격 상태가 바뀐 경우 동기화 인터페이스 주입
+            if (!localConfig) {
+                document.getElementById('window-alias').value = data.config.windowAlias;
+                document.getElementById('pnl-side').value = data.config.side;
+                document.getElementById('cond-price-atv').checked = data.config.priceAtv;
+                document.getElementById('cond-price-type').value = data.config.priceType;
+                document.getElementById('cond-price-val').value = data.config.priceVal || Math.floor(livePrice);
+                document.getElementById('cond-rsi-atv').checked = data.config.rsiAtv;
+                document.getElementById('cond-rsi-type').value = data.config.rsiType;
+                document.getElementById('cond-rsi-val').value = data.config.rsiVal;
+                document.getElementById('cond-bb-period').value = data.config.bbPeriod;
+                document.getElementById('cond-bb-std').value = data.config.bbStd;
+                document.getElementById('cond-bb-upper-atv').checked = data.config.bbUpperAtv;
+                document.getElementById('cond-bb-lower-atv').checked = data.config.bbLowerAtv;
+                document.getElementById('cond-vol-atv').checked = data.config.volAtv;
+                document.getElementById('cond-vol-ratio').value = data.config.volRatio;
+                
+                isSystemRunning = data.config.isSystemRunning;
+                if (data.config.side === 'long') switchTheme('matrix'); else switchTheme('nerv_operational');
+            } else {
+                // 상호 토글 동기화 대응
+                isSystemRunning = data.config.isSystemRunning;
+            }
+
+            localConfig = data.config;
+            updateSystemStatusUI();
+
+        } catch (e) {
+            document.getElementById('status-text').innerText = "CONNECT_FAULT";
+        }
+    }
+
     async function onLocalSettingsChanged() {
-        const config = {
+        const payload = {
+            isSystemRunning: isSystemRunning,
             windowAlias: document.getElementById('window-alias').value,
             side: document.getElementById('pnl-side').value,
             priceAtv: document.getElementById('cond-price-atv').checked,
             priceType: document.getElementById('cond-price-type').value,
-            priceVal: parseFloat(document.getElementById('cond-price-val').value),
+            priceVal: parseFloat(document.getElementById('cond-price-val').value) || 0,
             rsiAtv: document.getElementById('cond-rsi-atv').checked,
             rsiType: document.getElementById('cond-rsi-type').value,
-            rsiVal: parseFloat(document.getElementById('cond-rsi-val').value),
-            bbPeriod: parseInt(document.getElementById('cond-bb-period').value),
-            bbStd: parseFloat(document.getElementById('cond-bb-std').value),
+            rsiVal: parseFloat(document.getElementById('cond-rsi-val').value) || 30,
+            bbPeriod: parseInt(document.getElementById('cond-bb-period').value) || 200,
+            bbStd: parseFloat(document.getElementById('cond-bb-std').value) || 2,
             bbUpperAtv: document.getElementById('cond-bb-upper-atv').checked,
             bbLowerAtv: document.getElementById('cond-bb-lower-atv').checked,
             volAtv: document.getElementById('cond-vol-atv').checked,
-            volRatio: parseFloat(document.getElementById('cond-vol-ratio').value),
-            isSystemRunning: isSystemRunning
+            volRatio: parseFloat(document.getElementById('cond-vol-ratio').value) || 1.5,
+            volMaPeriod: parseInt(document.getElementById('cond-vol-ma-period').value) || 30,
+            telegramToken: localConfig ? localConfig.telegramToken : "",
+            telegramChatId: localConfig ? localConfig.telegramChatId : ""
         };
-
-        await fetch('/api/config', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(config)
-        });
+        await fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     }
 
-    // [중요] 상태 UI 업데이트
+    // 에러 없이 즉시 구동 가능하도록 최적화 완료된 시스템 토글 함수
+    function toggleSystem() {
+        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioContext.state === 'suspended') audioContext.resume();
+        
+        isSystemRunning = !isSystemRunning;
+        
+        if (isSystemRunning) {
+            log("TACTICAL CORE DEPLOYED.");
+            playThemeSound();
+        } else {
+            stopRepeatingAlertSound();
+            log("SYSTEM ANALYSIS SUSPENDED.");
+        }
+        
+        updateSystemStatusUI();
+        onLocalSettingsChanged();
+    }
+
     function updateSystemStatusUI() {
         const btn = document.getElementById('btn-toggle');
-        const status = document.getElementById('status-text');
+        const statusTxt = document.getElementById('status-text');
         if (isSystemRunning) {
-            btn.innerText = "TERMINATE MONITORING";
-            status.innerText = "MAGI_ONLINE // MONITORING";
-            log(":: TACTICAL CORE DEPLOYED.");
+            statusTxt.innerText = (activeTheme==='matrix') ? 'STATUS: ACTIVE' : 'MAGI_ONLINE // MONITORING';
+            btn.innerText = (activeTheme==='matrix') ? 'HALT_SYSTEM.BAT' : 'TERMINATE MONITORING';
         } else {
-            btn.innerText = "ACTIVATE MAGI SYSTEM";
-            status.innerText = "SYSTEM: OFF_LINE";
-            log(":: SYSTEM ANALYSIS SUSPENDED.");
+            statusTxt.innerText = (activeTheme==='matrix') ? 'STATUS: STOPPED' : 'SYSTEM: OFF_LINE';
+            btn.innerText = (activeTheme==='matrix') ? 'INITIALIZE_SYSTEM.BAT' : 'ACTIVATE MAGI SYSTEM';
         }
     }
 
-    // [핵심] 서버측 로직도 나중에 이렇게 AND 로직으로 묶여있는지 꼭 확인해줘!
-    // 지금 수정본은 프론트에서 보내는 설정값이 완벽하게 전달되도록 세팅했어.
+    function calculateLivePnl() {
+        const side = document.getElementById('pnl-side').value;
+        const entry = parseFloat(document.getElementById('pnl-entry-price').value);
+        const qty = parseFloat(document.getElementById('pnl-qty').value);
+        const roeEl = document.getElementById('pnl-roe-val');
+        const amtEl = document.getElementById('pnl-amt-val');
+        
+        if (!entry || !qty || livePrice <= 0) {
+            roeEl.innerText = "0.00%"; roeEl.className = "";
+            amtEl.innerText = "0.00 USDT"; amtEl.className = "";
+            return;
+        }
+
+        let amt = side === 'long' ? (livePrice - entry) * qty : (entry - livePrice) * qty;
+        let roe = side === 'long' ? ((livePrice - entry) / entry) * 100 : ((entry - livePrice) / entry) * 100;
+
+        roeEl.innerText = `${roe >= 0 ? '+' : ''}${roe.toFixed(2)}%`;
+        amtEl.innerText = `${amt >= 0 ? '+' : ''}${amt.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} USDT`;
+        
+        if (amt > 0) { roeEl.className = "pnl-plus"; amtEl.className = "pnl-plus"; }
+        else if (amt < 0) { roeEl.className = "pnl-minus"; amtEl.className = "pnl-minus"; }
+        else { roeEl.className = ""; amtEl.className = ""; }
+    }
+
+    function playThemeSound() {
+        if (!audioContext) return;
+        const now = audioContext.currentTime;
+        const gainNode = audioContext.createGain(); const osc1 = audioContext.createOscillator(); const osc2 = audioContext.createOscillator();
+        if(activeTheme==='matrix') { osc1.type = 'square'; osc1.frequency.setValueAtTime(750, now); gainNode.gain.setValueAtTime(0.08, now); gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.35); osc1.connect(gainNode); osc1.start(now); osc1.stop(now + 0.35); } 
+        else { osc1.type = 'sawtooth'; osc1.frequency.setValueAtTime(587.33, now); osc2.type = 'sawtooth'; osc2.frequency.setValueAtTime(592.33, now); gainNode.gain.setValueAtTime(0.12, now); gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5); osc1.connect(gainNode); osc2.connect(gainNode); osc1.start(now); osc2.start(now); osc1.stop(now + 0.5); osc2.stop(now + 0.5); }
+        gainNode.connect(audioContext.destination);
+    }
+
+    function startRepeatingAlertSound() { stopRepeatingAlertSound(); playThemeSound(); audioIntervalId = setInterval(() => { playThemeSound(); }, 900); }
+    function stopRepeatingAlertSound() { if (audioIntervalId) { clearInterval(audioIntervalId); audioIntervalId = null; } }
+
+    function openPopup(contentHtml) {
+        const infoBox = document.getElementById('modal-info');
+        infoBox.innerHTML = '<div class="corner-decor"></div>' + contentHtml;
+        document.getElementById('alert-modal').style.display = 'flex';
+    }
+
+    function closePopup() { document.getElementById('alert-modal').style.display = 'none'; stopRepeatingAlertSound(); }
+
+    function log(m) {
+        const b = document.getElementById('log-box');
+        b.innerHTML = `:: ${m}<br>` + b.innerHTML;
+    }
+
+    // 상시 5분봉 정밀 계측을 위한 타겟 카운트다운 생성기
+    function setNextTargetTime() { 
+        const now = new Date(); 
+        const currentMinutes = now.getMinutes();
+        const nextMinutes = Math.ceil((currentMinutes + 0.01) / 5) * 5; 
+        
+        const target = new Date(now); 
+        target.setMinutes(nextMinutes); 
+        target.setSeconds(0); 
+        target.setMilliseconds(0); 
+        
+        // 정각 한계 돌파 필터링
+        if (nextMinutes === 60 || target.getTime() <= now.getTime()) {
+            target.setTime(target.getTime() + 5 * 60 * 1000);
+        }
+        nextCheckTime = target.getTime(); 
+    }
+
+    // 실시간 타이틀 시계 루프 (1초 마다)
+    setInterval(() => {
+        const d = new Date();
+        document.getElementById('live-clock').innerText = 
+            String(d.getHours()).padStart(2, '0') + ":" + String(d.getMinutes()).padStart(2, '0') + ":" + String(d.getSeconds()).padStart(2, '0');
+    }, 1000);
+
+    // 봉 완성 실시간 계산 독립 루프 (1초 마다 실행)
+    setInterval(() => {
+        if (nextCheckTime === 0) {
+            setNextTargetTime();
+        }
+        const diff = nextCheckTime - Date.now();
+        if (diff <= 0) { 
+            setNextTargetTime(); 
+        } else { 
+            const m = Math.floor(diff / 60000);
+            const s = Math.floor((diff % 60000) / 1000); 
+            document.getElementById('countdown').innerText = `${m}M ${s}S`; 
+        }
+    }, 1000);
+
+    window.addEventListener('DOMContentLoaded', () => {
+        setNextTargetTime();
+        
+        // 최초 구동 파이프라인 정렬
+        fetchBybitAndReport();
+        setInterval(fetchBybitAndReport, 3000);
+
+        syncServer();
+        setInterval(syncServer, 2000);
+    });
+</script>
+</body>
+</html>
