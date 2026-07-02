@@ -1,69 +1,23 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TACTICAL_POSITION_MONITOR_v5.8_CRT_FIXED</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght=400;700&family=Orbitron:wght=400;700;900&display=swap');
-        * { box-sizing: border-box; }
-        body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 15px; }
-        .container { width: 380px; background-color: #0c0502; border: 1px solid #ff5500; padding: 15px; position: relative; }
-        .corner-decor { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        .corner-decor::before { content: ""; position: absolute; top: -1px; left: -1px; width: 10px; height: 10px; border-top: 1.5px solid #ff5500; border-left: 1.5px solid #ff5500; }
-        .corner-decor::after { content: ""; position: absolute; top: -1px; right: -1px; width: 10px; height: 10px; border-top: 1.5px solid #ff5500; border-right: 1.5px solid #ff5500; }
-        h1 { font-size: 16px; text-align: center; border-bottom: 2px double #ff5500; margin-bottom: 15px; }
-        .data-box, .pnl-box, .condition-group { border: 1px solid #ff5500; padding: 12px; margin-bottom: 15px; background: rgba(170, 55, 0, 0.05); }
-        .btn-core { width: 100%; padding: 12px; background-color: #ff5500; color: #0c0502; border: none; font-weight: 900; cursor: pointer; }
-        .log { height: 100px; overflow-y: auto; background: #000; border: 1px solid #ff5500; padding: 5px; font-size: 11px; color: #ff5500; }
-        input, select { background: #000; color: #ff5500; border: 1px solid #ff5500; padding: 5px; }
-    </style>
-</head>
-<body>
-<div class="container">
-    <div class="corner-decor"></div>
-    <h1>MAGI_SYS://TACTICAL_MONITOR</h1>
-    
-    <div class="pnl-box">
-        <select id="pnl-side" onchange="onLocalSettingsChanged()">
-            <option value="long">LONG POSITION</option>
-            <option value="short" selected>SHORT POSITION</option>
-        </select>
-        <div style="margin-top:10px;">
-            <input type="number" id="pnl-entry-price" placeholder="진입가">
-            <input type="number" id="pnl-qty" placeholder="수량">
-        </div>
-    </div>
-
-    <div class="data-box">
-        <div id="current-price">PRICE: 로딩중...</div>
-        <div id="current-rsi">RSI: -</div>
-    </div>
-
-    <div class="condition-group">
-        <label><input type="checkbox" id="cond-rsi-atv" onchange="onLocalSettingsChanged()"> RSI 감시</label>
-        <input type="number" id="cond-rsi-val" value="30">
-    </div>
-
-    <button class="btn-core" onclick="toggleSystem()" id="btn-toggle">ACTIVATE MAGI SYSTEM</button>
-    <div class="log" id="log-box">전술 서버 동기화 대기 중...</div>
-</div>
-
-<script>
-    let isSystemRunning = false;
-
-    function log(msg) {
-        const logBox = document.getElementById('log-box');
-        logBox.innerHTML += `<div>${msg}</div>`;
-        logBox.scrollTop = logBox.scrollHeight;
-    }
-
+// [수정된 부분] 설정이 바뀔 때마다 서버에 즉시 전송
     async function onLocalSettingsChanged() {
         const config = {
+            windowAlias: document.getElementById('window-alias').value,
+            side: document.getElementById('pnl-side').value,
+            priceAtv: document.getElementById('cond-price-atv').checked,
+            priceType: document.getElementById('cond-price-type').value,
+            priceVal: parseFloat(document.getElementById('cond-price-val').value),
             rsiAtv: document.getElementById('cond-rsi-atv').checked,
+            rsiType: document.getElementById('cond-rsi-type').value,
             rsiVal: parseFloat(document.getElementById('cond-rsi-val').value),
-            side: document.getElementById('pnl-side').value
+            bbPeriod: parseInt(document.getElementById('cond-bb-period').value),
+            bbStd: parseFloat(document.getElementById('cond-bb-std').value),
+            bbUpperAtv: document.getElementById('cond-bb-upper-atv').checked,
+            bbLowerAtv: document.getElementById('cond-bb-lower-atv').checked,
+            volAtv: document.getElementById('cond-vol-atv').checked,
+            volRatio: parseFloat(document.getElementById('cond-vol-ratio').value),
+            isSystemRunning: isSystemRunning
         };
+
         await fetch('/api/config', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -71,21 +25,20 @@
         });
     }
 
-    function toggleSystem() {
-        isSystemRunning = !isSystemRunning;
-        updateSystemStatusUI();
-    }
-
+    // [중요] 상태 UI 업데이트
     function updateSystemStatusUI() {
         const btn = document.getElementById('btn-toggle');
+        const status = document.getElementById('status-text');
         if (isSystemRunning) {
             btn.innerText = "TERMINATE MONITORING";
+            status.innerText = "MAGI_ONLINE // MONITORING";
             log(":: TACTICAL CORE DEPLOYED.");
         } else {
             btn.innerText = "ACTIVATE MAGI SYSTEM";
+            status.innerText = "SYSTEM: OFF_LINE";
             log(":: SYSTEM ANALYSIS SUSPENDED.");
         }
     }
-</script>
-</body>
-</html>
+
+    // [핵심] 서버측 로직도 나중에 이렇게 AND 로직으로 묶여있는지 꼭 확인해줘!
+    // 지금 수정본은 프론트에서 보내는 설정값이 완벽하게 전달되도록 세팅했어.
