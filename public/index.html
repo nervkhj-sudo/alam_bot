@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TACTICAL_REMOTE_MONITOR_v5.5</title>
+    <title>TACTICAL_REMOTE_MONITOR_v5.7</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght=400;700&family=Orbitron:wght=400;700;900&display=swap');
     </style>
@@ -112,20 +112,72 @@
     let localConfig = null;
     let livePrice = 0;
 
-    // 대시보드 전용 가상 시계 가동
+    // 시계 가동
     setInterval(() => {
         const d = new Date();
         document.getElementById('live-clock').innerText = 
             String(d.getHours()).padStart(2, '0') + ":" + String(d.getMinutes()).padStart(2, '0') + ":" + String(d.getSeconds()).padStart(2, '0');
     }, 1000);
 
-    // 백엔드와 데이터 싱크 2초 주기로 동기화
+    // [특단 조치] 차단되지 않는 브라우저 IP로 직접 바이비트 데이터를 긁어와서 가공 후 서버에 전달하는 안전 장치
+    async function fetchBybitAndReport() {
+        try {
+            const url = 'https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=5&limit=200';
+            const res = await fetch(url);
+            const data = await res.json();
+            
+            if (!data || !data.result || !data.result.list || data.result.list.length === 0) return;
+
+            const list = data.result.list;
+            const price = parseFloat(list[0][4]);
+            const closedCandleTime = parseInt(list[1][0]);
+
+            const allCloses = list.map(c => parseFloat(c[4])).reverse();
+            const allVolumes = list.map(c => parseFloat(c[5])).reverse();
+
+            // 1. RSI(14) 연산 (어제 스타일 순수 구현)
+            const rsiCloses = allCloses.slice(0, -1);
+            let gains = 0, losses = 0;
+            for (let i = rsiCloses.length - 14; i < rsiCloses.length; i++) {
+                let diff = rsiCloses[i] - rsiCloses[i-1];
+                if (diff > 0) gains += diff; else losses -= diff;
+            }
+            const rsi = losses === 0 ? 100 : 100 - (100 / (1 + (gains / losses)));
+
+            // 2. 볼린저 밴드 연산
+            const bbSample = rsiCloses.slice(-20);
+            const ma = bbSample.reduce((a, b) => a + b, 0) / bbSample.length;
+            const variance = bbSample.reduce((a, b) => a + Math.pow(b - ma, 2), 0) / bbSample.length;
+            const std = Math.sqrt(variance);
+            const bbStdParam = localConfig ? localConfig.bbStd : 2;
+            const bbUpper = ma + (bbStdParam * std);
+            const bbLower = ma - (bbStdParam * std);
+
+            // 3. 거래량 비율 연산
+            const targetVol = parseFloat(list[1][5]);
+            const prevVols = allVolumes.slice(-7, -2);
+            const volMa = prevVols.reduce((a, b) => a + b, 0) / prevVols.length;
+            const volRatio = volMa > 0 ? (targetVol / volMa) : 1;
+
+            // 정제된 지표 세트 데이터를 백엔드 관제소로 패스 역전송
+            await fetch('/api/report-metrics', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ price, rsi, bbUpper, bbLower, volRatio, closedCandleTime })
+            });
+
+        } catch (e) {
+            console.error("클라이언트 브로커 수신 장애:", e);
+        }
+    }
+
+    // 서버 모니터링 상태 조회 인터벌
     async function syncServer() {
         try {
             const res = await fetch('/api/config');
             const data = await res.json();
             
-            // 1. 화면에 연산된 최신 지표 실시간 매핑
+            // 데이터 출력 바인딩
             livePrice = data.lastData.price;
             document.getElementById('current-price').innerText = livePrice > 0 ? livePrice.toLocaleString() + " USDT" : "로딩 중...";
             document.getElementById('current-rsi').innerText = data.lastData.rsi > 0 ? data.lastData.rsi.toFixed(1) : "-";
@@ -134,13 +186,13 @@
 
             calculateLivePnl();
 
-            // 2. 5분봉 마감 시 조건이 성립하여 백엔드 팝업 신호(triggerPopup)가 떨어지면 브라우저 경고창 트리거
+            // 백엔드가 조건 승인을 내려주면 브라우저 알람창 즉시 오픈
             if (data.lastData.triggerPopup) {
                 log(`💥 TARGET CONDITION MATCHED! Price: ${livePrice.toLocaleString()}`);
                 alert(`🚨 [전략 만족 알람]\n노드: ${data.config.windowAlias}\n현재 5분봉 마감 조건이 만족되었습니다!\n가격: ${livePrice.toLocaleString()} USDT\nRSI: ${data.lastData.rsi.toFixed(1)}`);
             }
 
-            // 인풋 UI 데이터 세팅값 동기화
+            // 인풋 상태 동기화
             if (!localConfig || localConfig.isSystemRunning !== data.config.isSystemRunning) {
                 document.getElementById('window-alias').value = data.config.windowAlias;
                 document.getElementById('pnl-side').value = data.config.side;
@@ -215,7 +267,11 @@
         b.innerHTML = `:: ${m}<br>` + b.innerHTML;
     }
 
-    // 루틴 2초 주기 배치 가동
+    // 1. 브라우저가 직접 바이비트 긁어오기 스케줄러 (3초 주기)
+    fetchBybitAndReport();
+    setInterval(fetchBybitAndReport, 3000);
+
+    // 2. 화면 동기화 인터벌 (2초 주기)
     syncServer();
     setInterval(syncServer, 2000);
 </script>
