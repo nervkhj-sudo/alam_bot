@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TACTICAL_POSITION_MONITOR_v5.8_FINAL</title>
+    <title>TACTICAL_POSITION_MONITOR_v5.9_BIG_FONT</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght=400;700&family=Orbitron:wght=400;700;900&display=swap');
     </style>
@@ -22,7 +22,7 @@
             z-index: 99999; opacity: 0.5; pointer-events: none; background-size: 100% 4px; 
             transform: translateZ(0); will-change: transform;
         }
-        /* 가장 바깥쪽 큰 박스 (반투명 클래식 아날로그 질감 레이어 세팅) */
+        /* 가독성을 확보하기 위해 전체 컨테이너 폭을 380px -> 460px로 확장 */
         .container { 
             background: rgba(12, 5, 2, 0.75); 
             border: 1px solid rgba(255, 85, 0, 0.5); 
@@ -36,7 +36,7 @@
         .pnl-box { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(5, 2, 1, 0.5); }
         .condition-group { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(12, 5, 2, 0.4); }
         
-        /* 모서리 데코레이션 스타일 정의 (두께 1.5px 반영) */
+        /* 모서리 데코레이션 스타일 정의 (두께 1.5px 및 크기 9px 규격 절대 보존) */
         .corner-decor::before, .corner-decor::after,
         .pnl-box::before, .pnl-box::after,
         .data-box::before, .data-box::after,
@@ -53,9 +53,6 @@
         .status { color: #ff5500; border: 1px dashed rgba(255, 85, 0, 0.7); background: rgba(255, 85, 0, 0.05); }
         .log { background: #0c0502; border: 1px solid rgba(255, 85, 0, 0.4); color: #ff5500; opacity: 0.85; }
         #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.4); color: rgba(255,85,0,0.7); }
-        #countdown { color:#ff5500 !important; }
-        
-        /* 팝업 모달 크리티컬 글로우 스타일 */
         .modal-overlay { background-color: rgba(5,2,1,0.85); }
         .modal-content { background-color: #ff5500; border: 1px solid #ff5500; color: #050201; font-weight: bold; box-shadow: 0 0 30px rgba(255, 85, 0, 0.6); }
         .modal-content .corner-decor::before, .modal-content .corner-decor::after { border-color: #050201 !important; }
@@ -63,7 +60,6 @@
         .modal-body .corner-decor::before, .modal-body .corner-decor::after { border-color: #ff5500 !important; }
         .modal-close-btn { background-color: #050201; color: #ff5500; border: 1px solid #ff5500; font-weight: bold; }
         .modal-close-btn:hover { background-color: #ff5500; color: #050201; }
-        .nerv-tag { font-size: 9px; color: #ff5500; border: 1px solid rgba(255, 85, 0, 0.5); padding: 1px 4px; position: absolute; top: 4px; left: 6px; background: rgba(255,85,0,0.1); }
         .window-alias-box { border-bottom: 1px dashed rgba(255, 85, 0, 0.4); color: #ff5500; }
     </style>
     <style>
@@ -83,42 +79,58 @@
         .pnl-box::before, .data-box::before, .condition-group::before, .modal-content::before, .modal-body::before { content: ""; position: absolute; bottom: -1.5px; left: -1.5px; width: 9px; height: 9px; border-bottom: 1.5px solid #ff5500; border-left: 1.5px solid #ff5500; pointer-events: none; z-index: 10; }
         .pnl-box::after, .data-box::after, .condition-group::after, .modal-content::after, .modal-body::after { content: ""; position: absolute; bottom: -1.5px; right: -1.5px; width: 9px; height: 9px; border-bottom: 1.5px solid #ff5500; border-right: 1.5px solid #ff5500; pointer-events: none; z-index: 10; }
         
-        .container { width: 380px; padding: 15px; }
+        /* [크기 조정] 가독성 향상을 위해 폭을 460px로 확장 */
+        .container { width: 460px; padding: 15px; }
+        
+        /* [예외 고정] 메인 타이틀 크기는 원본 16px 고정 */
         h1 { font-size: 16px; font-weight: 700; text-align: center; margin-top: 5px; margin-bottom: 15px; letter-spacing: 0.5px; }
         
+        /* [예외 고정] 시계 크기는 원본 26px 고정 */
         .live-clock-wrapper { text-align: center; font-size: 26px; font-weight: 900 !important; margin-bottom: 15px; letter-spacing: 2px; font-family: 'Orbitron', sans-serif !important; }
         
         .pnl-box { padding: 12px; margin-bottom: 15px; }
-        .pnl-title { font-size: 11px; font-weight: bold; margin-bottom: 8px; opacity: 0.85; text-align: center; letter-spacing: 0.5px; }
-        .pnl-direction-wrapper { display: flex; align-items: center; justify-content: center; margin-bottom: 8px; gap: 8px; font-size: 11px; }
-        .pnl-direction-wrapper select { height: 26px; font-size: 12px; padding: 0 6px; font-weight: bold; width: 100%; outline: none; }
+        /* [150% 확대 적용 영역] */
+        .pnl-title { font-size: 16.5px; font-weight: bold; margin-bottom: 8px; opacity: 0.85; text-align: center; letter-spacing: 0.5px; }
+        .pnl-direction-wrapper { display: flex; align-items: center; justify-content: center; margin-bottom: 8px; gap: 8px; font-size: 16.5px; }
+        .pnl-direction-wrapper select { height: 38px; font-size: 18px; padding: 0 6px; font-weight: bold; width: 100%; outline: none; }
         .pnl-inputs { display: flex; gap: 8px; margin-bottom: 10px; justify-content: space-between; }
-        .pnl-inputs div { display: flex; flex-direction: column; width: 48%; font-size: 11px; gap: 3px; }
-        .pnl-inputs input { height: 26px; font-size: 12px; outline: none; text-align: center; padding: 2px; }
-        .pnl-display { display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.1); }
+        .pnl-inputs div { display: flex; flex-direction: column; width: 48%; font-size: 16.5px; gap: 5px; }
+        .pnl-inputs input { height: 38px; font-size: 18px; outline: none; text-align: center; padding: 2px; }
+        .pnl-display { display: flex; justify-content: space-between; font-size: 21px; font-weight: bold; padding-top: 6px; border-top: 1px dashed rgba(255,255,255,0.1); }
         .pnl-plus { color: #00ff66 !important; text-shadow: 0 0 8px rgba(0,255,102,0.8) !important; }
         .pnl-minus { color: #ff3333 !important; text-shadow: 0 0 8px rgba(255,51,51,0.8) !important; }
         
         .data-box { padding: 12px; margin-bottom: 15px; }
-        .data-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; line-height: 1.4; }
-        .section-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 19.5px; line-height: 1.4; }
+        .section-title { font-size: 19.5px; font-weight: 700; margin-bottom: 8px; }
         .condition-group { padding: 12px; margin-bottom: 12px; }
-        .condition-title { font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; font-size: 13px; }
-        .condition-title input[type="checkbox"] { margin-right: 6px; transform: scale(1.1); cursor: pointer; }
-        .input-inline { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; }
-        select, input[type="number"], input[type="text"] { padding: 4px 6px; font-size: 12px; height: 28px; outline: none; text-align: center; }
+        .condition-title { font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; font-size: 19.5px; }
+        .condition-title input[type="checkbox"] { margin-right: 8px; transform: scale(1.4); cursor: pointer; }
+        .input-inline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 18px; }
+        
+        /* 인풋 노드 텍스트 150% 및 높이 최적화 */
+        select, input[type="number"], input[type="text"] { padding: 4px 6px; font-size: 18px; height: 38px; outline: none; text-align: center; }
         .control-wrapper { display: flex; gap: 10px; margin-bottom: 12px; }
-        .btn-core { width: 100%; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
-        .status { text-align: center; font-size: 12px; font-weight: 700; margin-bottom: 10px; padding: 6px; }
-        .log { max-height: 120px; overflow-y: auto; padding: 8px; font-size: 12px; line-height: 1.4; }
+        
+        .btn-core { width: 100%; padding: 14px; font-size: 21px; font-weight: 700; cursor: pointer; }
+        .status { text-align: center; font-size: 18px; font-weight: 700; margin-bottom: 10px; padding: 8px; }
+        
+        /* 로그 텍스트 확대 및 출력창 확장 */
+        .log { max-height: 180px; overflow-y: auto; padding: 10px; font-size: 18px; line-height: 1.4; }
         
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; justify-content: center; align-items: center; z-index: 1000000; }
-        .modal-content { padding: 25px; width: 340px; text-align: center; }
-        .modal-title { font-size: 22px; font-weight: 900; margin-bottom: 15px; letter-spacing: 1px; }
-        .modal-body { font-size: 13px; line-height: 1.6; text-align: left; padding: 15px; margin-bottom: 18px; font-weight: 700; font-family: 'Courier New', monospace; }
-        .modal-close-btn { width: 100%; padding: 10px; font-size: 14px; font-weight: 900; cursor: pointer; }
-        .window-alias-box { margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; padding-bottom: 8px; }
-        .window-alias-box input { height: 24px; font-size: 11px; width: 180px; }
+        .modal-content { padding: 25px; width: 420px; text-align: center; }
+        .modal-title { font-size: 33px; font-weight: 900; margin-bottom: 15px; letter-spacing: 1px; }
+        .modal-body { font-size: 19.5px; line-height: 1.6; text-align: left; padding: 15px; margin-bottom: 18px; font-weight: 700; font-family: 'Courier New', monospace; }
+        .modal-close-btn { width: 100%; padding: 12px; font-size: 21px; font-weight: 900; cursor: pointer; }
+        
+        .window-alias-box { margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 18px; padding-bottom: 8px; }
+        .window-alias-box input { height: 34px; font-size: 16.5px; width: 240px; }
+        .nerv-tag { font-size: 13.5px; color: #ff5500; border: 1px solid rgba(255, 85, 0, 0.5); padding: 2px 6px; position: absolute; top: 4px; left: 6px; background: rgba(255,85,0,0.1); }
+    </style>
+    <style>
+        /* 테마 스왑 시 적용될 스타일셋 */
+        const_themes_font_mod = true; 
     </style>
 </head>
 <body>
@@ -189,7 +201,7 @@
                 <option value="above">PRICE ≥</option>
                 <option value="below">PRICE ≤</option>
             </select>
-            <input type="number" id="cond-price-val" style="max-width: 110px;" oninput="onLocalSettingsChanged()">
+            <input type="number" id="cond-price-val" style="max-width: 160px;" oninput="onLocalSettingsChanged()">
             <span>USDT</span>
         </div>
     </div>
@@ -202,25 +214,25 @@
                 <option value="above" selected>RSI ≥</option>
                 <option value="below">RSI ≤</option>
             </select>
-            <input type="number" id="cond-rsi-val" value="55" style="max-width: 60px;" oninput="onLocalSettingsChanged()">
+            <input type="number" id="cond-rsi-val" value="55" style="max-width: 90px;" oninput="onLocalSettingsChanged()">
         </div>
     </div>
 
     <div class="condition-group">
         <div class="corner-decor"></div>
-        <div id="lbl-bb-sub" style="font-size: 12px; margin-bottom: 6px; opacity:0.8;">&gt; BOLLINGER_ENVELOPE_SYSTEM</div>
+        <div id="lbl-bb-sub" style="font-size: 18px; margin-bottom: 6px; opacity:0.8;">&gt; BOLLINGER_ENVELOPE_SYSTEM</div>
         <div class="input-inline" style="margin-bottom: 10px;">
-            <span>P:</span> <input type="number" id="cond-bb-period" value="200" style="max-width: 55px;" oninput="onLocalSettingsChanged()">
-            <span>★:</span> <input type="number" id="cond-bb-std" value="2" step="0.1" style="max-width: 50px;" oninput="onLocalSettingsChanged()">
+            <span>P:</span> <input type="number" id="cond-bb-period" value="200" style="max-width: 85px;" oninput="onLocalSettingsChanged()">
+            <span>★:</span> <input type="number" id="cond-bb-std" value="2" step="0.1" style="max-width: 75px;" oninput="onLocalSettingsChanged()">
         </div>
         <label class="condition-title"><input type="checkbox" id="cond-bb-upper-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c3a">[CASPER-A] UPPER_BAND_BREACH</span></label>
-        <div class="input-inline" style="margin-left: 18px; margin-bottom: 6px;">
+        <div class="input-inline" style="margin-left: 24px; margin-bottom: 6px;">
             <select id="cond-bb-upper-target" disabled>
                 <option value="high" selected>HIGH ≥ UPPER</option>
             </select>
         </div>
         <label class="condition-title"><input type="checkbox" id="cond-bb-lower-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c3b">[CASPER-B] LOWER_BAND_BREACH</span></label>
-        <div class="input-inline" style="margin-left: 18px;">
+        <div class="input-inline" style="margin-left: 24px;">
             <select id="cond-bb-lower-target" disabled>
                 <option value="low" selected>LOW ≤ LOWER</option>
             </select>
@@ -231,8 +243,8 @@
         <div class="corner-decor"></div>
         <label class="condition-title"><input type="checkbox" id="cond-vol-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c4">[MAGI_SYS] QUANTITY_SPIKE</span></label>
         <div class="input-inline">
-            <span>MA:</span> <input type="number" id="cond-vol-ma-period" value="30" style="max-width:50px;" disabled>
-            <span>비율:</span> <input type="number" id="cond-vol-ratio" value="1.5" step="0.1" style="max-width:55px;" oninput="onLocalSettingsChanged()">
+            <span>MA:</span> <input type="number" id="cond-vol-ma-period" value="30" style="max-width:75px;" disabled>
+            <span>비율:</span> <input type="number" id="cond-vol-ratio" value="1.5" step="0.1" style="max-width:85px;" oninput="onLocalSettingsChanged()">
             <span>배 이상</span>
         </div>
     </div>
@@ -307,8 +319,6 @@
     let audioIntervalId = null;
     let nextCheckTime = 0;
     let isSystemRunning = false;
-    
-    // 치명적 중복 알람 차단용 봉 마감 동기화 타임스탬프 락 변수
     let lastProcessedCandleTime = 0;
 
     function onPositionSideChanged() {
@@ -341,11 +351,9 @@
         updateSystemStatusUI();
     }
 
-    // 트레이딩뷰/바이비 차트 표준 Wilder Smoothing RSI 계산 함수 구현
     function calculateWilderRSI(closes, period = 14) {
         if (closes.length <= period) return 50;
-        let gains = [];
-        let losses = [];
+        let gains = []; let losses = [];
         for (let i = 1; i < closes.length; i++) {
             let diff = closes[i] - closes[i - 1];
             if (diff > 0) { gains.push(diff); losses.push(0); } 
@@ -365,22 +373,15 @@
     async function fetchBybitAndReport() {
         try {
             const url = 'https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=5&limit=200';
-            const res = await fetch(url);
-            const data = await res.json();
-            
+            const res = await fetch(url); const data = await res.json();
             if (!data || !data.result || !data.result.list || data.result.list.length === 0) return;
 
             const list = data.result.list;
-            
-            // 1. 실시간 시세 UI는 항상 list[0]을 보고 초단위로 신속하게 업데이트
             livePrice = parseFloat(list[0][4]);
             document.getElementById('current-price').innerText = livePrice.toLocaleString() + " USDT";
             calculateLivePnl();
 
-            // 2. 완성된 5분 마감봉 타임스탬프 추출
             const closedCandleTime = parseInt(list[1][0]);
-
-            // 3. 지표 정밀 계산 루틴 구동 (순수 완성봉 데이터셋 구축)
             const closes = list.slice(1).map(c => parseFloat(c[4])).reverse();
             const rsi = calculateWilderRSI(closes, 14);
 
@@ -396,33 +397,25 @@
             const targetVol = parseFloat(list[1][5]);
             const volMaPeriod = localConfig ? localConfig.volMaPeriod : 30;
             const allVolumes = list.slice(1).map(c => parseFloat(c[5])).reverse();
-            const prevVols = allVolumes.slice(-(volMaPeriod + 1), -1); 
+            const prevVols = allVolumes.slice(-(volMaPeriod + 1), -1);
             const volMa = prevVols.reduce((a, b) => a + b, 0) / prevVols.length;
             const volRatio = volMa > 0 ? (targetVol / volMa) : 1;
 
-            // 지표 판독 데이터 실시간 매칭 출력
             document.getElementById('current-rsi').innerText = rsi.toFixed(2);
             document.getElementById('bb-status').innerText = `${Math.floor(bbUpper)} / ${Math.floor(bbLower)}`;
             document.getElementById('volume-status').innerText = `${volRatio.toFixed(2)}x`;
 
-            // 동일 5분봉 내 중복 조건 체크 패스 시스템 락 가동
-            if (closedCandleTime === lastProcessedCandleTime) {
-                return; 
-            }
+            if (closedCandleTime === lastProcessedCandleTime) return;
 
-            // 4. 감시 엔진 알고리즘 실행 (모든 기준값은 완벽히 마감된 list[1] 단일 타겟으로 일치)
             let triggerPopup = false;
-            let matchedConditionsText = []; // 활성화 및 충족된 조건식 텍스트 수집 배열
+            let matchedConditionsText = [];
 
             if (isSystemRunning) {
-                let conditionMet = true;
-                let activeConditionsCount = 0;
-                
+                let conditionMet = true; let activeConditionsCount = 0;
                 const closedPrice = parseFloat(list[1][4]);
                 const closedHigh = parseFloat(list[1][2]);
                 const closedLow = parseFloat(list[1][3]);
 
-                // 가격 조건 검증
                 if (document.getElementById('cond-price-atv').checked) {
                     activeConditionsCount++;
                     const pType = document.getElementById('cond-price-type').value;
@@ -434,7 +427,6 @@
                     } else { conditionMet = false; }
                 }
 
-                // 와일더 RSI 조건 검증
                 if (document.getElementById('cond-rsi-atv').checked) {
                     activeConditionsCount++;
                     const rType = document.getElementById('cond-rsi-type').value;
@@ -446,7 +438,6 @@
                     } else { conditionMet = false; }
                 }
 
-                // 볼린저밴드 상단 검증
                 if (document.getElementById('cond-bb-upper-atv').checked) {
                     activeConditionsCount++;
                     if (closedHigh >= bbUpper) {
@@ -454,7 +445,6 @@
                     } else { conditionMet = false; }
                 }
 
-                // 볼린저밴드 하단 검증
                 if (document.getElementById('cond-bb-lower-atv').checked) {
                     activeConditionsCount++;
                     if (closedLow <= bbLower) {
@@ -462,7 +452,6 @@
                     } else { conditionMet = false; }
                 }
 
-                // 거래량 검증
                 if (document.getElementById('cond-vol-atv').checked) {
                     activeConditionsCount++;
                     const vRatioThreshold = parseFloat(document.getElementById('cond-vol-ratio').value) || 1.5;
@@ -471,60 +460,46 @@
                     } else { conditionMet = false; }
                 }
 
-                // 조건이 유효하고 최종 충족되었을 때 진입
                 if (activeConditionsCount > 0 && conditionMet) {
-                    triggerPopup = true;
-                    lastProcessedCandleTime = closedCandleTime; // 동일 봉 재발령 락 걸기
+                    triggerPopup = true; lastProcessedCandleTime = closedCandleTime;
                 }
             }
 
-            // 5. 서버 측 메트릭스 리포트 전송 (사용자가 화면에서 체크한 정보만 데이터 배열로 동적 포함)
             await fetch('/api/report-metrics', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    price: parseFloat(list[1][4]), 
-                    rsi, bbUpper, bbLower, volRatio, closedCandleTime, triggerPopup,
-                    matchedConditions: matchedConditionsText // 텔레그램 발송용 전용 필터링 핵심 데이터 바인딩
+                    price: parseFloat(list[1][4]), rsi, bbUpper, bbLower, volRatio, closedCandleTime, triggerPopup,
+                    matchedConditions: matchedConditionsText
                 })
             });
-
-        } catch (e) {
-            console.error("안전 브로커 수신 장애 수동 복구 중:", e);
-        }
+        } catch (e) { console.error(e); }
     }
 
     async function syncServer() {
         try {
-            const res = await fetch('/api/config');
-            const data = await res.json();
-
+            const res = await fetch('/api/config'); const data = await res.json();
             if (data.lastData.triggerPopup && isSystemRunning) {
                 if (document.getElementById('alert-modal').style.display !== 'flex') {
-                    log(`⚡ [CRITICAL] STRATEGY_PATTERN_MATCHED`);
                     startRepeatingAlertSound();
-                    
                     const currentThemeColor = activeTheme === 'matrix' ? '#00ff66' : '#ff5500';
-                    
-                    // 팝업 내부 모달창 메시지도 사용자가 체크한 커스텀 필터 정보만 동적으로 렌더링되도록 구현
                     let conditionDetailsHtml = "";
                     if (data.lastData.matchedConditions && data.lastData.matchedConditions.length > 0) {
                         data.lastData.matchedConditions.forEach(cond => {
-                            conditionDetailsHtml += `<div style="margin: 5px 0;">&gt; <span style="color:#ffffff;">${cond}</span></div>`;
+                            conditionDetailsHtml += `<div style="margin: 6px 0;">&gt; <span style="color:#ffffff;">${cond}</span></div>`;
                         });
                     } else {
                         conditionDetailsHtml = `
-                            <div style="margin: 4px 0;">&gt; PRICE: <span style="color:#ffffff;">${data.lastData.price.toLocaleString()} USDT</span></div>
-                            <div style="margin: 4px 0;">&gt; RSI  : <span style="color:#ffffff;">${data.lastData.rsi.toFixed(2)}</span></div>
-                            <div style="margin: 4px 0;">&gt; VOL  : <span style="color:#ffffff;">${data.lastData.volRatio.toFixed(2)}x</span></div>
+                            <div style="margin: 6px 0;">&gt; PRICE: <span style="color:#ffffff;">${data.lastData.price.toLocaleString()} USDT</span></div>
+                            <div style="margin: 6px 0;">&gt; RSI  : <span style="color:#ffffff;">${data.lastData.rsi.toFixed(2)}</span></div>
                         `;
                     }
-
+                    /* 모달창 내부 텍스트 폰트 크기도 150% 급에 맞춘 16.5px ~ 22.5px 스케일 세팅 */
                     const popupHtml = `
-                        <div style="font-size:11px; opacity:0.6; margin-bottom:6px; color:#ffffff;">CORE_NODE: ${data.config.windowAlias}</div>
-                        <div style="color:${currentThemeColor}; font-weight:bold; font-size:15px; margin-bottom:10px; border-bottom:1px dashed ${currentThemeColor}; padding-bottom:5px; text-shadow:0 0 5px ${currentThemeColor};">⚠️ TARGET CONDITION COMPLIED</div>
-                        <div style="margin: 6px 0; font-size:14px; font-weight:bold; color:#ffffff;">현재 완성가: ${data.lastData.price.toLocaleString()} USDT</div>
-                        <div style="margin-top:12px; font-size:12px; text-align:left; line-height:1.5;">
+                        <div style="font-size:16.5px; opacity:0.6; margin-bottom:8px; color:#ffffff;">CORE_NODE: ${data.config.windowAlias}</div>
+                        <div style="color:${currentThemeColor}; font-weight:bold; font-size:22.5px; margin-bottom:10px; border-bottom:1px dashed ${currentThemeColor}; padding-bottom:5px; text-shadow:0 0 5px ${currentThemeColor};">⚠️ TARGET CONDITION COMPLIED</div>
+                        <div style="margin: 8px 0; font-size:21px; font-weight:bold; color:#ffffff;">현재 완성가: ${data.lastData.price.toLocaleString()} USDT</div>
+                        <div style="margin-top:14px; font-size:18px; text-align:left; line-height:1.5;">
                             ${conditionDetailsHtml}
                         </div>
                     `;
@@ -547,17 +522,10 @@
                 document.getElementById('cond-bb-lower-atv').checked = data.config.bbLowerAtv;
                 document.getElementById('cond-vol-atv').checked = data.config.volAtv;
                 document.getElementById('cond-vol-ratio').value = data.config.volRatio;
-                
                 if (data.config.side === 'long') switchTheme('matrix'); else switchTheme('nerv_operational');
             }
-
-            localConfig = data.config;
-            isSystemRunning = localConfig.isSystemRunning;
-            updateSystemStatusUI();
-
-        } catch (e) {
-            document.getElementById('status-text').innerText = "CONNECT_FAULT";
-        }
+            localConfig = data.config; isSystemRunning = localConfig.isSystemRunning; updateSystemStatusUI();
+        } catch (e) { document.getElementById('status-text').innerText = "CONNECT_FAULT"; }
     }
 
     async function onLocalSettingsChanged() {
@@ -578,9 +546,7 @@
             bbLowerAtv: document.getElementById('cond-bb-lower-atv').checked,
             volAtv: document.getElementById('cond-vol-atv').checked,
             volRatio: parseFloat(document.getElementById('cond-vol-ratio').value) || 1.5,
-            volMaPeriod: 30,
-            telegramToken: localConfig.telegramToken,
-            telegramChatId: localConfig.telegramChatId
+            volMaPeriod: 30, telegramToken: localConfig.telegramToken, telegramChatId: localConfig.telegramChatId
         };
         await fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     }
@@ -588,23 +554,13 @@
     function toggleSystem() {
         if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
         if (audioContext.state === 'suspended') audioContext.resume();
-        
-        isSystemRunning = !isSystemRunning;
-        onLocalSettingsChanged();
-        
-        if (isSystemRunning) {
-            log("TACTICAL CORE DEPLOYED.");
-            playThemeSound();
-        } else {
-            stopRepeatingAlertSound();
-            log("SYSTEM ANALYSIS SUSPENDED.");
-        }
+        isSystemRunning = !isSystemRunning; onLocalSettingsChanged();
+        if (isSystemRunning) { log("TACTICAL CORE DEPLOYED."); playThemeSound(); } else { stopRepeatingAlertSound(); log("SYSTEM ANALYSIS SUSPENDED."); }
         syncServer();
     }
 
     function updateSystemStatusUI() {
-        const btn = document.getElementById('btn-toggle');
-        const statusTxt = document.getElementById('status-text');
+        const btn = document.getElementById('btn-toggle'); const statusTxt = document.getElementById('status-text');
         if (isSystemRunning) {
             statusTxt.innerText = (activeTheme==='matrix') ? 'STATUS: ACTIVE' : 'MAGI_ONLINE // MONITORING';
             btn.innerText = (activeTheme==='matrix') ? 'HALT_SYSTEM.BAT' : 'TERMINATE MONITORING';
@@ -621,40 +577,27 @@
     }
 
     function loadSavedPnlInputs() {
-        const savedEntry = localStorage.getItem('magi_pnl_entry');
-        const savedQty = localStorage.getItem('magi_pnl_qty');
+        const savedEntry = localStorage.getItem('magi_pnl_entry'); const savedQty = localStorage.getItem('magi_pnl_qty');
         if (savedEntry !== null) document.getElementById('pnl-entry-price').value = savedEntry;
         if (savedQty !== null) document.getElementById('pnl-qty').value = savedQty;
     }
 
     function calculateLivePnl() {
         const side = document.getElementById('pnl-side').value;
-        const entry = parseFloat(document.getElementById('pnl-entry-price').value);
-        const qty = parseFloat(document.getElementById('pnl-qty').value);
-        const roeEl = document.getElementById('pnl-roe-val');
-        const amtEl = document.getElementById('pnl-amt-val');
-        
-        if (!entry || !qty || livePrice <= 0) {
-            roeEl.innerText = "0.00%"; roeEl.className = "";
-            amtEl.innerText = "0.00 USDT"; amtEl.className = "";
-            return;
-        }
-
+        const entry = parseFloat(document.getElementById('pnl-entry-price').value); const qty = parseFloat(document.getElementById('pnl-qty').value);
+        const roeEl = document.getElementById('pnl-roe-val'); const amtEl = document.getElementById('pnl-amt-val');
+        if (!entry || !qty || livePrice <= 0) { roeEl.innerText = "0.00%"; roeEl.className = ""; amtEl.innerText = "0.00 USDT"; amtEl.className = ""; return; }
         let amt = side === 'long' ? (livePrice - entry) * qty : (entry - livePrice) * qty;
         let roe = side === 'long' ? ((livePrice - entry) / entry) * 100 : ((entry - livePrice) / entry) * 100;
-
         roeEl.innerText = `${roe >= 0 ? '+' : ''}${roe.toFixed(2)}%`;
         amtEl.innerText = `${amt >= 0 ? '+' : ''}${amt.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} USDT`;
-        
-        if (amt > 0) { roeEl.className = "pnl-plus"; amtEl.className = "pnl-plus"; }
-        else if (amt < 0) { roeEl.className = "pnl-minus"; amtEl.className = "pnl-minus"; }
+        if (amt > 0) { roeEl.className = "pnl-plus"; amtEl.className = "pnl-plus"; } 
+        else if (amt < 0) { roeEl.className = "pnl-minus"; amtEl.className = "pnl-minus"; } 
         else { roeEl.className = ""; amtEl.className = ""; }
     }
 
     function playThemeSound() {
-        if (!audioContext) return;
-        const now = audioContext.currentTime;
-        const gainNode = audioContext.createGain(); const osc1 = audioContext.createOscillator(); const osc2 = audioContext.createOscillator();
+        if (!audioContext) return; const now = audioContext.currentTime; const gainNode = audioContext.createGain(); const osc1 = audioContext.createOscillator(); const osc2 = audioContext.createOscillator();
         if(activeTheme==='matrix') { osc1.type = 'square'; osc1.frequency.setValueAtTime(750, now); gainNode.gain.setValueAtTime(0.08, now); gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.35); osc1.connect(gainNode); osc1.start(now); osc1.stop(now + 0.35); } 
         else { osc1.type = 'sawtooth'; osc1.frequency.setValueAtTime(587.33, now); osc2.type = 'sawtooth'; osc2.frequency.setValueAtTime(592.33, now); gainNode.gain.setValueAtTime(0.12, now); gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5); osc1.connect(gainNode); osc2.connect(gainNode); osc1.start(now); osc2.start(now); osc1.stop(now + 0.5); osc2.stop(now + 0.5); }
         gainNode.connect(audioContext.destination);
@@ -662,47 +605,25 @@
 
     function startRepeatingAlertSound() { stopRepeatingAlertSound(); playThemeSound(); audioIntervalId = setInterval(() => { playThemeSound(); }, 900); }
     function stopRepeatingAlertSound() { if (audioIntervalId) { clearInterval(audioIntervalId); audioIntervalId = null; } }
-
-    function openPopup(contentHtml) {
-        const infoBox = document.getElementById('modal-info');
-        infoBox.innerHTML = '<div class="corner-decor"></div>' + contentHtml;
-        document.getElementById('alert-modal').style.display = 'flex';
-    }
-
+    function openPopup(contentHtml) { const infoBox = document.getElementById('modal-info'); infoBox.innerHTML = '<div class="corner-decor"></div>' + contentHtml; document.getElementById('alert-modal').style.display = 'flex'; }
     function closePopup() { document.getElementById('alert-modal').style.display = 'none'; stopRepeatingAlertSound(); }
-
-    function log(m) {
-        const b = document.getElementById('log-box');
-        b.innerHTML = `:: ${m}<br>` + b.innerHTML;
-    }
-
+    function log(m) { const b = document.getElementById('log-box'); b.innerHTML = `:: ${m}<br>` + b.innerHTML; }
     function setNextTargetTime() { const now = new Date(); const nextMinutes = Math.ceil((now.getMinutes() + 0.05) / 5) * 5; const target = new Date(now); target.setMinutes(nextMinutes); target.setSeconds(1); target.setMilliseconds(0); nextCheckTime = target.getTime(); }
 
     setInterval(() => {
         const d = new Date();
-        document.getElementById('live-clock').innerText = 
-            String(d.getHours()).padStart(2, '0') + ":" + String(d.getMinutes()).padStart(2, '0') + ":" + String(d.getSeconds()).padStart(2, '0');
+        document.getElementById('live-clock').innerText = String(d.getHours()).padStart(2, '0') + ":" + String(d.getMinutes()).padStart(2, '0') + ":" + String(d.getSeconds()).padStart(2, '0');
     }, 1000);
 
     setInterval(() => {
-        if (nextCheckTime === 0 || !isSystemRunning) {
-            document.getElementById('countdown').innerText = "STANDBY";
-            return;
-        }
+        if (nextCheckTime === 0 || !isSystemRunning) { document.getElementById('countdown').innerText = "STANDBY"; return; }
         const diff = nextCheckTime - Date.now();
         if (diff <= 0) { setNextTargetTime(); } 
         else { const m = Math.floor(diff / 60000), s = Math.floor((diff % 60000) / 1000); document.getElementById('countdown').innerText = `${m}M ${s}S`; }
     }, 1000);
 
     window.addEventListener('DOMContentLoaded', () => {
-        setNextTargetTime();
-        loadSavedPnlInputs();
-        
-        fetchBybitAndReport();
-        setInterval(fetchBybitAndReport, 3000);
-
-        syncServer();
-        setInterval(syncServer, 2000);
+        setNextTargetTime(); loadSavedPnlInputs(); fetchBybitAndReport(); setInterval(fetchBybitAndReport, 3000); syncServer(); setInterval(syncServer, 2000);
     });
 </script>
 </body>
