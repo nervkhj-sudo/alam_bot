@@ -3,26 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TACTICAL_POSITION_MONITOR_v5.9_BIG_FONT</title>
+    <title>TACTICAL_POSITION_MONITOR_v5.92_CLEAN</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght=400;700&family=Orbitron:wght=400;700;900&display=swap');
     </style>
     <style id="theme-style">
-        /* 초기값은 에반게리온 (SHORT) 테마로 시작 */
+        /* 초기값: 에반게리온 (SHORT) 테마 */
         body { 
             font-family: 'Courier New', 'Courier Prime', monospace; 
             background-color: #050201; 
             color: #ff5500; 
             text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); 
         }
-        /* CRT 모니터 고유의 아날로그 미세 주사선 효과 완벽 보존 */
-        body::before { 
-            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; 
-            background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.75) 50%); 
-            z-index: 99999; opacity: 0.5; pointer-events: none; background-size: 100% 4px; 
-            transform: translateZ(0); will-change: transform;
-        }
-        /* 가독성을 확보하기 위해 전체 컨테이너 폭을 380px -> 460px로 확장 */
+        /* [변경] 가로줄 주사선 효과(body::before)를 완전히 제거하여 가독성 선명화 */
+        
+        /* 글자 크기 축소에 맞춰 메인 컨테이너 폭을 460px -> 400px로 슬림화 */
         .container { 
             background: rgba(12, 5, 2, 0.75); 
             border: 1px solid rgba(255, 85, 0, 0.5); 
@@ -31,12 +26,11 @@
         h1 { color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.8); }
         .live-clock-wrapper { color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); }
         
-        /* 내부 핵심 구조 박스 */
         .data-box { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(5, 2, 1, 0.5); }
         .pnl-box { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(5, 2, 1, 0.5); }
         .condition-group { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(12, 5, 2, 0.4); }
         
-        /* 모서리 데코레이션 스타일 정의 (두께 1.5px 및 크기 9px 규격 절대 보존) */
+        /* 모서리 데코레이션 (두께 1.5px 및 크기 9px 철저 보존) */
         .corner-decor::before, .corner-decor::after,
         .pnl-box::before, .pnl-box::after,
         .data-box::before, .data-box::after,
@@ -71,66 +65,59 @@
         .container, .pnl-box, .data-box, .condition-group, .modal-content, .modal-body { position: relative; }
         .corner-decor { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
         
-        /* 모서리 데코레이션 크기 9px, 두께 1.5px 축소 세팅 완벽 보존 */
+        /* 모서리 데코레이션 크기 9px, 두께 1.5px 유지 */
         .corner-decor::before { content: ""; position: absolute; top: -1.5px; left: -1.5px; width: 9px; height: 9px; border-top: 1.5px solid #ff5500; border-left: 1.5px solid #ff5500; }
         .corner-decor::after { content: ""; position: absolute; top: -1.5px; right: -1.5px; width: 9px; height: 9px; border-top: 1.5px solid #ff5500; border-right: 1.5px solid #ff5500; }
         
-        /* 박스 하단 데코레이션 크기 9px, 두께 1.5px 반영 */
         .pnl-box::before, .data-box::before, .condition-group::before, .modal-content::before, .modal-body::before { content: ""; position: absolute; bottom: -1.5px; left: -1.5px; width: 9px; height: 9px; border-bottom: 1.5px solid #ff5500; border-left: 1.5px solid #ff5500; pointer-events: none; z-index: 10; }
         .pnl-box::after, .data-box::after, .condition-group::after, .modal-content::after, .modal-body::after { content: ""; position: absolute; bottom: -1.5px; right: -1.5px; width: 9px; height: 9px; border-bottom: 1.5px solid #ff5500; border-right: 1.5px solid #ff5500; pointer-events: none; z-index: 10; }
         
-        /* [크기 조정] 가독성 향상을 위해 폭을 460px로 확장 */
-        .container { width: 460px; padding: 15px; }
+        /* [크기 최적화] 너비 400px 슬림 다운 */
+        .container { width: 400px; padding: 12px; }
         
-        /* [예외 고정] 메인 타이틀 크기는 원본 16px 고정 */
-        h1 { font-size: 16px; font-weight: 700; text-align: center; margin-top: 5px; margin-bottom: 15px; letter-spacing: 0.5px; }
+        /* [지정 유지] 메인 타이틀 및 시계 크기는 레이아웃 앵커로서 고정 */
+        h1 { font-size: 16px; font-weight: 700; text-align: center; margin-top: 5px; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .live-clock-wrapper { text-align: center; font-size: 26px; font-weight: 900 !important; margin-bottom: 12px; letter-spacing: 2px; font-family: 'Orbitron', sans-serif !important; }
         
-        /* [예외 고정] 시계 크기는 원본 26px 고정 */
-        .live-clock-wrapper { text-align: center; font-size: 26px; font-weight: 900 !important; margin-bottom: 15px; letter-spacing: 2px; font-family: 'Orbitron', sans-serif !important; }
+        .pnl-box { padding: 10px; margin-bottom: 12px; }
         
-        .pnl-box { padding: 12px; margin-bottom: 15px; }
-        /* [150% 확대 적용 영역] */
-        .pnl-title { font-size: 16.5px; font-weight: bold; margin-bottom: 8px; opacity: 0.85; text-align: center; letter-spacing: 0.5px; }
-        .pnl-direction-wrapper { display: flex; align-items: center; justify-content: center; margin-bottom: 8px; gap: 8px; font-size: 16.5px; }
-        .pnl-direction-wrapper select { height: 38px; font-size: 18px; padding: 0 6px; font-weight: bold; width: 100%; outline: none; }
-        .pnl-inputs { display: flex; gap: 8px; margin-bottom: 10px; justify-content: space-between; }
-        .pnl-inputs div { display: flex; flex-direction: column; width: 48%; font-size: 16.5px; gap: 5px; }
-        .pnl-inputs input { height: 38px; font-size: 18px; outline: none; text-align: center; padding: 2px; }
-        .pnl-display { display: flex; justify-content: space-between; font-size: 21px; font-weight: bold; padding-top: 6px; border-top: 1px dashed rgba(255,255,255,0.1); }
+        /* [80% 축소 적용 영역] */
+        .pnl-title { font-size: 13.5px; font-weight: bold; margin-bottom: 6px; opacity: 0.85; text-align: center; letter-spacing: 0.5px; }
+        .pnl-direction-wrapper { display: flex; align-items: center; justify-content: center; margin-bottom: 6px; gap: 6px; font-size: 14.5px; }
+        .pnl-direction-wrapper select { height: 32px; font-size: 14.5px; padding: 0 4px; font-weight: bold; width: 100%; outline: none; }
+        .pnl-inputs { display: flex; gap: 6px; margin-bottom: 8px; justify-content: space-between; }
+        .pnl-inputs div { display: flex; flex-direction: column; width: 48%; font-size: 13.5px; gap: 4px; }
+        .pnl-inputs input { height: 32px; font-size: 14.5px; outline: none; text-align: center; padding: 2px; }
+        .pnl-display { display: flex; justify-content: space-between; font-size: 17px; font-weight: bold; padding-top: 6px; border-top: 1px dashed rgba(255,255,255,0.1); }
         .pnl-plus { color: #00ff66 !important; text-shadow: 0 0 8px rgba(0,255,102,0.8) !important; }
         .pnl-minus { color: #ff3333 !important; text-shadow: 0 0 8px rgba(255,51,51,0.8) !important; }
         
-        .data-box { padding: 12px; margin-bottom: 15px; }
-        .data-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 19.5px; line-height: 1.4; }
-        .section-title { font-size: 19.5px; font-weight: 700; margin-bottom: 8px; }
-        .condition-group { padding: 12px; margin-bottom: 12px; }
-        .condition-title { font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; font-size: 19.5px; }
-        .condition-title input[type="checkbox"] { margin-right: 8px; transform: scale(1.4); cursor: pointer; }
-        .input-inline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 18px; }
+        .data-box { padding: 10px; margin-bottom: 12px; }
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 15.5px; line-height: 1.4; }
+        .section-title { font-size: 15.5px; font-weight: 700; margin-bottom: 6px; }
+        .condition-group { padding: 10px; margin-bottom: 10px; }
+        .condition-title { font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; font-size: 15.5px; }
+        .condition-title input[type="checkbox"] { margin-right: 6px; transform: scale(1.15); cursor: pointer; }
+        .input-inline { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 14.5px; }
         
-        /* 인풋 노드 텍스트 150% 및 높이 최적화 */
-        select, input[type="number"], input[type="text"] { padding: 4px 6px; font-size: 18px; height: 38px; outline: none; text-align: center; }
-        .control-wrapper { display: flex; gap: 10px; margin-bottom: 12px; }
+        /* 인풋 인터페이스 축소 조정 */
+        select, input[type="number"], input[type="text"] { padding: 2px 4px; font-size: 14.5px; height: 32px; outline: none; text-align: center; }
+        .control-wrapper { display: flex; gap: 8px; margin-bottom: 10px; }
         
-        .btn-core { width: 100%; padding: 14px; font-size: 21px; font-weight: 700; cursor: pointer; }
-        .status { text-align: center; font-size: 18px; font-weight: 700; margin-bottom: 10px; padding: 8px; }
+        .btn-core { width: 100%; padding: 10px; font-size: 17px; font-weight: 700; cursor: pointer; }
+        .status { text-align: center; font-size: 14.5px; font-weight: 700; margin-bottom: 8px; padding: 6px; }
         
-        /* 로그 텍스트 확대 및 출력창 확장 */
-        .log { max-height: 180px; overflow-y: auto; padding: 10px; font-size: 18px; line-height: 1.4; }
+        .log { max-height: 150px; overflow-y: auto; padding: 8px; font-size: 14.5px; line-height: 1.4; }
         
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; justify-content: center; align-items: center; z-index: 1000000; }
-        .modal-content { padding: 25px; width: 420px; text-align: center; }
-        .modal-title { font-size: 33px; font-weight: 900; margin-bottom: 15px; letter-spacing: 1px; }
-        .modal-body { font-size: 19.5px; line-height: 1.6; text-align: left; padding: 15px; margin-bottom: 18px; font-weight: 700; font-family: 'Courier New', monospace; }
-        .modal-close-btn { width: 100%; padding: 12px; font-size: 21px; font-weight: 900; cursor: pointer; }
+        .modal-content { padding: 20px; width: 360px; text-align: center; }
+        .modal-title { font-size: 26.5px; font-weight: 900; margin-bottom: 12px; letter-spacing: 1px; }
+        .modal-body { font-size: 15.5px; line-height: 1.5; text-align: left; padding: 12px; margin-bottom: 14px; font-weight: 700; font-family: 'Courier New', monospace; }
+        .modal-close-btn { width: 100%; padding: 10px; font-size: 17px; font-weight: 900; cursor: pointer; }
         
-        .window-alias-box { margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 18px; padding-bottom: 8px; }
-        .window-alias-box input { height: 34px; font-size: 16.5px; width: 240px; }
-        .nerv-tag { font-size: 13.5px; color: #ff5500; border: 1px solid rgba(255, 85, 0, 0.5); padding: 2px 6px; position: absolute; top: 4px; left: 6px; background: rgba(255,85,0,0.1); }
-    </style>
-    <style>
-        /* 테마 스왑 시 적용될 스타일셋 */
-        const_themes_font_mod = true; 
+        .window-alias-box { margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; font-size: 14.5px; padding-bottom: 6px; }
+        .window-alias-box input { height: 28px; font-size: 13.5px; width: 210px; }
+        .nerv-tag { font-size: 11px; color: #ff5500; border: 1px solid rgba(255, 85, 0, 0.5); padding: 1px 4px; position: absolute; top: 4px; left: 6px; background: rgba(255,85,0,0.1); }
     </style>
 </head>
 <body>
@@ -201,7 +188,7 @@
                 <option value="above">PRICE ≥</option>
                 <option value="below">PRICE ≤</option>
             </select>
-            <input type="number" id="cond-price-val" style="max-width: 160px;" oninput="onLocalSettingsChanged()">
+            <input type="number" id="cond-price-val" style="max-width: 130px;" oninput="onLocalSettingsChanged()">
             <span>USDT</span>
         </div>
     </div>
@@ -214,25 +201,25 @@
                 <option value="above" selected>RSI ≥</option>
                 <option value="below">RSI ≤</option>
             </select>
-            <input type="number" id="cond-rsi-val" value="55" style="max-width: 90px;" oninput="onLocalSettingsChanged()">
+            <input type="number" id="cond-rsi-val" value="55" style="max-width: 80px;" oninput="onLocalSettingsChanged()">
         </div>
     </div>
 
     <div class="condition-group">
         <div class="corner-decor"></div>
-        <div id="lbl-bb-sub" style="font-size: 18px; margin-bottom: 6px; opacity:0.8;">&gt; BOLLINGER_ENVELOPE_SYSTEM</div>
-        <div class="input-inline" style="margin-bottom: 10px;">
-            <span>P:</span> <input type="number" id="cond-bb-period" value="200" style="max-width: 85px;" oninput="onLocalSettingsChanged()">
-            <span>★:</span> <input type="number" id="cond-bb-std" value="2" step="0.1" style="max-width: 75px;" oninput="onLocalSettingsChanged()">
+        <div id="lbl-bb-sub" style="font-size: 14.5px; margin-bottom: 4px; opacity:0.8;">&gt; BOLLINGER_ENVELOPE_SYSTEM</div>
+        <div class="input-inline" style="margin-bottom: 8px;">
+            <span>P:</span> <input type="number" id="cond-bb-period" value="200" style="max-width: 75px;" oninput="onLocalSettingsChanged()">
+            <span>★:</span> <input type="number" id="cond-bb-std" value="2" step="0.1" style="max-width: 65px;" oninput="onLocalSettingsChanged()">
         </div>
         <label class="condition-title"><input type="checkbox" id="cond-bb-upper-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c3a">[CASPER-A] UPPER_BAND_BREACH</span></label>
-        <div class="input-inline" style="margin-left: 24px; margin-bottom: 6px;">
+        <div class="input-inline" style="margin-left: 20px; margin-bottom: 4px;">
             <select id="cond-bb-upper-target" disabled>
                 <option value="high" selected>HIGH ≥ UPPER</option>
             </select>
         </div>
         <label class="condition-title"><input type="checkbox" id="cond-bb-lower-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c3b">[CASPER-B] LOWER_BAND_BREACH</span></label>
-        <div class="input-inline" style="margin-left: 24px;">
+        <div class="input-inline" style="margin-left: 20px;">
             <select id="cond-bb-lower-target" disabled>
                 <option value="low" selected>LOW ≤ LOWER</option>
             </select>
@@ -243,8 +230,8 @@
         <div class="corner-decor"></div>
         <label class="condition-title"><input type="checkbox" id="cond-vol-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c4">[MAGI_SYS] QUANTITY_SPIKE</span></label>
         <div class="input-inline">
-            <span>MA:</span> <input type="number" id="cond-vol-ma-period" value="30" style="max-width:75px;" disabled>
-            <span>비율:</span> <input type="number" id="cond-vol-ratio" value="1.5" step="0.1" style="max-width:85px;" oninput="onLocalSettingsChanged()">
+            <span>MA:</span> <input type="number" id="cond-vol-ma-period" value="30" style="max-width:65px;" disabled>
+            <span>비율:</span> <input type="number" id="cond-vol-ratio" value="1.5" step="0.1" style="max-width:75px;" oninput="onLocalSettingsChanged()">
             <span>배 이상</span>
         </div>
     </div>
@@ -257,10 +244,10 @@
 </div>
 
 <script>
+    /* [변경] 테마 스왑용 문자열에서도 body::before 주사선 가로줄 로직 일체 제거 */
     const themes = {
         nerv_operational: `
             body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); }
-            body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.75) 50%); z-index: 99999; opacity: 0.5; pointer-events: none; background-size: 100% 4px; transform: translateZ(0); will-change: transform; }
             .container { background: rgba(12, 5, 2, 0.75); border: 1px solid rgba(255, 85, 0, 0.5); box-shadow: 0 0 20px rgba(255, 85, 0, 0.2), inset 0 0 15px rgba(255, 85, 0, 0.1); }
             h1 { color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.8); }
             .live-clock-wrapper { color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); }
@@ -286,7 +273,6 @@
         `,
         matrix: `
             body { font-family: 'Courier New', monospace; background-color: #000500; color: #00ff66; text-shadow: 0 0 6px rgba(0, 255, 102, 0.75), 0 0 12px rgba(0, 255, 102, 0.5); }
-            body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(0, 5, 0, 0) 50%, rgba(0, 0, 0, 0.8) 50%); z-index: 99999; opacity: 0.55; pointer-events: none; background-size: 100% 4px; transform: translateZ(0); will-change: transform; }
             .container { background: rgba(0, 10, 2, 0.8); border: 1px solid rgba(0, 255, 102, 0.5); box-shadow: 0 0 20px rgba(0, 255, 102, 0.2), inset 0 0 15px rgba(0, 255, 102, 0.1); }
             h1 { color: #00ff66; border-bottom: 1px dashed #00ff66; text-shadow: 0 0 8px rgba(0,255,102,0.8); }
             .live-clock-wrapper { color: #00ff66; text-shadow: 0 0 12px rgba(0, 255, 102, 0.95), 0 0 20px rgba(0, 255, 102, 0.6); }
@@ -306,7 +292,7 @@
             .modal-overlay { background-color: rgba(0,5,1,0.85); }
             .modal-content { background-color: #00ff66; border: 1px solid #00ff66; color: #000500; box-shadow: 0 0 30px rgba(0, 255, 102, 0.6); }
             .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000500 !important; }
-            .modal-body { border: 1px dashed #00ff66; background: #000500; color: #00ff66; text-shadow: 0 0 6px rgba(0, 255, 102, 0.7); }
+            .modal-body { border: 1px dashed #00ff66; background: #000000; color: #00ff66; text-shadow: 0 0 6px rgba(0, 255, 102, 0.7); }
             .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #00ff66 !important; }
             .modal-close-btn { background-color: #000500; color: #00ff66; border: 1px solid #00ff66; }
         `
@@ -486,20 +472,20 @@
                     let conditionDetailsHtml = "";
                     if (data.lastData.matchedConditions && data.lastData.matchedConditions.length > 0) {
                         data.lastData.matchedConditions.forEach(cond => {
-                            conditionDetailsHtml += `<div style="margin: 6px 0;">&gt; <span style="color:#ffffff;">${cond}</span></div>`;
+                            conditionDetailsHtml += `<div style="margin: 5px 0;">&gt; <span style="color:#ffffff;">${cond}</span></div>`;
                         });
                     } else {
                         conditionDetailsHtml = `
-                            <div style="margin: 6px 0;">&gt; PRICE: <span style="color:#ffffff;">${data.lastData.price.toLocaleString()} USDT</span></div>
-                            <div style="margin: 6px 0;">&gt; RSI  : <span style="color:#ffffff;">${data.lastData.rsi.toFixed(2)}</span></div>
+                            <div style="margin: 5px 0;">&gt; PRICE: <span style="color:#ffffff;">${data.lastData.price.toLocaleString()} USDT</span></div>
+                            <div style="margin: 5px 0;">&gt; RSI  : <span style="color:#ffffff;">${data.lastData.rsi.toFixed(2)}</span></div>
                         `;
                     }
-                    /* 모달창 내부 텍스트 폰트 크기도 150% 급에 맞춘 16.5px ~ 22.5px 스케일 세팅 */
+                    /* [80% 축소] 알림 팝업 내부 인라인 스타일 글자 크기 스케일 다운 */
                     const popupHtml = `
-                        <div style="font-size:16.5px; opacity:0.6; margin-bottom:8px; color:#ffffff;">CORE_NODE: ${data.config.windowAlias}</div>
-                        <div style="color:${currentThemeColor}; font-weight:bold; font-size:22.5px; margin-bottom:10px; border-bottom:1px dashed ${currentThemeColor}; padding-bottom:5px; text-shadow:0 0 5px ${currentThemeColor};">⚠️ TARGET CONDITION COMPLIED</div>
-                        <div style="margin: 8px 0; font-size:21px; font-weight:bold; color:#ffffff;">현재 완성가: ${data.lastData.price.toLocaleString()} USDT</div>
-                        <div style="margin-top:14px; font-size:18px; text-align:left; line-height:1.5;">
+                        <div style="font-size:13.5px; opacity:0.6; margin-bottom:6px; color:#ffffff;">CORE_NODE: ${data.config.windowAlias}</div>
+                        <div style="color:${currentThemeColor}; font-weight:bold; font-size:18px; margin-bottom:8px; border-bottom:1px dashed ${currentThemeColor}; padding-bottom:4px; text-shadow:0 0 5px ${currentThemeColor};">⚠️ TARGET CONDITION COMPLIED</div>
+                        <div style="margin: 6px 0; font-size:17px; font-weight:bold; color:#ffffff;">현재 완성가: ${data.lastData.price.toLocaleString()} USDT</div>
+                        <div style="margin-top:10px; font-size:14.5px; text-align:left; line-height:1.5;">
                             ${conditionDetailsHtml}
                         </div>
                     `;
