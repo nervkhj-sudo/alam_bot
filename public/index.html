@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TACTICAL_POSITION_MONITOR_v5.7_CRT_FINAL</title>
+    <title>TACTICAL_POSITION_MONITOR_v5.8_FINAL</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght=400;700&family=Orbitron:wght=400;700;900&display=swap');
     </style>
@@ -36,7 +36,7 @@
         .pnl-box { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(5, 2, 1, 0.5); }
         .condition-group { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(12, 5, 2, 0.4); }
         
-        /* 요청사항 반영: 내부 박스용 모서리 데코레이션 스타일 정의 (두께 1.5px 반영) */
+        /* 모서리 데코레이션 스타일 정의 (두께 1.5px 반영) */
         .corner-decor::before, .corner-decor::after,
         .pnl-box::before, .pnl-box::after,
         .data-box::before, .data-box::after,
@@ -75,11 +75,11 @@
         .container, .pnl-box, .data-box, .condition-group, .modal-content, .modal-body { position: relative; }
         .corner-decor { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
         
-        /* 요청사항 반영: 모서리 데코레이션 크기 9px, 두께 1.5px 축소 세팅 */
+        /* 모서리 데코레이션 크기 9px, 두께 1.5px 축소 세팅 완벽 보존 */
         .corner-decor::before { content: ""; position: absolute; top: -1.5px; left: -1.5px; width: 9px; height: 9px; border-top: 1.5px solid #ff5500; border-left: 1.5px solid #ff5500; }
         .corner-decor::after { content: ""; position: absolute; top: -1.5px; right: -1.5px; width: 9px; height: 9px; border-top: 1.5px solid #ff5500; border-right: 1.5px solid #ff5500; }
         
-        /* 컨테이너 하단 요소를 제외한 박스 하단 데코레이션 크기 9px, 두께 1.5px 반영 */
+        /* 박스 하단 데코레이션 크기 9px, 두께 1.5px 반영 */
         .pnl-box::before, .data-box::before, .condition-group::before, .modal-content::before, .modal-body::before { content: ""; position: absolute; bottom: -1.5px; left: -1.5px; width: 9px; height: 9px; border-bottom: 1.5px solid #ff5500; border-left: 1.5px solid #ff5500; pointer-events: none; z-index: 10; }
         .pnl-box::after, .data-box::after, .condition-group::after, .modal-content::after, .modal-body::after { content: ""; position: absolute; bottom: -1.5px; right: -1.5px; width: 9px; height: 9px; border-bottom: 1.5px solid #ff5500; border-right: 1.5px solid #ff5500; pointer-events: none; z-index: 10; }
         
@@ -199,10 +199,10 @@
         <label class="condition-title"><input type="checkbox" id="cond-rsi-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c2">[BALTHASAR] RSI_INDEX_LIMIT</span></label>
         <div class="input-inline">
             <select id="cond-rsi-type" onchange="onLocalSettingsChanged()">
-                <option value="above">RSI ≥</option>
-                <option value="below" selected>RSI ≤</option>
+                <option value="above" selected>RSI ≥</option>
+                <option value="below">RSI ≤</option>
             </select>
-            <input type="number" id="cond-rsi-val" value="30" style="max-width: 60px;" oninput="onLocalSettingsChanged()">
+            <input type="number" id="cond-rsi-val" value="55" style="max-width: 60px;" oninput="onLocalSettingsChanged()">
         </div>
     </div>
 
@@ -219,7 +219,7 @@
                 <option value="high" selected>HIGH ≥ UPPER</option>
             </select>
         </div>
-        <label class="condition-title"><input type="checkbox" id="cond-bb-lower-atv" checked onchange="onLocalSettingsChanged()"> <span id="lbl-c3b">[CASPER-B] LOWER_BAND_BREACH</span></label>
+        <label class="condition-title"><input type="checkbox" id="cond-bb-lower-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c3b">[CASPER-B] LOWER_BAND_BREACH</span></label>
         <div class="input-inline" style="margin-left: 18px;">
             <select id="cond-bb-lower-target" disabled>
                 <option value="low" selected>LOW ≤ LOWER</option>
@@ -229,7 +229,7 @@
 
     <div class="condition-group">
         <div class="corner-decor"></div>
-        <label class="condition-title"><input type="checkbox" id="cond-vol-atv" checked onchange="onLocalSettingsChanged()"> <span id="lbl-c4">[MAGI_SYS] QUANTITY_SPIKE</span></label>
+        <label class="condition-title"><input type="checkbox" id="cond-vol-atv" onchange="onLocalSettingsChanged()"> <span id="lbl-c4">[MAGI_SYS] QUANTITY_SPIKE</span></label>
         <div class="input-inline">
             <span>MA:</span> <input type="number" id="cond-vol-ma-period" value="30" style="max-width:50px;" disabled>
             <span>비율:</span> <input type="number" id="cond-vol-ratio" value="1.5" step="0.1" style="max-width:55px;" oninput="onLocalSettingsChanged()">
@@ -245,7 +245,6 @@
 </div>
 
 <script>
-    // 테마 전환 루틴 내 축소 데코레이션(두께 1.5px, 크기 9px) 정밀 보존 세팅
     const themes = {
         nerv_operational: `
             body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); }
@@ -308,6 +307,9 @@
     let audioIntervalId = null;
     let nextCheckTime = 0;
     let isSystemRunning = false;
+    
+    // 치명적 중복 알람 차단용 봉 마감 동기화 타임스탬프 락 변수
+    let lastProcessedCandleTime = 0;
 
     function onPositionSideChanged() {
         const side = document.getElementById('pnl-side').value;
@@ -339,6 +341,27 @@
         updateSystemStatusUI();
     }
 
+    // 트레이딩뷰/바이비 차트 표준 Wilder Smoothing RSI 계산 함수 구현
+    function calculateWilderRSI(closes, period = 14) {
+        if (closes.length <= period) return 50;
+        let gains = [];
+        let losses = [];
+        for (let i = 1; i < closes.length; i++) {
+            let diff = closes[i] - closes[i - 1];
+            if (diff > 0) { gains.push(diff); losses.push(0); } 
+            else { gains.push(0); losses.push(-diff); }
+        }
+        let avgGain = 0; let avgLoss = 0;
+        for (let i = 0; i < period; i++) { avgGain += gains[i]; avgLoss += losses[i]; }
+        avgGain /= period; avgLoss /= period;
+        for (let i = period; i < gains.length; i++) {
+            avgGain = (avgGain * (period - 1) + gains[i]) / period;
+            avgLoss = (avgLoss * (period - 1) + losses[i]) / period;
+        }
+        if (avgLoss === 0) return 100;
+        return 100 - (100 / (1 + (avgGain / avgLoss)));
+    }
+
     async function fetchBybitAndReport() {
         try {
             const url = 'https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=5&limit=200';
@@ -348,24 +371,21 @@
             if (!data || !data.result || !data.result.list || data.result.list.length === 0) return;
 
             const list = data.result.list;
-            const price = parseFloat(list[0][4]);
-            const highPrice = parseFloat(list[0][2]);
-            const lowPrice = parseFloat(list[0][3]);
+            
+            // 1. 실시간 시세 UI는 항상 list[0]을 보고 초단위로 신속하게 업데이트
+            livePrice = parseFloat(list[0][4]);
+            document.getElementById('current-price').innerText = livePrice.toLocaleString() + " USDT";
+            calculateLivePnl();
+
+            // 2. 완성된 5분 마감봉 타임스탬프 추출
             const closedCandleTime = parseInt(list[1][0]);
 
-            const allCloses = list.map(c => parseFloat(c[4])).reverse();
-            const allVolumes = list.map(c => parseFloat(c[5])).reverse();
-
-            const rsiCloses = allCloses.slice(0, -1);
-            let gains = 0, losses = 0;
-            for (let i = rsiCloses.length - 14; i < rsiCloses.length; i++) {
-                let diff = rsiCloses[i] - rsiCloses[i-1];
-                if (diff > 0) gains += diff; else losses -= diff;
-            }
-            const rsi = losses === 0 ? 100 : 100 - (100 / (1 + (gains / losses)));
+            // 3. 지표 정밀 계산 루틴 구동 (순수 완성봉 데이터셋 구축)
+            const closes = list.slice(1).map(c => parseFloat(c[4])).reverse();
+            const rsi = calculateWilderRSI(closes, 14);
 
             const bbPeriod = localConfig ? localConfig.bbPeriod : 200;
-            const bbSample = rsiCloses.slice(-bbPeriod);
+            const bbSample = closes.slice(-bbPeriod);
             const ma = bbSample.reduce((a, b) => a + b, 0) / bbSample.length;
             const variance = bbSample.reduce((a, b) => a + Math.pow(b - ma, 2), 0) / bbSample.length;
             const std = Math.sqrt(variance);
@@ -375,56 +395,98 @@
 
             const targetVol = parseFloat(list[1][5]);
             const volMaPeriod = localConfig ? localConfig.volMaPeriod : 30;
-            const prevVols = allVolumes.slice(-(volMaPeriod + 2), -2);
+            const allVolumes = list.slice(1).map(c => parseFloat(c[5])).reverse();
+            const prevVols = allVolumes.slice(-(volMaPeriod + 1), -1); 
             const volMa = prevVols.reduce((a, b) => a + b, 0) / prevVols.length;
             const volRatio = volMa > 0 ? (targetVol / volMa) : 1;
 
+            // 지표 판독 데이터 실시간 매칭 출력
+            document.getElementById('current-rsi').innerText = rsi.toFixed(2);
+            document.getElementById('bb-status').innerText = `${Math.floor(bbUpper)} / ${Math.floor(bbLower)}`;
+            document.getElementById('volume-status').innerText = `${volRatio.toFixed(2)}x`;
+
+            // 동일 5분봉 내 중복 조건 체크 패스 시스템 락 가동
+            if (closedCandleTime === lastProcessedCandleTime) {
+                return; 
+            }
+
+            // 4. 감시 엔진 알고리즘 실행 (모든 기준값은 완벽히 마감된 list[1] 단일 타겟으로 일치)
             let triggerPopup = false;
+            let matchedConditionsText = []; // 활성화 및 충족된 조건식 텍스트 수집 배열
+
             if (isSystemRunning) {
                 let conditionMet = true;
                 let activeConditionsCount = 0;
+                
+                const closedPrice = parseFloat(list[1][4]);
+                const closedHigh = parseFloat(list[1][2]);
+                const closedLow = parseFloat(list[1][3]);
 
+                // 가격 조건 검증
                 if (document.getElementById('cond-price-atv').checked) {
                     activeConditionsCount++;
                     const pType = document.getElementById('cond-price-type').value;
                     const pVal = parseFloat(document.getElementById('cond-price-val').value) || 0;
-                    if (pType === 'above' && !(price >= pVal)) conditionMet = false;
-                    if (pType === 'below' && !(price <= pVal)) conditionMet = false;
+                    if (pType === 'above' && closedPrice >= pVal) {
+                        matchedConditionsText.push(`가격 조건 돌파 (기준: ≥ ${pVal.toLocaleString()} / 완성값: ${closedPrice.toLocaleString()})`);
+                    } else if (pType === 'below' && closedPrice <= pVal) {
+                        matchedConditionsText.push(`가격 조건 이탈 (기준: ≤ ${pVal.toLocaleString()} / 완성값: ${closedPrice.toLocaleString()})`);
+                    } else { conditionMet = false; }
                 }
 
+                // 와일더 RSI 조건 검증
                 if (document.getElementById('cond-rsi-atv').checked) {
                     activeConditionsCount++;
                     const rType = document.getElementById('cond-rsi-type').value;
                     const rVal = parseFloat(document.getElementById('cond-rsi-val').value) || 0;
-                    if (rType === 'above' && !(rsi >= rVal)) conditionMet = false;
-                    if (rType === 'below' && !(rsi <= rVal)) conditionMet = false;
+                    if (rType === 'above' && rsi >= rVal) {
+                        matchedConditionsText.push(`RSI 상향 돌파 (기준: ≥ ${rVal} / 완성값: ${rsi.toFixed(2)})`);
+                    } else if (rType === 'below' && rsi <= rVal) {
+                        matchedConditionsText.push(`RSI 하향 이탈 (기준: ≤ ${rVal} / 완성값: ${rsi.toFixed(2)})`);
+                    } else { conditionMet = false; }
                 }
 
+                // 볼린저밴드 상단 검증
                 if (document.getElementById('cond-bb-upper-atv').checked) {
                     activeConditionsCount++;
-                    if (!(highPrice >= bbUpper)) conditionMet = false;
+                    if (closedHigh >= bbUpper) {
+                        matchedConditionsText.push(`볼린저밴드 상단 돌파 (밴드상단: ${Math.floor(bbUpper)} / 고가: ${closedHigh})`);
+                    } else { conditionMet = false; }
                 }
 
+                // 볼린저밴드 하단 검증
                 if (document.getElementById('cond-bb-lower-atv').checked) {
                     activeConditionsCount++;
-                    if (!(lowPrice <= bbLower)) conditionMet = false;
+                    if (closedLow <= bbLower) {
+                        matchedConditionsText.push(`볼린저밴드 하단 터치 (밴드하단: ${Math.floor(bbLower)} / 저가: ${closedLow})`);
+                    } else { conditionMet = false; }
                 }
 
+                // 거래량 검증
                 if (document.getElementById('cond-vol-atv').checked) {
                     activeConditionsCount++;
                     const vRatioThreshold = parseFloat(document.getElementById('cond-vol-ratio').value) || 1.5;
-                    if (!(volRatio >= vRatioThreshold)) conditionMet = false;
+                    if (volRatio >= vRatioThreshold) {
+                        matchedConditionsText.push(`거래량 폭발 급증 (기준: ${vRatioThreshold}배 / 완성값: ${volRatio.toFixed(2)}배)`);
+                    } else { conditionMet = false; }
                 }
 
+                // 조건이 유효하고 최종 충족되었을 때 진입
                 if (activeConditionsCount > 0 && conditionMet) {
                     triggerPopup = true;
+                    lastProcessedCandleTime = closedCandleTime; // 동일 봉 재발령 락 걸기
                 }
             }
 
+            // 5. 서버 측 메트릭스 리포트 전송 (사용자가 화면에서 체크한 정보만 데이터 배열로 동적 포함)
             await fetch('/api/report-metrics', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ price, rsi, bbUpper, bbLower, volRatio, closedCandleTime, triggerPopup })
+                body: JSON.stringify({ 
+                    price: parseFloat(list[1][4]), 
+                    rsi, bbUpper, bbLower, volRatio, closedCandleTime, triggerPopup,
+                    matchedConditions: matchedConditionsText // 텔레그램 발송용 전용 필터링 핵심 데이터 바인딩
+                })
             });
 
         } catch (e) {
@@ -436,14 +498,6 @@
         try {
             const res = await fetch('/api/config');
             const data = await res.json();
-            
-            livePrice = data.lastData.price;
-            document.getElementById('current-price').innerText = livePrice > 0 ? livePrice.toLocaleString() + " USDT" : "로딩 중... ";
-            document.getElementById('current-rsi').innerText = data.lastData.rsi > 0 ? data.lastData.rsi.toFixed(1) : "-";
-            document.getElementById('bb-status').innerText = data.lastData.bbUpper > 0 ? `${Math.floor(data.lastData.bbUpper)} / ${Math.floor(data.lastData.bbLower)}` : "-";
-            document.getElementById('volume-status').innerText = data.lastData.volRatio > 0 ? `${data.lastData.volRatio.toFixed(1)}x` : "-";
-
-            calculateLivePnl();
 
             if (data.lastData.triggerPopup && isSystemRunning) {
                 if (document.getElementById('alert-modal').style.display !== 'flex') {
@@ -451,12 +505,28 @@
                     startRepeatingAlertSound();
                     
                     const currentThemeColor = activeTheme === 'matrix' ? '#00ff66' : '#ff5500';
+                    
+                    // 팝업 내부 모달창 메시지도 사용자가 체크한 커스텀 필터 정보만 동적으로 렌더링되도록 구현
+                    let conditionDetailsHtml = "";
+                    if (data.lastData.matchedConditions && data.lastData.matchedConditions.length > 0) {
+                        data.lastData.matchedConditions.forEach(cond => {
+                            conditionDetailsHtml += `<div style="margin: 5px 0;">&gt; <span style="color:#ffffff;">${cond}</span></div>`;
+                        });
+                    } else {
+                        conditionDetailsHtml = `
+                            <div style="margin: 4px 0;">&gt; PRICE: <span style="color:#ffffff;">${data.lastData.price.toLocaleString()} USDT</span></div>
+                            <div style="margin: 4px 0;">&gt; RSI  : <span style="color:#ffffff;">${data.lastData.rsi.toFixed(2)}</span></div>
+                            <div style="margin: 4px 0;">&gt; VOL  : <span style="color:#ffffff;">${data.lastData.volRatio.toFixed(2)}x</span></div>
+                        `;
+                    }
+
                     const popupHtml = `
                         <div style="font-size:11px; opacity:0.6; margin-bottom:6px; color:#ffffff;">CORE_NODE: ${data.config.windowAlias}</div>
                         <div style="color:${currentThemeColor}; font-weight:bold; font-size:15px; margin-bottom:10px; border-bottom:1px dashed ${currentThemeColor}; padding-bottom:5px; text-shadow:0 0 5px ${currentThemeColor};">⚠️ TARGET CONDITION COMPLIED</div>
-                        <div style="margin: 4px 0;">&gt; PRICE: <span style="color:#ffffff;">${livePrice.toLocaleString()} USDT</span></div>
-                        <div style="margin: 4px 0;">&gt; RSI  : <span style="color:#ffffff;">${data.lastData.rsi.toFixed(1)}</span></div>
-                        <div style="margin: 4px 0;">&gt; VOL  : <span style="color:#ffffff;">${data.lastData.volRatio.toFixed(1)}x</span></div>
+                        <div style="margin: 6px 0; font-size:14px; font-weight:bold; color:#ffffff;">현재 완성가: ${data.lastData.price.toLocaleString()} USDT</div>
+                        <div style="margin-top:12px; font-size:12px; text-align:left; line-height:1.5;">
+                            ${conditionDetailsHtml}
+                        </div>
                     `;
                     openPopup(popupHtml);
                 }
@@ -467,7 +537,7 @@
                 document.getElementById('pnl-side').value = data.config.side;
                 document.getElementById('cond-price-atv').checked = data.config.priceAtv;
                 document.getElementById('cond-price-type').value = data.config.priceType;
-                document.getElementById('cond-price-val').value = data.config.priceVal || Math.floor(livePrice);
+                document.getElementById('cond-price-val').value = data.config.priceVal;
                 document.getElementById('cond-rsi-atv').checked = data.config.rsiAtv;
                 document.getElementById('cond-rsi-type').value = data.config.rsiType;
                 document.getElementById('cond-rsi-val').value = data.config.rsiVal;
@@ -501,14 +571,14 @@
             priceVal: parseFloat(document.getElementById('cond-price-val').value) || 0,
             rsiAtv: document.getElementById('cond-rsi-atv').checked,
             rsiType: document.getElementById('cond-rsi-type').value,
-            rsiVal: parseFloat(document.getElementById('cond-rsi-val').value) || 30,
+            rsiVal: parseFloat(document.getElementById('cond-rsi-val').value) || 55,
             bbPeriod: parseInt(document.getElementById('cond-bb-period').value) || 200,
             bbStd: parseFloat(document.getElementById('cond-bb-std').value) || 2,
             bbUpperAtv: document.getElementById('cond-bb-upper-atv').checked,
             bbLowerAtv: document.getElementById('cond-bb-lower-atv').checked,
             volAtv: document.getElementById('cond-vol-atv').checked,
             volRatio: parseFloat(document.getElementById('cond-vol-ratio').value) || 1.5,
-            volMaPeriod: parseInt(document.getElementById('cond-vol-ma-period').value) || 30,
+            volMaPeriod: 30,
             telegramToken: localConfig.telegramToken,
             telegramChatId: localConfig.telegramChatId
         };
@@ -545,19 +615,14 @@
     }
 
     function saveAndCalculatePnl() {
-        const entryVal = document.getElementById('pnl-entry-price').value;
-        const qtyVal = document.getElementById('pnl-qty').value;
-        
-        localStorage.setItem('magi_pnl_entry', entryVal);
-        localStorage.setItem('magi_pnl_qty', qtyVal);
-        
+        localStorage.setItem('magi_pnl_entry', document.getElementById('pnl-entry-price').value);
+        localStorage.setItem('magi_pnl_qty', document.getElementById('pnl-qty').value);
         calculateLivePnl();
     }
 
     function loadSavedPnlInputs() {
         const savedEntry = localStorage.getItem('magi_pnl_entry');
         const savedQty = localStorage.getItem('magi_pnl_qty');
-        
         if (savedEntry !== null) document.getElementById('pnl-entry-price').value = savedEntry;
         if (savedQty !== null) document.getElementById('pnl-qty').value = savedQty;
     }
