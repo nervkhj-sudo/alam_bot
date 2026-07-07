@@ -3,21 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TACTICAL_POSITION_MONITOR_v5.92_CLEAN</title>
+    <title>TACTICAL_POSITION_MONITOR_v5.95_WAVE</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght=400;700&family=Orbitron:wght=400;700;900&display=swap');
     </style>
     <style id="theme-style">
-        /* 초기값: 에반게리온 (SHORT) 테마 */
         body { 
             font-family: 'Courier New', 'Courier Prime', monospace; 
             background-color: #050201; 
             color: #ff5500; 
             text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); 
         }
-        /* [변경] 가로줄 주사선 효과(body::before)를 완전히 제거하여 가독성 선명화 */
-        
-        /* 글자 크기 축소에 맞춰 메인 컨테이너 폭을 460px -> 400px로 슬림화 */
         .container { 
             background: rgba(12, 5, 2, 0.75); 
             border: 1px solid rgba(255, 85, 0, 0.5); 
@@ -30,7 +26,6 @@
         .pnl-box { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(5, 2, 1, 0.5); }
         .condition-group { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(12, 5, 2, 0.4); }
         
-        /* 모서리 데코레이션 (두께 1.5px 및 크기 9px 철저 보존) */
         .corner-decor::before, .corner-decor::after,
         .pnl-box::before, .pnl-box::after,
         .data-box::before, .data-box::after,
@@ -65,23 +60,19 @@
         .container, .pnl-box, .data-box, .condition-group, .modal-content, .modal-body { position: relative; }
         .corner-decor { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
         
-        /* 모서리 데코레이션 크기 9px, 두께 1.5px 유지 */
         .corner-decor::before { content: ""; position: absolute; top: -1.5px; left: -1.5px; width: 9px; height: 9px; border-top: 1.5px solid #ff5500; border-left: 1.5px solid #ff5500; }
         .corner-decor::after { content: ""; position: absolute; top: -1.5px; right: -1.5px; width: 9px; height: 9px; border-top: 1.5px solid #ff5500; border-right: 1.5px solid #ff5500; }
         
         .pnl-box::before, .data-box::before, .condition-group::before, .modal-content::before, .modal-body::before { content: ""; position: absolute; bottom: -1.5px; left: -1.5px; width: 9px; height: 9px; border-bottom: 1.5px solid #ff5500; border-left: 1.5px solid #ff5500; pointer-events: none; z-index: 10; }
         .pnl-box::after, .data-box::after, .condition-group::after, .modal-content::after, .modal-body::after { content: ""; position: absolute; bottom: -1.5px; right: -1.5px; width: 9px; height: 9px; border-bottom: 1.5px solid #ff5500; border-right: 1.5px solid #ff5500; pointer-events: none; z-index: 10; }
         
-        /* [크기 최적화] 너비 400px 슬림 다운 */
         .container { width: 400px; padding: 12px; }
         
-        /* [지정 유지] 메인 타이틀 및 시계 크기는 레이아웃 앵커로서 고정 */
         h1 { font-size: 16px; font-weight: 700; text-align: center; margin-top: 5px; margin-bottom: 12px; letter-spacing: 0.5px; }
         .live-clock-wrapper { text-align: center; font-size: 26px; font-weight: 900 !important; margin-bottom: 12px; letter-spacing: 2px; font-family: 'Orbitron', sans-serif !important; }
         
         .pnl-box { padding: 10px; margin-bottom: 12px; }
         
-        /* [80% 축소 적용 영역] */
         .pnl-title { font-size: 13.5px; font-weight: bold; margin-bottom: 6px; opacity: 0.85; text-align: center; letter-spacing: 0.5px; }
         .pnl-direction-wrapper { display: flex; align-items: center; justify-content: center; margin-bottom: 6px; gap: 6px; font-size: 14.5px; }
         .pnl-direction-wrapper select { height: 32px; font-size: 14.5px; padding: 0 4px; font-weight: bold; width: 100%; outline: none; }
@@ -100,7 +91,6 @@
         .condition-title input[type="checkbox"] { margin-right: 6px; transform: scale(1.15); cursor: pointer; }
         .input-inline { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 14.5px; }
         
-        /* 인풋 인터페이스 축소 조정 */
         select, input[type="number"], input[type="text"] { padding: 2px 4px; font-size: 14.5px; height: 32px; outline: none; text-align: center; }
         .control-wrapper { display: flex; gap: 8px; margin-bottom: 10px; }
         
@@ -244,7 +234,6 @@
 </div>
 
 <script>
-    /* [변경] 테마 스왑용 문자열에서도 body::before 주사선 가로줄 로직 일체 제거 */
     const themes = {
         nerv_operational: `
             body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); }
@@ -306,6 +295,10 @@
     let nextCheckTime = 0;
     let isSystemRunning = false;
     let lastProcessedCandleTime = 0;
+    
+    /* [고도화] 웹소켓 제어 변수 */
+    let socket = null;
+    let isWebsocketConnected = false;
 
     function onPositionSideChanged() {
         const side = document.getElementById('pnl-side').value;
@@ -337,6 +330,47 @@
         updateSystemStatusUI();
     }
 
+    /* [고도화] 바이비트 V5 웹소켓 초기화 및 초단위 체결 스트리밍 인터셉트 */
+    function initBybitWebSocket() {
+        if (socket) { socket.close(); }
+        
+        const wsUrl = "wss://stream.bybit.com/v5/public/linear";
+        socket = new WebSocket(wsUrl);
+
+        socket.onopen = () => {
+            isWebsocketConnected = true;
+            log("WS STREAM: CONNECTED SUB_SYSTEM.");
+            // tickers 토픽 구독 (실시간 종가 매칭)
+            socket.send(JSON.stringify({
+                "op": "subscribe",
+                "args": ["tickers.BTCUSDT"]
+            }));
+        };
+
+        socket.onmessage = (event) => {
+            const msg = JSON.parse(event.data);
+            if (msg.topic === "tickers.BTCUSDT" && msg.data) {
+                const tickerData = msg.data;
+                // 초단위 틱 발생 시 실시간 최신 가격 주입
+                if (tickerData.lastPrice) {
+                    livePrice = parseFloat(tickerData.lastPrice);
+                    document.getElementById('current-price').innerText = livePrice.toLocaleString() + " USDT";
+                    calculateLivePnl(); // PNL 및 ROE 초고속 리프레시
+                }
+            }
+        };
+
+        socket.onclose = () => {
+            isWebsocketConnected = false;
+            log("WS STREAM: OFF_LINE. RECONNECTING...");
+            setTimeout(initBybitWebSocket, 3000); // 3초 뒤 자동 재연동 파이프라인
+        };
+
+        socket.onerror = (err) => {
+            console.error("WebSocket Error:", err);
+        };
+    }
+
     function calculateWilderRSI(closes, period = 14) {
         if (closes.length <= period) return 50;
         let gains = []; let losses = [];
@@ -356,6 +390,7 @@
         return 100 - (100 / (1 + (avgGain / avgLoss)));
     }
 
+    /* 보조지표 및 마감 데이터 모니터링 (5초 주기로 여유롭게 보정) */
     async function fetchBybitAndReport() {
         try {
             const url = 'https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=5&limit=200';
@@ -363,9 +398,13 @@
             if (!data || !data.result || !data.result.list || data.result.list.length === 0) return;
 
             const list = data.result.list;
-            livePrice = parseFloat(list[0][4]);
-            document.getElementById('current-price').innerText = livePrice.toLocaleString() + " USDT";
-            calculateLivePnl();
+            
+            // 만약 웹소켓이 끊겨있다면 HTTP 폴링 가격을 대체 백업으로 스위칭
+            if (!isWebsocketConnected) {
+                livePrice = parseFloat(list[0][4]);
+                document.getElementById('current-price').innerText = livePrice.toLocaleString() + " USDT";
+                calculateLivePnl();
+            }
 
             const closedCandleTime = parseInt(list[1][0]);
             const closes = list.slice(1).map(c => parseFloat(c[4])).reverse();
@@ -480,7 +519,6 @@
                             <div style="margin: 5px 0;">&gt; RSI  : <span style="color:#ffffff;">${data.lastData.rsi.toFixed(2)}</span></div>
                         `;
                     }
-                    /* [80% 축소] 알림 팝업 내부 인라인 스타일 글자 크기 스케일 다운 */
                     const popupHtml = `
                         <div style="font-size:13.5px; opacity:0.6; margin-bottom:6px; color:#ffffff;">CORE_NODE: ${data.config.windowAlias}</div>
                         <div style="color:${currentThemeColor}; font-weight:bold; font-size:18px; margin-bottom:8px; border-bottom:1px dashed ${currentThemeColor}; padding-bottom:4px; text-shadow:0 0 5px ${currentThemeColor};">⚠️ TARGET CONDITION COMPLIED</div>
@@ -609,7 +647,18 @@
     }, 1000);
 
     window.addEventListener('DOMContentLoaded', () => {
-        setNextTargetTime(); loadSavedPnlInputs(); fetchBybitAndReport(); setInterval(fetchBybitAndReport, 3000); syncServer(); setInterval(syncServer, 2000);
+        setNextTargetTime(); 
+        loadSavedPnlInputs(); 
+        
+        // 1. 실시간 웹소켓 인프라 즉시 가동
+        initBybitWebSocket(); 
+        
+        // 2. 보조지표 및 마감 백그라운드 데이터 연동 (5초 주기)
+        fetchBybitAndReport(); 
+        setInterval(fetchBybitAndReport, 5000); 
+        
+        syncServer(); 
+        setInterval(syncServer, 2000);
     });
 </script>
 </body>
