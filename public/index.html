@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TACTICAL_POSITION_MONITOR_v5.7_ULTRA_GLASS</title>
+    <title>TACTICAL_POSITION_MONITOR_v5.7_CRT_FINAL</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght=400;700&family=Orbitron:wght=400;700;900&display=swap');
     </style>
@@ -11,33 +11,32 @@
         /* 초기값은 에반게리온 (SHORT) 테마로 시작 */
         body { 
             font-family: 'Courier New', 'Courier Prime', monospace; 
-            background-color: #030100; 
+            background-color: #050201; 
             color: #ff5500; 
-            text-shadow: 0 0 6px rgba(255, 85, 0, 0.4), 0 0 12px rgba(255, 85, 0, 0.2); 
+            text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); 
         }
+        /* CRT 모니터 고유의 아날로그 미세 주사선 효과 완벽 보존 */
         body::before { 
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; 
-            background: linear-gradient(rgba(3, 1, 0, 0) 40%, rgba(0, 0, 0, 0.6) 60%); 
-            z-index: 99999; opacity: 0.45; pointer-events: none; background-size: 100% 6px; 
+            background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.75) 50%); 
+            z-index: 99999; opacity: 0.5; pointer-events: none; background-size: 100% 4px; 
             transform: translateZ(0); will-change: transform;
         }
-        /* 1. 가장 바깥쪽 큰 박스 (반투명 유리 질감 대폭 강화: 블러 레이어 및 하이브리드 광택 테두리 세팅) */
+        /* 가장 바깥쪽 큰 박스 (반투명 클래식 아날로그 질감 레이어 세팅) */
         .container { 
-            background: linear-gradient(135deg, rgba(20, 8, 3, 0.35) 0%, rgba(8, 3, 1, 0.55) 100%); 
-            border: 0.5px solid rgba(255, 85, 0, 0.4);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 0 30px rgba(255, 85, 0, 0.15); 
-            backdrop-filter: blur(22px) saturate(140%);
-            -webkit-backdrop-filter: blur(22px) saturate(140%);
+            background: rgba(12, 5, 2, 0.75); 
+            border: 1px solid rgba(255, 85, 0, 0.5); 
+            box-shadow: 0 0 20px rgba(255, 85, 0, 0.2), inset 0 0 15px rgba(255, 85, 0, 0.1); 
         }
-        h1 { color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.6); }
+        h1 { color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.8); }
         .live-clock-wrapper { color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); }
         
-        /* 2. 내부 핵심 박스들 (글래스모피즘 극대화 및 미세 음영 처리) */
-        .data-box { border: 0.5px solid rgba(255, 85, 0, 0.35); background: linear-gradient(135deg, rgba(170, 55, 0, 0.04) 0%, rgba(5, 2, 1, 0.4) 100%); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 1px 0px rgba(255,255,255,0.08), 0 4px 15px rgba(0,0,0,0.3); }
-        .pnl-box { border: 0.5px solid rgba(255, 85, 0, 0.35); background: linear-gradient(135deg, rgba(170, 55, 0, 0.03) 0%, rgba(5, 2, 1, 0.4) 100%); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 1px 0px rgba(255,255,255,0.08), 0 4px 15px rgba(0,0,0,0.3); }
-        .condition-group { border: 0.5px solid rgba(255, 85, 0, 0.35); background: linear-gradient(135deg, rgba(12, 5, 2, 0.3) 0%, rgba(5, 2, 1, 0.55) 100%); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 1px 0px rgba(255,255,255,0.05), 0 4px 15px rgba(0,0,0,0.3); }
+        /* 내부 핵심 구조 박스 */
+        .data-box { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(5, 2, 1, 0.5); }
+        .pnl-box { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(5, 2, 1, 0.5); }
+        .condition-group { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(12, 5, 2, 0.4); }
         
-        /* 내부 박스용 모서리 데코레이션 스타일 정의 (두께 절반인 1.5px로 변경) */
+        /* 요청사항 반영: 내부 박스용 모서리 데코레이션 스타일 정의 (두께 1.5px 반영) */
         .corner-decor::before, .corner-decor::after,
         .pnl-box::before, .pnl-box::after,
         .data-box::before, .data-box::after,
@@ -45,27 +44,27 @@
         .modal-content::before, .modal-content::after,
         .modal-body::before, .modal-body::after { border-color: #ff5500 !important; border-width: 1.5px !important; }
         
-        .data-row span:last-child { color: #ffffff; font-weight: 900; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 15px rgba(255,255,255,0.6); }
+        .data-row span:last-child { color: #ff5500; font-weight: bold; }
         .condition-title { color: #ff5500; }
         input[type="checkbox"] { accent-color: #ff5500; }
-        select, input[type="number"], input[type="text"] { background-color: rgba(5, 2, 1, 0.65); color: #ff5500; border: 0.5px solid rgba(255, 85, 0, 0.4); box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); backdrop-filter: blur(6px); }
-        .btn-core { background-color: #ff5500; color: #0c0502; border: none; font-weight: 900; box-shadow: 0 0 15px rgba(255, 85, 0, 0.5); text-shadow: none; }
-        .btn-core:hover { background-color: #ffffff; color: #0c0502; box-shadow: 0 0 20px #ffffff; }
-        .status { color: #ff5500; border: 0.5px dashed rgba(255, 85, 0, 0.6); background: rgba(170, 55, 0, 0.03); text-shadow: 0 0 5px rgba(255,85,0,0.5); }
-        .log { background: rgba(5, 2, 1, 0.65); border: 0.5px solid rgba(255, 85, 0, 0.4); color: #ff5500; opacity: 0.85; backdrop-filter: blur(6px); }
-        #sub-countdown-row { border-top: 0.5px dashed rgba(255, 85, 0, 0.4); color: rgba(255,85,0,0.7); }
-        #countdown { color:#ffffff !important; }
+        select, input[type="number"], input[type="text"] { background-color: #0c0502; color: #ff5500; border: 1px solid rgba(255, 85, 0, 0.5); }
+        .btn-core { background-color: #ff5500; color: #050201; border: none; font-weight: bold; box-shadow: 0 0 10px rgba(255, 85, 0, 0.4); }
+        .btn-core:hover { background-color: #ffffff; color: #050201; box-shadow: 0 0 15px #ffffff; }
+        .status { color: #ff5500; border: 1px dashed rgba(255, 85, 0, 0.7); background: rgba(255, 85, 0, 0.05); }
+        .log { background: #0c0502; border: 1px solid rgba(255, 85, 0, 0.4); color: #ff5500; opacity: 0.85; }
+        #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.4); color: rgba(255,85,0,0.7); }
+        #countdown { color:#ff5500 !important; }
         
         /* 팝업 모달 크리티컬 글로우 스타일 */
-        .modal-overlay { background-color: rgba(0,0,0,0.75); background-image: repeating-linear-gradient(45deg, rgba(255,17,0,0.08) 0px, rgba(255,17,0,0.08) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
-        .modal-content { background-color: #ff1100; border: 0.5px solid #ff1100; color: #000000; font-weight: 900; box-shadow: 0 0 40px rgba(255, 17, 0, 0.85); }
-        .modal-content .corner-decor::before, .modal-content .corner-decor::after { border-color: #000000 !important; }
-        .modal-body { border: 2px solid #ff1100; background: #000000; color: #ff1100; text-shadow: 0 0 8px rgba(255, 17, 0, 0.8); box-shadow: inset 0 0 15px rgba(255,17,0,0.3); }
-        .modal-body .corner-decor::before, .modal-body .corner-decor::after { border-color: #ff1100 !important; }
-        .modal-close-btn { background-color: #000000; color: #ff1100; border: 0.5px solid #ff1100; font-weight: 900; box-shadow: 0 0 10px rgba(255,17,0,0.4); }
-        .modal-close-btn:hover { background-color: #ff1100; color: #000000; box-shadow: 0 0 15px #ff1100; }
-        .nerv-tag { font-size: 9px; color: #ff5500; border: 0.5px solid rgba(255, 85, 0, 0.5); padding: 1px 4px; position: absolute; top: 4px; left: 6px; background: rgba(255,85,0,0.15); box-shadow: 0 0 5px rgba(255,85,0,0.3); }
-        .window-alias-box { border-bottom: 0.5px dashed rgba(255, 85, 0, 0.4); color: #ff5500; }
+        .modal-overlay { background-color: rgba(5,2,1,0.85); }
+        .modal-content { background-color: #ff5500; border: 1px solid #ff5500; color: #050201; font-weight: bold; box-shadow: 0 0 30px rgba(255, 85, 0, 0.6); }
+        .modal-content .corner-decor::before, .modal-content .corner-decor::after { border-color: #050201 !important; }
+        .modal-body { border: 1px dashed #ff5500; background: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.7); }
+        .modal-body .corner-decor::before, .modal-body .corner-decor::after { border-color: #ff5500 !important; }
+        .modal-close-btn { background-color: #050201; color: #ff5500; border: 1px solid #ff5500; font-weight: bold; }
+        .modal-close-btn:hover { background-color: #ff5500; color: #050201; }
+        .nerv-tag { font-size: 9px; color: #ff5500; border: 1px solid rgba(255, 85, 0, 0.5); padding: 1px 4px; position: absolute; top: 4px; left: 6px; background: rgba(255,85,0,0.1); }
+        .window-alias-box { border-bottom: 1px dashed rgba(255, 85, 0, 0.4); color: #ff5500; }
     </style>
     <style>
         * { box-sizing: border-box; }
@@ -76,18 +75,17 @@
         .container, .pnl-box, .data-box, .condition-group, .modal-content, .modal-body { position: relative; }
         .corner-decor { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
         
-        /* 내부 핵심 타겟팅 요소의 모서리 "ㄱ"자 공통 로직 조절 (크기 9px, 두께 1.5px 반영) */
+        /* 요청사항 반영: 모서리 데코레이션 크기 9px, 두께 1.5px 축소 세팅 */
         .corner-decor::before { content: ""; position: absolute; top: -1.5px; left: -1.5px; width: 9px; height: 9px; border-top: 1.5px solid #ff5500; border-left: 1.5px solid #ff5500; }
         .corner-decor::after { content: ""; position: absolute; top: -1.5px; right: -1.5px; width: 9px; height: 9px; border-top: 1.5px solid #ff5500; border-right: 1.5px solid #ff5500; }
         
-        /* 아래 가상 선택자 배치에서 .container 항목을 완벽히 격리 및 배제 처리 (크기 9px, 두께 1.5px 반영) */
+        /* 컨테이너 하단 요소를 제외한 박스 하단 데코레이션 크기 9px, 두께 1.5px 반영 */
         .pnl-box::before, .data-box::before, .condition-group::before, .modal-content::before, .modal-body::before { content: ""; position: absolute; bottom: -1.5px; left: -1.5px; width: 9px; height: 9px; border-bottom: 1.5px solid #ff5500; border-left: 1.5px solid #ff5500; pointer-events: none; z-index: 10; }
         .pnl-box::after, .data-box::after, .condition-group::after, .modal-content::after, .modal-body::after { content: ""; position: absolute; bottom: -1.5px; right: -1.5px; width: 9px; height: 9px; border-bottom: 1.5px solid #ff5500; border-right: 1.5px solid #ff5500; pointer-events: none; z-index: 10; }
         
         .container { width: 380px; padding: 15px; }
         h1 { font-size: 16px; font-weight: 700; text-align: center; margin-top: 5px; margin-bottom: 15px; letter-spacing: 0.5px; }
         
-        /* 시계 폰트 Orbitron 헤비 웨이트 리얼 복구 */
         .live-clock-wrapper { text-align: center; font-size: 26px; font-weight: 900 !important; margin-bottom: 15px; letter-spacing: 2px; font-family: 'Orbitron', sans-serif !important; }
         
         .pnl-box { padding: 12px; margin-bottom: 15px; }
@@ -98,8 +96,8 @@
         .pnl-inputs div { display: flex; flex-direction: column; width: 48%; font-size: 11px; gap: 3px; }
         .pnl-inputs input { height: 26px; font-size: 12px; outline: none; text-align: center; padding: 2px; }
         .pnl-display { display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.1); }
-        .pnl-plus { color: #00ff66 !important; text-shadow: 0 0 8px rgba(0,255,102,1), 0 0 15px rgba(0,255,102,0.5) !important; }
-        .pnl-minus { color: #ff1100 !important; text-shadow: 0 0 8px rgba(255,17,0,1), 0 0 15px rgba(255,17,0,0.5) !important; }
+        .pnl-plus { color: #00ff66 !important; text-shadow: 0 0 8px rgba(0,255,102,0.8) !important; }
+        .pnl-minus { color: #ff3333 !important; text-shadow: 0 0 8px rgba(255,51,51,0.8) !important; }
         
         .data-box { padding: 12px; margin-bottom: 15px; }
         .data-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; line-height: 1.4; }
@@ -114,7 +112,6 @@
         .status { text-align: center; font-size: 12px; font-weight: 700; margin-bottom: 10px; padding: 6px; }
         .log { max-height: 120px; overflow-y: auto; padding: 8px; font-size: 12px; line-height: 1.4; }
         
-        /* 인하우스 팝업 레이어 배치 스타일 */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; justify-content: center; align-items: center; z-index: 1000000; }
         .modal-content { padding: 25px; width: 340px; text-align: center; }
         .modal-title { font-size: 22px; font-weight: 900; margin-bottom: 15px; letter-spacing: 1px; }
@@ -135,7 +132,6 @@
     </div>
 </div>
 
-<!-- 가장 바깥쪽 컨테이너 박스 -->
 <div class="container" id="main-container">
     <div class="nerv-tag" id="nerv-only-tag" style="display:block;">NERV ONLY</div>
     <h1 id="main-title">MAGI_SYS://TACTICAL_MONITOR</h1>
@@ -249,59 +245,59 @@
 </div>
 
 <script>
-    // 테마 전환 내 콤팩트 데코레이션(두께 1.5px) 하드코딩 반영
+    // 테마 전환 루틴 내 축소 데코레이션(두께 1.5px, 크기 9px) 정밀 보존 세팅
     const themes = {
         nerv_operational: `
-            body { font-family: 'Courier New', monospace; background-color: #030100; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.4), 0 0 12px rgba(255, 85, 0, 0.2); }
-            body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(3, 1, 0, 0) 40%, rgba(0, 0, 0, 0.6) 60%); z-index: 99999; opacity: 0.45; pointer-events: none; background-size: 100% 6px; transform: translateZ(0); will-change: transform; }
-            .container { background: linear-gradient(135deg, rgba(20, 8, 3, 0.35) 0%, rgba(8, 3, 1, 0.55) 100%); border: 0.5px solid rgba(255, 85, 0, 0.4); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 0 30px rgba(255, 85, 0, 0.15); backdrop-filter: blur(22px) saturate(140%); -webkit-backdrop-filter: blur(22px) saturate(140%); }
-            h1 { color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.6); }
+            body { font-family: 'Courier New', monospace; background-color: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.75), 0 0 12px rgba(255, 85, 0, 0.5); }
+            body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(5, 2, 1, 0) 50%, rgba(0, 0, 0, 0.75) 50%); z-index: 99999; opacity: 0.5; pointer-events: none; background-size: 100% 4px; transform: translateZ(0); will-change: transform; }
+            .container { background: rgba(12, 5, 2, 0.75); border: 1px solid rgba(255, 85, 0, 0.5); box-shadow: 0 0 20px rgba(255, 85, 0, 0.2), inset 0 0 15px rgba(255, 85, 0, 0.1); }
+            h1 { color: #ff5500; border-bottom: 2px double #ff5500; text-shadow: 0 0 8px rgba(255,85,0,0.8); }
             .live-clock-wrapper { color: #ff5500; text-shadow: 0 0 12px rgba(255, 85, 0, 0.95), 0 0 20px rgba(255, 85, 0, 0.6); }
-            .data-box { border: 0.5px solid rgba(255, 85, 0, 0.35); background: linear-gradient(135deg, rgba(170, 55, 0, 0.04) 0%, rgba(5, 2, 1, 0.4) 100%); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 1px 0px rgba(255,255,255,0.08), 0 4px 15px rgba(0,0,0,0.3); }
-            .data-row span:last-child { color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 15px rgba(255,255,255,0.6); }
-            .condition-group { border: 0.5px solid rgba(255, 85, 0, 0.35); background: linear-gradient(135deg, rgba(12, 5, 2, 0.3) 0%, rgba(5, 2, 1, 0.55) 100%); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 1px 0px rgba(255,255,255,0.05), 0 4px 15px rgba(0,0,0,0.3); }
+            .data-box { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(5, 2, 1, 0.5); }
+            .data-row span:last-child { color: #ff5500; }
+            .condition-group { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(12, 5, 2, 0.4); }
             .condition-title { color: #ff5500; }
             .corner-decor::before, .corner-decor::after, .pnl-box::before, .pnl-box::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #ff5500 !important; border-width: 1.5px !important; }
             input[type="checkbox"] { accent-color: #ff5500; }
-            select, input[type="number"], input[type="text"] { background-color: rgba(5, 2, 1, 0.65); color: #ff5500; border: 0.5px solid rgba(255, 85, 0, 0.4); box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
-            .btn-core { background-color: #ff5500; color: #0c0502; box-shadow: 0 0 15px rgba(255, 85, 0, 0.5); }
-            .status { color: #ff5500; border: 0.5px dashed rgba(255, 85, 0, 0.6); background: rgba(170, 55, 0, 0.03); text-shadow: 0 0 5px rgba(255,85,0,0.5); }
-            .log { background: rgba(5, 2, 1, 0.65); border: 0.5px solid rgba(255, 85, 0, 0.4); color: #ff5500; backdrop-filter: blur(4px); }
-            .pnl-box { border: 0.5px solid rgba(255, 85, 0, 0.35); background: linear-gradient(135deg, rgba(170, 55, 0, 0.03) 0%, rgba(5, 2, 1, 0.4) 100%); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 1px 0px rgba(255,255,255,0.08), 0 4px 15px rgba(0,0,0,0.3); }
-            .window-alias-box { border-bottom: 0.5px dashed rgba(255, 85, 0, 0.4); color: #ff5500; }
-            #sub-countdown-row { border-top: 0.5px dashed rgba(255, 85, 0, 0.4); color: rgba(255,85,0,0.7); }
-            .modal-overlay { background-color: rgba(0,0,0,0.75); background-image: repeating-linear-gradient(45deg, rgba(255,85,0,0.08) 0px, rgba(255,85,0,0.08) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
-            .modal-content { background-color: #ff5500; border: 0.5px solid #ff5500; color: #000000; box-shadow: 0 0 40px rgba(255, 85, 0, 0.85); }
-            .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000000 !important; }
-            .modal-body { border: 2px solid #ff5500; background: #000000; color: #ff5500; text-shadow: 0 0 8px rgba(255, 85, 0, 0.8); }
+            select, input[type="number"], input[type="text"] { background-color: #0c0502; color: #ff5500; border: 1px solid rgba(255, 85, 0, 0.5); }
+            .btn-core { background-color: #ff5500; color: #050201; box-shadow: 0 0 10px rgba(255, 85, 0, 0.4); }
+            .status { color: #ff5500; border: 1px dashed rgba(255, 85, 0, 0.7); background: rgba(255, 85, 0, 0.05); }
+            .log { background: #0c0502; border: 1px solid rgba(255, 85, 0, 0.4); color: #ff5500; }
+            .pnl-box { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(5, 2, 1, 0.5); }
+            .window-alias-box { border-bottom: 1px dashed rgba(255, 85, 0, 0.4); color: #ff5500; }
+            #sub-countdown-row { border-top: 1px dashed rgba(255, 85, 0, 0.4); color: rgba(255,85,0,0.7); }
+            .modal-overlay { background-color: rgba(5,2,1,0.85); }
+            .modal-content { background-color: #ff5500; border: 1px solid #ff5500; color: #050201; box-shadow: 0 0 30px rgba(255, 85, 0, 0.6); }
+            .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #050201 !important; }
+            .modal-body { border: 1px dashed #ff5500; background: #050201; color: #ff5500; text-shadow: 0 0 6px rgba(255, 85, 0, 0.7); }
             .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #ff5500 !important; }
-            .modal-close-btn { background-color: #000000; color: #ff5500; border: 0.5px solid #ff5500; }
+            .modal-close-btn { background-color: #050201; color: #ff5500; border: 1px solid #ff5500; }
         `,
         matrix: `
-            body { font-family: 'Courier New', monospace; background-color: #000000; color: #00ff41; text-shadow: 0 0 6px rgba(0, 255, 65, 0.4), 0 0 12px rgba(0, 255, 65, 0.2); }
-            body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 60%); z-index: 99999; opacity: 0.45; pointer-events: none; background-size: 100% 6px; transform: translateZ(0); will-change: transform; }
-            .container { background: linear-gradient(135deg, rgba(2, 15, 4, 0.35) 0%, rgba(0, 5, 1, 0.6) 100%); border: 0.5px solid rgba(0, 255, 65, 0.45); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 0 30px rgba(0, 255, 65, 0.15); backdrop-filter: blur(22px) saturate(140%); -webkit-backdrop-filter: blur(22px) saturate(140%); }
-            h1 { color:#00ff41; border-bottom: 1px dashed #00ff41; text-shadow: 0 0 8px rgba(0,255,65,0.5); }
-            .live-clock-wrapper { color: #00ff41; text-shadow: 0 0 12px rgba(0, 255, 65, 0.95), 0 0 20px rgba(0, 255, 65, 0.6); }
-            .data-box { border: 0.5px solid rgba(0, 255, 65, 0.4); background: linear-gradient(135deg, rgba(0, 25, 5, 0.05) 0%, rgba(0, 0, 0, 0.4) 100%); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 1px 0px rgba(255,255,255,0.08), 0 4px 15px rgba(0,0,0,0.3); }
-            .data-row span:last-child { color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 12px rgba(0,255,65,0.5); }
-            .condition-group { border: 0.5px solid rgba(0, 255, 65, 0.4); background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.55) 100%); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 1px 0px rgba(255,255,255,0.05), 0 4px 15px rgba(0,0,0,0.3); }
-            .condition-title { color: #00ff41; }
-            .corner-decor::before, .corner-decor::after, .pnl-box::before, .pnl-box::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #00ff41 !important; border-width: 1.5px !important; }
-            input[type="checkbox"] { accent-color: #00ff41; }
-            select, input[type="number"], input[type="text"] { background-color: rgba(0, 0, 0, 0.65); color: #00ff41; border: 0.5px solid rgba(0, 255, 65, 0.4); box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
-            .btn-core { background-color: #00ff41; color: #000000; box-shadow: 0 0 15px rgba(0, 255, 65, 0.5); }
-            .status { color: #00ff41; border: 0.5px solid #00ff41; background: none; text-shadow: 0 0 5px rgba(0,255,65,0.5); }
-            .log { background: rgba(0, 0, 0, 0.65); border: 0.5px solid rgba(0, 255, 65, 0.4); color: #00ff41; backdrop-filter: blur(4px); }
-            .pnl-box { border: 0.5px solid rgba(0, 255, 65, 0.4); background: linear-gradient(135deg, rgba(0, 20, 5, 0.04) 0%, rgba(0, 0, 0, 0.4) 100%); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 1px 0px rgba(255,255,255,0.08), 0 4px 15px rgba(0,0,0,0.3); }
-            .window-alias-box { border-bottom: 0.5px dashed rgba(0, 255, 65, 0.5); color: #00ff41; }
-            #sub-countdown-row { border-top: 0.5px dashed rgba(0, 255, 65, 0.5); color: rgba(0,255,65,0.7); }
-            .modal-overlay { background-color: rgba(0,0,0,0.8); background-image: repeating-linear-gradient(45deg, rgba(0,255,65,0.05) 0px, rgba(0,255,65,0.05) 15px, rgba(0,0,0,0) 15px, rgba(0,0,0,0) 30px); }
-            .modal-content { background-color: #00ff41; border: 0.5px solid #00ff41; color: #000000; box-shadow: 0 0 40px rgba(0, 255, 65, 0.85); }
-            .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000000 !important; }
-            .modal-body { border: 2px solid #00ff41; background: #000000; color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.8); }
-            .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #00ff41 !important; }
-            .modal-close-btn { background-color: #000000; color: #00ff41; border: 0.5px solid #00ff41; }
+            body { font-family: 'Courier New', monospace; background-color: #000500; color: #00ff66; text-shadow: 0 0 6px rgba(0, 255, 102, 0.75), 0 0 12px rgba(0, 255, 102, 0.5); }
+            body::before { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(0, 5, 0, 0) 50%, rgba(0, 0, 0, 0.8) 50%); z-index: 99999; opacity: 0.55; pointer-events: none; background-size: 100% 4px; transform: translateZ(0); will-change: transform; }
+            .container { background: rgba(0, 10, 2, 0.8); border: 1px solid rgba(0, 255, 102, 0.5); box-shadow: 0 0 20px rgba(0, 255, 102, 0.2), inset 0 0 15px rgba(0, 255, 102, 0.1); }
+            h1 { color: #00ff66; border-bottom: 1px dashed #00ff66; text-shadow: 0 0 8px rgba(0,255,102,0.8); }
+            .live-clock-wrapper { color: #00ff66; text-shadow: 0 0 12px rgba(0, 255, 102, 0.95), 0 0 20px rgba(0, 255, 102, 0.6); }
+            .data-box { border: 1px solid rgba(0, 255, 102, 0.4); background: rgba(0, 5, 1, 0.5); }
+            .data-row span:last-child { color: #00ff66; }
+            .condition-group { border: 1px solid rgba(0, 255, 102, 0.4); background: rgba(0, 8, 2, 0.4); }
+            .condition-title { color: #00ff66; }
+            .corner-decor::before, .corner-decor::after, .pnl-box::before, .pnl-box::after, .data-box::before, .data-box::after, .condition-group::before, .condition-group::after { border-color: #00ff66 !important; border-width: 1.5px !important; }
+            input[type="checkbox"] { accent-color: #00ff66; }
+            select, input[type="number"], input[type="text"] { background-color: #000a02; color: #00ff66; border: 1px solid rgba(0, 255, 102, 0.5); }
+            .btn-core { background-color: #00ff66; color: #000500; box-shadow: 0 0 10px rgba(0, 255, 102, 0.4); }
+            .status { color: #00ff66; border: 1px dashed rgba(0, 255, 102, 0.7); background: rgba(0, 255, 102, 0.05); }
+            .log { background: #000a02; border: 1px solid rgba(0, 255, 102, 0.4); color: #00ff66; }
+            .pnl-box { border: 1px solid rgba(0, 255, 102, 0.4); background: rgba(0, 5, 1, 0.5); }
+            .window-alias-box { border-bottom: 1px dashed rgba(0, 255, 102, 0.4); color: #00ff66; }
+            #sub-countdown-row { border-top: 1px dashed rgba(0, 255, 102, 0.4); color: rgba(0,255,102,0.7); }
+            .modal-overlay { background-color: rgba(0,5,1,0.85); }
+            .modal-content { background-color: #00ff66; border: 1px solid #00ff66; color: #000500; box-shadow: 0 0 30px rgba(0, 255, 102, 0.6); }
+            .modal-content .corner-decor::before, .modal-content .corner-decor::after, .modal-content::before, .modal-content::after { border-color: #000500 !important; }
+            .modal-body { border: 1px dashed #00ff66; background: #000500; color: #00ff66; text-shadow: 0 0 6px rgba(0, 255, 102, 0.7); }
+            .modal-body .corner-decor::before, .modal-body .corner-decor::after, .modal-body::before, .modal-body::after { border-color: #00ff66 !important; }
+            .modal-close-btn { background-color: #000500; color: #00ff66; border: 1px solid #00ff66; }
         `
     };
 
@@ -313,7 +309,6 @@
     let nextCheckTime = 0;
     let isSystemRunning = false;
 
-    // 포지션 상태 및 테마 핸들링
     function onPositionSideChanged() {
         const side = document.getElementById('pnl-side').value;
         if (side === 'long') switchTheme('matrix'); else switchTheme('nerv_operational');
@@ -344,7 +339,6 @@
         updateSystemStatusUI();
     }
 
-    // 0.5px 초정밀 분석 엔진 파이프라인
     async function fetchBybitAndReport() {
         try {
             const url = 'https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=5&limit=200';
@@ -438,7 +432,6 @@
         }
     }
 
-    // 서버 및 세팅 싱크 로직
     async function syncServer() {
         try {
             const res = await fetch('/api/config');
@@ -457,10 +450,10 @@
                     log(`⚡ [CRITICAL] STRATEGY_PATTERN_MATCHED`);
                     startRepeatingAlertSound();
                     
-                    const currentThemeColor = activeTheme === 'matrix' ? '#00ff41' : '#ff5500';
+                    const currentThemeColor = activeTheme === 'matrix' ? '#00ff66' : '#ff5500';
                     const popupHtml = `
-                        <div style="font-size:11px; opacity:0.6; margin-bottom:6px; color:#ffffff;">SYS_NODE: ${data.config.windowAlias}</div>
-                        <div style="color:${currentThemeColor}; font-weight:900; font-size:15px; margin-bottom:10px; border-bottom:1px dashed ${currentThemeColor}; padding-bottom:5px; text-shadow:0 0 5px ${currentThemeColor};">⚠️ TARGET CONDITION COMPLIED</div>
+                        <div style="font-size:11px; opacity:0.6; margin-bottom:6px; color:#ffffff;">CORE_NODE: ${data.config.windowAlias}</div>
+                        <div style="color:${currentThemeColor}; font-weight:bold; font-size:15px; margin-bottom:10px; border-bottom:1px dashed ${currentThemeColor}; padding-bottom:5px; text-shadow:0 0 5px ${currentThemeColor};">⚠️ TARGET CONDITION COMPLIED</div>
                         <div style="margin: 4px 0;">&gt; PRICE: <span style="color:#ffffff;">${livePrice.toLocaleString()} USDT</span></div>
                         <div style="margin: 4px 0;">&gt; RSI  : <span style="color:#ffffff;">${data.lastData.rsi.toFixed(1)}</span></div>
                         <div style="margin: 4px 0;">&gt; VOL  : <span style="color:#ffffff;">${data.lastData.volRatio.toFixed(1)}x</span></div>
@@ -551,7 +544,6 @@
         }
     }
 
-    // 로컬 스토리지 연동형 PNL 처리 함수 (영구 보존 기법)
     function saveAndCalculatePnl() {
         const entryVal = document.getElementById('pnl-entry-price').value;
         const qtyVal = document.getElementById('pnl-qty').value;
@@ -594,7 +586,6 @@
         else { roeEl.className = ""; amtEl.className = ""; }
     }
 
-    // 인하우스 음향 오실레이터
     function playThemeSound() {
         if (!audioContext) return;
         const now = audioContext.currentTime;
@@ -640,7 +631,7 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         setNextTargetTime();
-        loadSavedPnlInputs(); // 초기화 시 로컬 저장소 수치 복구
+        loadSavedPnlInputs();
         
         fetchBybitAndReport();
         setInterval(fetchBybitAndReport, 3000);
